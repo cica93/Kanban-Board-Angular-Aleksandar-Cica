@@ -1,0 +1,41 @@
+type Query {
+  getTaskById(id: ID!): OptionalTask!
+  getTasks(
+    page: number
+    pageSize: number
+    columns: [String!]
+    order: String
+    description: String
+  ): [OptionalTask!]!
+}
+
+type Mutation {
+  createTask(task: Task!): OptionalTask
+  updateTask(id: ID!, task: Task!): OptionalTask
+  patchTask(id: ID!, task: OptionalTask!): OptionalTask
+  deleteTask(id: ID!): OptionalTask
+}
+
+type User {
+  id: ID!
+  fullName: String!
+  email: String!
+}
+
+type Task {
+  id: ID
+  title: String!
+  description: String!
+  taskStatus: String!
+  taskPriority: String!
+  users: [User!]
+}
+
+type OptionalTask {
+  id: ID
+  title: String
+  description: String
+  taskStatus: String
+  taskPriority: String
+  users: [User!]
+}

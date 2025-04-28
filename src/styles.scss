@@ -1,0 +1,10 @@
+/* You can add global styles to this file, and also import other style files */
+@import 'primeng/resources/themes/lara-light-blue/theme'; // or other theme
+@import "primeicons/primeicons.css";
+@import "primeflex/primeflex.css";
+@import "primeng/resources/primeng.css";
+@import "primeflex/primeflex.scss";
+
+.p-password-input, .p-password, .p-dropdown {
+   width: 100%;
+}
