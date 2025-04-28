@@ -4,7 +4,7 @@ import { map, Observable, of } from 'rxjs';
 import { AbstractTaskService, Task } from './abstract.task.service';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class TaskGraphQlService extends AbstractTaskService {
   constructor(private apollo: Apollo) {
@@ -40,10 +40,38 @@ export class TaskGraphQlService extends AbstractTaskService {
     }
   `;
 
+  GET_TASK_BY_ID_QUERY = gql`
+    query getTaskById($id: ID!) {
+      getTaskById(id: $id) {
+        id
+        title
+        description
+        taskStatus
+        taskPriority
+        users {
+          id
+          fullName
+          email
+        }
+      }
+    }
+  `;
+
+  override getById(id: number): Observable<Task> {
+    return this.apollo
+      .watchQuery({
+        query: this.GET_TASK_BY_ID_QUERY,
+        variables: {
+          id,
+        },
+      })
+      .valueChanges.pipe(map((result: any) => result.data.getTaskById));
+  }
+
   override get(
-    description = '',
-    columns: ['id'],
-    order = 'desc',
+    description = "",
+    columns: ["id"],
+    order = "desc",
     limit = 20,
     offset = 0
   ): Observable<Task[]> {
@@ -65,26 +93,26 @@ export class TaskGraphQlService extends AbstractTaskService {
     id: number,
     task: Partial<Task>
   ): Observable<Task | null | undefined> {
-    console.log(task)
-     return this.apollo
-       .mutate<Task>({
-         mutation: gql`
-           mutation updateTask($id: ID!, $task: TaskInput!) {
-             updateTask(id: $id, task: $task) {
-               id
-               title
-               description
-               taskStatus
-               taskPriority
-             }
-           }
-         `,
-         variables: {
-           task,
-           id,
-         },
-       })
-       .pipe(map((r: MutationResult<Task>) => r.data));
+    console.log(task);
+    return this.apollo
+      .mutate<Task>({
+        mutation: gql`
+          mutation updateTask($id: ID!, $task: TaskInput!) {
+            updateTask(id: $id, task: $task) {
+              id
+              title
+              description
+              taskStatus
+              taskPriority
+            }
+          }
+        `,
+        variables: {
+          task,
+          id,
+        },
+      })
+      .pipe(map((r: MutationResult<Task>) => r.data));
   }
   override patch(
     id: number,

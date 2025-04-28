@@ -13,7 +13,7 @@ export interface Task {
 
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export abstract class AbstractTaskService {
   abstract get(
@@ -24,9 +24,17 @@ export abstract class AbstractTaskService {
     offset?: number
   ): Observable<Task[]>;
 
-  abstract put(id: number, task: Partial<Task>): Observable<Task | null | undefined>;
+  abstract getById(id: number): Observable<Task>;
 
-  abstract patch(id: number, task: Partial<Task>): Observable<Task | null | undefined>;
+  abstract put(
+    id: number,
+    task: Partial<Task>
+  ): Observable<Task | null | undefined>;
+
+  abstract patch(
+    id: number,
+    task: Partial<Task>
+  ): Observable<Task | null | undefined>;
 
   abstract post(task: Partial<Task>): Observable<Task | null | undefined>;
 

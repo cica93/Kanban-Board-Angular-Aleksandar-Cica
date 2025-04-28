@@ -7,7 +7,23 @@ import {
 
 import { AsyncPipe, KeyValuePipe } from '@angular/common';
 import { CardModule } from 'primeng/card';
-import { debounceTime, distinctUntilChanged, every, exhaustMap, filter, fromEvent, map, merge, Observable, scan, startWith, Subject, switchMap, tap } from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  every,
+  exhaustMap,
+  filter,
+  fromEvent,
+  map,
+  merge,
+  Observable,
+  scan,
+  shareReplay,
+  startWith,
+  Subject,
+  switchMap,
+  tap,
+} from "rxjs";
 import { Button } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import {
@@ -86,7 +102,7 @@ export class BoardComponent implements OnInit {
   draggedTaskId: number | undefined;
 
   ngOnInit(): void {
-    this.users$ = this.userService.getUsers();
+    this.users$ = this.userService.getUsers().pipe(shareReplay(1));
     this.form = this.fb.group({
       description: ['', Validators.required],
       title: ['', [Validators.required]],

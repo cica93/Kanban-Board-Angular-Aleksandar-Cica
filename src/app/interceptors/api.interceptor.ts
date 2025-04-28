@@ -23,11 +23,15 @@ export const ApiInterceptor: HttpInterceptorFn = (req, next) => {
   return next(authReq).pipe(
     catchError((err: object) => {
       if (err instanceof HttpErrorResponse) {
+        console.log(err);
         const status = (err as HttpErrorResponse).status;
         if (status === 401) {
           securityService.logout();
         } else {
-          errorHandlerService.errorEvent.next(err.error.error);
+          errorHandlerService.errorEvent.next({
+            detail: err.error.message as string,
+            summary: "error",
+          });
         }
       }
       return throwError(() => err);
