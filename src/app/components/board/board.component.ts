@@ -9,8 +9,6 @@ import { AsyncPipe, KeyValuePipe } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import {
   debounceTime,
-  distinctUntilChanged,
-  every,
   exhaustMap,
   filter,
   fromEvent,
@@ -21,7 +19,6 @@ import {
   shareReplay,
   startWith,
   Subject,
-  switchMap,
   tap,
 } from "rxjs";
 import { Button } from 'primeng/button';
