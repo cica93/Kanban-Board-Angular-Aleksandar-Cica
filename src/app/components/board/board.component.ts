@@ -20,7 +20,7 @@ import {
   startWith,
   Subject,
   tap,
-} from "rxjs";
+} from 'rxjs';
 import { Button } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import {
@@ -39,10 +39,14 @@ import { SecurityService } from '../../services/security.service';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { User, UserService } from '../../services/user.service';
-import { AbstractTaskService, Task } from '../../services/abstract.task.service';
+import {
+  AbstractTaskService,
+  Task,
+} from '../../services/abstract.task.service';
 import { RouterLink } from '@angular/router';
 import { TooltipModule } from 'primeng/tooltip';
 import { DragDropModule } from 'primeng/dragdrop';
+import { TaskCardComponent } from './task-card/task-card.component';
 
 export interface TaskResponse {
   event: string | { event: string };
@@ -70,9 +74,9 @@ export interface TaskResponse {
     ToastModule,
     RouterLink,
     DragDropModule,
+    TaskCardComponent,
   ],
   templateUrl: './board.component.html',
-  styleUrl: './board.component.scss',
 })
 export class BoardComponent implements OnInit {
   offset = 0;
@@ -227,12 +231,11 @@ export class BoardComponent implements OnInit {
   }
 
   handleDrop(taskStatus: string): void {
-    this.taskService
-      .patch(this.draggedTaskId!, { taskStatus }).subscribe({
-        next: () => {
-          this.searchChange.next("");
-        }
-      })
+    this.taskService.patch(this.draggedTaskId!, { taskStatus }).subscribe({
+      next: () => {
+        this.searchChange.next('');
+      },
+    });
   }
 }
 

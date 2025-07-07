@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Apollo, gql, MutationResult } from 'apollo-angular';
-import { map, Observable, of } from 'rxjs';
-import { AbstractTaskService, Task } from './abstract.task.service';
+import {  map, Observable, of } from "rxjs";
+import { AbstractTaskService, Task } from "./abstract.task.service";
 
 @Injectable({
   providedIn: "root",

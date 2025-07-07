@@ -1,6 +1,4 @@
 import { Routes } from '@angular/router';
-import { BoardComponent } from './components/board/board.component';
-import { LoginComponent } from './components/login/login.component';
 import { inject } from '@angular/core';
 import { map } from 'rxjs';
 import { SecurityService } from './services/security.service';
@@ -26,21 +24,30 @@ export const routes: Routes = [
   {
     path: 'rest',
     title: 'Board Rest',
-    component: BoardComponent,
+    loadComponent: () =>
+      import('./components/board/board.component').then(
+        (c) => c.BoardComponent
+      ),
     providers: [{ provide: AbstractTaskService, useExisting: TaskService }],
     canActivate: [loginGuard],
   },
   {
     path: '',
     title: 'Board Rest',
-    component: BoardComponent,
+    loadComponent: () =>
+      import('./components/board/board.component').then(
+        (c) => c.BoardComponent
+      ),
     providers: [{ provide: AbstractTaskService, useExisting: TaskService }],
     canActivate: [loginGuard],
   },
   {
     path: 'graphql',
     title: 'Board Graphql',
-    component: BoardComponent,
+    loadComponent: () =>
+      import('./components/board/board.component').then(
+        (c) => c.BoardComponent
+      ),
     providers: [
       { provide: AbstractTaskService, useExisting: TaskGraphQlService },
     ],
@@ -49,6 +56,9 @@ export const routes: Routes = [
   {
     path: 'login',
     title: 'Board',
-    component: LoginComponent,
+    loadComponent: () =>
+      import('./components/login/login.component').then(
+        (c) => c.LoginComponent
+      ),
   },
 ];

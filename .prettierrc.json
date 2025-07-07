@@ -1,0 +1,9 @@
+{
+  "singleQuote": true,
+  "semi": true,
+  "scripts": {
+    "lint": "eslint . --ext .ts,.js",
+    "lint:fix": "eslint . --ext .ts,.js --fix",
+    "format": "prettier --write \"./**/*.{js,ts,json,css,scss,html}\""
+  }
+}

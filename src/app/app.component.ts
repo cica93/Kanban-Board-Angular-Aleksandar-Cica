@@ -3,10 +3,10 @@ import { RouterOutlet } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { MessageHandlerService } from './services/message.handler.service';
 import { SecurityService } from './services/security.service';
-import { Observable } from 'rxjs';
-import { AsyncPipe } from '@angular/common';
-import { Subscription } from 'apollo-angular';
-import { User } from './services/user.service';
+import { Observable } from "rxjs";
+import { AsyncPipe } from "@angular/common";
+import { Subscription } from "apollo-angular";
+import { User } from "./services/user.service";
 import { ToastModule } from "primeng/toast";
 
 @Component({
@@ -29,13 +29,15 @@ export class AppComponent implements OnInit {
     this.messageHandler.errorEvent
       .asObservable()
       .subscribe(({ summary, detail }) => {
-        this.messageService.add({
-          severity: "error",
-          key: "main",
-          closable: true,
-          summary,
-          detail,
-        });
+        if (summary && detail) {
+          this.messageService.add({
+            severity: "error",
+            key: "main",
+            closable: true,
+            summary,
+            detail,
+          });
+        }
       });
   }
 }

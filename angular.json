@@ -25,7 +25,17 @@
             "inlineStyleLanguage": "scss",
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": ["src/styles.scss"],
-            "scripts": []
+            "stylePreprocessorOptions": {
+              "includePaths": ["node_modules/"]
+            },
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "chart.js",
+              "jspdf-autotable",
+              "file-saver",
+              "jspdf",
+              "quill"
+            ]
           },
           "configurations": {
             "production": {

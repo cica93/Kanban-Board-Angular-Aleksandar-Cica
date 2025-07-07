@@ -1,0 +1,13 @@
+{
+  "CodeGPT.apiKey": "CodeGPT Plus Beta",
+  "cSpell.words": ["avatargroup", "ngrx", "primeicons", "primeng"],
+  "prettier.singleQuote": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}
