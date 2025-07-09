@@ -13,12 +13,13 @@
                   class="flex-auto"
           />
           <label for="title">Password</label>
-              <p-password
+              <p-password #passwordInput
                 formControlName="password"
                 [toggleMask]="true"
                 [feedback]="true"
                 styleClass="full-width"
-              />
+              >
+            </p-password>
         </form>
     <div class="mt-3">
       <p-button label="Login" (click)="login()"[rounded]="true" class="flex-auto" styleClass="w-full"/>

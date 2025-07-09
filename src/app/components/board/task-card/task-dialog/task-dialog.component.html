@@ -1,0 +1,68 @@
+<p-sidebar
+  [visible]="true"
+  [dismissible]="false"
+  [showCloseIcon]="false"
+  position="right"
+  styleClass="p-sidebar-md w-4"
+>
+  <ng-template pTemplate="header">
+    <span class="font-semibold text-xl"></span>
+  </ng-template>
+  <form [formGroup]="form" class="flex flex-column gap-2">
+    <label for="title">Title</label>
+    <input
+      placeholder="title"
+      formControlName="title"
+      styleClass="w-full"
+      pInputText
+      class="flex-auto"
+    />
+    <label for="title">Description</label>
+    <input
+      placeholder="description"
+      formControlName="description"
+      styleClass="w-full"
+      pInputText
+      class="flex-auto"
+    />
+    <label for="title">Task Status</label>
+    <p-dropdown
+      [options]="taskStatuses"
+      formControlName="taskStatus"
+      placeholder="Select status"
+      class="w-full"
+    />
+
+    <label for="title">Task priority</label>
+    <p-dropdown
+      [options]="taskPriority"
+      formControlName="taskPriority"
+      placeholder="Select a priority"
+      class="w-full"
+    >
+     <ng-template let-priority pTemplate="item">
+         {{ priority | replace : "_" : " " }}
+     </ng-template>
+  </p-dropdown>
+
+    <label for="title">Task priority</label>
+    <p-multiSelect
+      [options]="(users$ | async) ?? []"
+      optionLabel="fullName"
+      optionValue="id"
+      formControlName="users"
+      placeholder="Select Users"
+      styleClass="w-full"
+    />
+  </form>
+  <div class="flex justify-content-end mt-3 gap-2">
+    <p-button
+      [tabindex]="-1"
+      pRipple
+      label="Cancel"
+      severity="secondary"
+      (click)="close()"
+    />
+    <p-button pRipple label="Save" severity="primary" (click)="save()" />
+  </div>
+</p-sidebar>

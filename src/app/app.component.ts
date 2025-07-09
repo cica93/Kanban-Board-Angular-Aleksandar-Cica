@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { MessageHandlerService } from './services/message.handler.service';
 import { SecurityService } from './services/security.service';
@@ -8,11 +8,12 @@ import { AsyncPipe } from "@angular/common";
 import { Subscription } from "apollo-angular";
 import { User } from "./services/user.service";
 import { ToastModule } from "primeng/toast";
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: "app-root",
   standalone: true,
-  imports: [RouterOutlet, AsyncPipe, ToastModule],
+  imports: [RouterOutlet, AsyncPipe, ToastModule, RouterLink, RouterLinkActive, TooltipModule],
   templateUrl: "./app.component.html",
   styleUrl: "./app.component.scss",
 })
@@ -39,5 +40,13 @@ export class AppComponent implements OnInit {
           });
         }
       });
+  }
+
+  logout(): void {
+    this.securityService.logout();
+  }
+
+  onSidebarActivate(event: any): void { 
+    console.log(event);
   }
 }

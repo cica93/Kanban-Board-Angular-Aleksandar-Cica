@@ -9,7 +9,6 @@ import { ApiInterceptor } from './interceptors/api.interceptor';
 import { JwtService } from './services/jwt.service';
 import { SecurityService } from './services/security.service';
 
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { ApolloClientOptions, InMemoryCache } from '@apollo/client/core';
 import { HttpLink } from 'apollo-angular/http';
 import { Apollo, APOLLO_OPTIONS } from 'apollo-angular';
@@ -35,7 +34,7 @@ export const appConfig: ApplicationConfig = {
     MessageService,
     Apollo,
     provideAnimations(),
-    provideAnimationsAsync(),
+   // provideAnimationsAsync(),
     providePrimeNG({
       theme: { preset: Aura, options: { darkModeSelector: ".p-dark" } },
     }),

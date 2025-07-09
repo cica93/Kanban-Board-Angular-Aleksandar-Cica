@@ -4,6 +4,9 @@
 @import "primeicons/primeicons.css";
 @import 'primeflex/primeflex.css';
 
+body {
+   margin: 0;
+}
 
 .p-password-input, .p-password, .p-dropdown {
    width: 100%;
@@ -12,4 +15,8 @@
 p-avatar-group > p-avatar:hover {
    z-index: 1000 !important;
    cursor: pointer;
+}
+
+.p-menu-list.p-reset > li:first-child:has(span:empty) {
+   display: none;
 }

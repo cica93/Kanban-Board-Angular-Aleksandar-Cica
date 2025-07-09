@@ -1,5 +1,11 @@
 @if (user$ | async; as user) {
+  <div class="flex mb-3 align-items-center w-full h-3rem gap-3 bg-primary px-5 text-white text-lg">
+    <a [routerLink]="['/rest']" routerLinkActive="router-link-active" class="text-white" >Rest</a>
+    <a [routerLink]="['/graphql']" routerLinkActive="router-link-active" class="text-white" >Graphql</a>
+   <i class="pi pi-sign-out ml-auto cursor-pointer" pTooltip="Logout" (click)="logout()"></i>
+  </div>
     <router-outlet></router-outlet>
+    <router-outlet name="sidebar"></router-outlet>
 } @else {
   <router-outlet></router-outlet>
 }

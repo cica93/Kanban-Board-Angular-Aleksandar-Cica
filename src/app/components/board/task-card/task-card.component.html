@@ -16,11 +16,11 @@
           }
         </p-avatar-group>
         <div class="p-2 surface-ground flex justify-center cursor-pointer border-circle" (click)="menu.toggle($event)">
-            <p-menu #menu [model]="items" [popup]="true" />
             <i  class="pi pi-ellipsis-v"></i>
         </div>
+        
       </div>
     </div>
   </div>
 </p-card>
-
+<p-menu #menu [model]="items" [popup]="true" />

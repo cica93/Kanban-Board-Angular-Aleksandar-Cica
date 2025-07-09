@@ -1,9 +1,13 @@
 {
-  "extends": "../tsconfig.json",
+  "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../out-tsc/spec",
     "types": ["jasmine", "node"]
   },
-  "files": ["test.ts"],
+  //  "files": [
+  //   "src/test.ts", // The main test entry point
+  //   "src/app/app.component.spec.ts",
+  //   "src/app/services/my-service.service.spec.ts",
+  // ],
   "include": ["**/*.spec.ts", "**/*.d.ts"]
 }
