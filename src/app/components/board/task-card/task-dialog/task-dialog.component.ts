@@ -27,40 +27,42 @@ import { ReplacePipe } from 'src/app/pipes/replace.pipe';
     ReactiveFormsModule,
     RippleModule,
     ReplacePipe,
-    PrimeTemplate
+    PrimeTemplate,
   ],
   templateUrl: './task-dialog.component.html',
 })
 export class TaskDialogComponent {
-
   taskStatuses = ['TO_DO', 'IN_PROGRESS', 'DONE'];
   taskPriority = ['LOW', 'MED', 'HEIGH'];
   form!: FormGroup;
   users$!: Observable<User[]>;
-  initValue!: Partial<Task> 
+  initValue!: Partial<Task>;
   constructor(
     private taskService: AbstractTaskService,
     private messageService: MessageService,
     private userService: UserService,
     private fb: FormBuilder,
     private router: Router,
-    private location: Location,
+    private location: Location
   ) {}
- 
 
   ngOnInit(): void {
     this.initValue = (this.location.getState() as any)?.['initValue'] ?? {};
     this.form = this.fb.group(
-    this.users$ = this.userService.getUsers().pipe(shareReplay(1)));
+      (this.users$ = this.userService.getUsers().pipe(shareReplay(1)))
+    );
     this.form = this.fb.group({
       description: [this.initValue.description, Validators.required],
       title: [this.initValue.title, [Validators.required]],
       taskStatus: [this.initValue.taskStatus, [Validators.required]],
       taskPriority: [this.initValue.taskPriority, Validators.required],
-      users: [(this.initValue.users ?? []).map((user: User) => +user.id), [Validators.required]],
+      users: [
+        (this.initValue.users ?? []).map((user: User) => +user.id),
+        [Validators.required],
+      ],
     });
   }
-save(): void {
+  save(): void {
     (this.initValue.id
       ? this.taskService.put(this.initValue.id, this.mapFormValue())
       : this.taskService.post(this.mapFormValue())
@@ -70,13 +72,13 @@ save(): void {
           severity: 'success',
           key: 'main',
           closable: true,
-          summary: this.initValue.id ? 'Task changed' : 'Task created',
+          summary: this.initValue.id ? 'Task updated' : 'Task created',
         });
         this.close(true);
       },
     });
   }
-  
+
   mapFormValue(): Partial<Task> {
     return {
       ...this.form.value,
@@ -85,6 +87,8 @@ save(): void {
   }
 
   close(initNewSearch = false): void {
-    this.router.navigate([{ outlets: { sidebar: null } }], { state: { initNewSearch } });
+    this.router.navigate([{ outlets: { sidebar: null } }], {
+      state: { initNewSearch },
+    });
   }
 }

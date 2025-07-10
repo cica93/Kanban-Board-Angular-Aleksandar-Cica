@@ -6,52 +6,62 @@
   styleClass="p-sidebar-md w-4"
 >
   <ng-template pTemplate="header">
-    <span class="font-semibold text-xl"></span>
+    <span class="font-semibold text-xl">{{initValue.id ? 'Edit':'Create'}} task</span>
   </ng-template>
   <form [formGroup]="form" class="flex flex-column gap-2">
     <label for="title">Title</label>
     <input
-      placeholder="title"
+      [attr.id]="'title'"
+      placeholder="Enter title"
       formControlName="title"
       styleClass="w-full"
       pInputText
       class="flex-auto"
     />
-    <label for="title">Description</label>
+    <label for="description">Description</label>
     <input
-      placeholder="description"
+      [attr.id]="'description'"
+      placeholder="Enter description"
       formControlName="description"
       styleClass="w-full"
       pInputText
       class="flex-auto"
     />
-    <label for="title">Task Status</label>
+    <label for="task-status">Task Status</label>
     <p-dropdown
+      [attr.id]="'task-status'"
       [options]="taskStatuses"
       formControlName="taskStatus"
-      placeholder="Select status"
-      class="w-full"
-    />
-
-    <label for="title">Task priority</label>
-    <p-dropdown
-      [options]="taskPriority"
-      formControlName="taskPriority"
-      placeholder="Select a priority"
+      placeholder="Select task status"
       class="w-full"
     >
-     <ng-template let-priority pTemplate="item">
-         {{ priority | replace : "_" : " " }}
-     </ng-template>
+      <ng-template let-status pTemplate="item">
+            {{ status | replace : "_" : " " }}
+      </ng-template>
+      <ng-template let-status pTemplate="selectedItem">
+            {{ status | replace : "_" : " " }}
+      </ng-template>
+    </p-dropdown>
+
+    <label for="task-priority">Task priority</label>
+    <p-dropdown
+      [attr.id]="'task-priority'"
+      [options]="taskPriority"
+      formControlName="taskPriority"
+      placeholder="Select task priority"
+      class="w-full"
+    >
+     
   </p-dropdown>
 
-    <label for="title">Task priority</label>
+    <label for="users">Users</label>
     <p-multiSelect
       [options]="(users$ | async) ?? []"
       optionLabel="fullName"
       optionValue="id"
+      [attr.id]="'users'"
       formControlName="users"
-      placeholder="Select Users"
+      placeholder="Select users"
       styleClass="w-full"
     />
   </form>

@@ -37,7 +37,7 @@ const logoutGuard = () => {
 export const routes: Routes = [
   {
     path: 'rest',
-    title: 'Board Rest',
+    title: 'Rest',
     loadComponent: () =>
       import('./components/board/board.component').then(
         (c) => c.BoardComponent
@@ -47,14 +47,16 @@ export const routes: Routes = [
   {
     path: 'user-dialog',
     outlet: 'sidebar',
-    loadComponent: () => import('./components/board/task-card/task-dialog/task-dialog.component').then(
-      (c) => c.TaskDialogComponent),
-        providers: [{ provide: AbstractTaskService, useExisting: TaskService }],
+    loadComponent: () =>
+      import(
+        './components/board/task-card/task-dialog/task-dialog.component'
+      ).then((c) => c.TaskDialogComponent),
+    providers: [{ provide: AbstractTaskService, useExisting: TaskService }],
     canActivate: [loginGuard],
   },
   {
     path: '',
-    title: 'Board Rest',
+    title: 'Rest',
     loadComponent: () =>
       import('./components/board/board.component').then(
         (c) => c.BoardComponent
@@ -64,7 +66,7 @@ export const routes: Routes = [
   },
   {
     path: 'graphql',
-    title: 'Board Graphql',
+    title: 'Graphql',
     loadComponent: () =>
       import('./components/board/board.component').then(
         (c) => c.BoardComponent
@@ -81,6 +83,6 @@ export const routes: Routes = [
       import('./components/login/login.component').then(
         (c) => c.LoginComponent
       ),
-   canActivate: [logoutGuard],
+    canActivate: [logoutGuard],
   },
 ];

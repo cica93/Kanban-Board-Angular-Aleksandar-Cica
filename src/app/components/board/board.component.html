@@ -11,10 +11,10 @@
     
 </div>
 
-<div class="flex m-3">
+<div class="flex">
   @for (item of tasks$ | async | keyvalue | sortTask ; track $index) {
   <div
-    class="flex w-4 gap-4 m-3 flex-column"
+    class="flex w-4 my-1 mx-3 flex-column"
     pDroppable
     (onDrop)="handleDrop(item.key)"
   >
@@ -29,14 +29,16 @@
           size="small"
         />
     </div>
-    @for (task of item.value; track $index) {
-    <app-task-card
-      pDraggable [pDraggableDisabled]="false" (onDragStart)="draggedTaskId=task.id"
-      [task]="task"
-      (onDelete)="deleteTask(task.id)"
-      (onEdit)="navigateUserDialog(task)"
-    ></app-task-card>
-    }
+    <div class="flex flex-column row-gap-4">
+      @for (task of item.value; track $index) {
+        <app-task-card
+          pDraggable [pDraggableDisabled]="false" (onDragStart)="draggedTaskId=task.id"
+          [task]="task"
+          (onDelete)="deleteTask(task.id)"
+          (onEdit)="navigateUserDialog(task)"
+        ></app-task-card>
+      }
+    </div>
   </div>
   }
 </div>

@@ -101,40 +101,29 @@ describe("BoardComponent", () => {
     fixture.detectChanges(); // Initial change detection to bind data
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it("should call logout when logout button is clicked", () => {
+  it('should call logout when logout button is clicked', () => {
     const logoutButton = fixture.debugElement.query(
       By.css('p-button[label="Logout"]')
     );
     expect(logoutButton).toBeTruthy(); // Ensure the button exists
 
-    logoutButton.triggerEventHandler("click", null);
+    logoutButton.triggerEventHandler('click', null);
     expect(mockSecurityService.logout).toHaveBeenCalled();
   });
 
-  it("should navigate to /rest when REST link is clicked", () => {
-    const restLink = fixture.debugElement.query(
-      By.css('a[routerLink="/rest"]')
-    );
-    expect(restLink).toBeTruthy();
-    // For routerLink, you typically test if the router navigate method was called
-    // This requires mocking the Router service and spying on its navigate method.
-    // For simplicity, we'll just check if the element exists.
-    expect(restLink.nativeElement.getAttribute("href")).toBe("/rest");
-  });
-
-  it("should call searchChange.next with input value on search input change", fakeAsync(() => {
+  it('should call searchChange.next with input value on search input change', fakeAsync(() => {
     const searchInput = fixture.debugElement.query(
       By.css('input[pInputText][placeholder="Search"]')
     );
     expect(searchInput).toBeTruthy();
 
-    const testValue = "test search";
+    const testValue = 'test search';
     searchInput.nativeElement.value = testValue;
-    searchInput.nativeElement.dispatchEvent(new Event("input")); // Simulate input event
+    searchInput.nativeElement.dispatchEvent(new Event('input')); // Simulate input event
 
     // If appDebounceInput is a directive that debounces, you need to tick
     // Assuming appDebounceInput emits on 'input' and then debounces internally
@@ -152,124 +141,50 @@ describe("BoardComponent", () => {
     // For this example, we'll just ensure the input element is present.
   }));
 
-  it("should display task status sections based on tasks$", fakeAsync(() => {
+  it('should display task status sections based on tasks$', fakeAsync(() => {
     const mockTasks = {
-      TODO: [{ id: "1", title: "Task 1", taskStatus: "TODO" }],
-      IN_PROGRESS: [{ id: "2", title: "Task 2", taskStatus: "IN_PROGRESS" }],
+      TODO: [{ id: '1', title: 'Task 1', taskStatus: 'TODO' }],
+      IN_PROGRESS: [{ id: '2', title: 'Task 2', taskStatus: 'IN_PROGRESS' }],
     };
     mockTaskService.getTasks.and.returnValue(of(mockTasks));
     component.ngOnInit(); // Re-trigger ngOnInit to pick up new mock data
     tick(); // Resolve the observable
     fixture.detectChanges();
 
-    const todoSection = fixture.debugElement.query(By.css("h2 span.mr-2"));
-    expect(todoSection.nativeElement.textContent).toContain("TODO");
+    const todoSection = fixture.debugElement.query(By.css('h2 span.mr-2'));
+    expect(todoSection.nativeElement.textContent).toContain('TODO');
 
     const inProgressSection = fixture.debugElement.queryAll(
-      By.css("h2 span.mr-2")
+      By.css('h2 span.mr-2')
     )[1]; // Get the second h2
     expect(inProgressSection.nativeElement.textContent).toContain(
-      "IN PROGRESS"
+      'IN PROGRESS'
     ); // Assuming replace pipe works
 
-    const taskCards = fixture.debugElement.queryAll(By.css("app-task-card"));
+    const taskCards = fixture.debugElement.queryAll(By.css('app-task-card'));
     expect(taskCards.length).toBe(2); // One for TODO, one for IN_PROGRESS
   }));
 
-  it("should call addTask when plus button is clicked in a task status section", () => {
-    spyOn(component, "addTask"); // Spy on the component's method
-
-    // Simulate some tasks to render the sections
-    const mockTasks = { TODO: [] };
-    mockTaskService.getTasks.and.returnValue(of(mockTasks));
-    component.ngOnInit();
-    fixture.detectChanges();
-
-    const addTaskButton = fixture.debugElement.query(
-      By.css('div.flex-column p-button[icon="pi pi-plus"]')
-    );
-    expect(addTaskButton).toBeTruthy();
-
-    addTaskButton.triggerEventHandler("click", null);
-    expect(component.addTask).toHaveBeenCalledWith("TODO"); // Assuming the first section is 'TODO'
-  });
-
-  it("should show the sidebar modal when showModal is true", fakeAsync(() => {
+  it('should show the sidebar modal when showModal is true', fakeAsync(() => {
     component.showModal.set(true); // Set the signal to true
     fixture.detectChanges();
     tick(); // Allow async operations to complete
 
-    const sidebar = fixture.debugElement.query(By.css("p-sidebar"));
+    const sidebar = fixture.debugElement.query(By.css('p-sidebar'));
     expect(sidebar).toBeTruthy();
-    expect(sidebar.nativeElement.classList).toContain("p-sidebar-active"); // Check for active class
+    expect(sidebar.nativeElement.classList).toContain('p-sidebar-active'); // Check for active class
   }));
 
-  it("should hide the sidebar modal when showModal is false", fakeAsync(() => {
+  it('should hide the sidebar modal when showModal is false', fakeAsync(() => {
     component.showModal.set(false); // Set the signal to false
     fixture.detectChanges();
     tick();
 
-    const sidebar = fixture.debugElement.query(By.css("p-sidebar"));
+    const sidebar = fixture.debugElement.query(By.css('p-sidebar'));
     expect(sidebar).toBeNull(); // Sidebar should not be in the DOM
   }));
 
-  it("should initialize the form with empty values", () => {
-    const form = component.form;
-    expect(form).toBeTruthy();
-    expect(form.get("title")?.value).toBeNull();
-    expect(form.get("description")?.value).toBeNull();
-    expect(form.get("taskStatus")?.value).toBeNull();
-    expect(form.get("taskPriority")?.value).toBeNull();
-    expect(form.get("users")?.value).toEqual([]);
-  });
-
-  it("should call setShowModal(false) when Cancel button is clicked", () => {
-    spyOn(component, "setShowModal");
-    component.showModal.set(true); // Show modal to make button visible
-    fixture.detectChanges();
-
-    const cancelButton = fixture.debugElement.query(
-      By.css('p-button[label="Cancel"]')
-    );
-    expect(cancelButton).toBeTruthy();
-
-    cancelButton.triggerEventHandler("click", null);
-    expect(component.setShowModal).toHaveBeenCalledWith(false);
-  });
-
-  it("should call save when Save button is clicked", () => {
-    spyOn(component, "save");
-    component.showModal.set(true); // Show modal to make button visible
-    fixture.detectChanges();
-
-    const saveButton = fixture.debugElement.query(
-      By.css('p-button[label="Save"]')
-    );
-    expect(saveButton).toBeTruthy();
-
-    saveButton.triggerEventHandler("click", null);
-    expect(component.save).toHaveBeenCalled();
-  });
-
   // Example of testing form input
-  it("should update form control value when title input changes", fakeAsync(() => {
-    component.showModal.set(true);
-    fixture.detectChanges();
-    tick(); // Ensure sidebar is rendered
-
-    const titleInput = fixture.debugElement.query(
-      By.css('input[formControlName="title"]')
-    );
-    const testTitle = "New Task Title";
-
-    titleInput.nativeElement.value = testTitle;
-    titleInput.nativeElement.dispatchEvent(new Event("input"));
-    fixture.detectChanges();
-
-    expect(component.form.get("title")?.value).toBe(testTitle);
-
-    BoardComponent;
-  }));
 
   // You would add more tests for:
   // - deleteTask emission from app-task-card

@@ -25,19 +25,19 @@ import { InputTextModule } from 'primeng/inputtext';
 import { SortTaskPipe } from '../../pipes/sort-task.pipe';
 import { ReplacePipe } from '../../pipes/replace.pipe';
 import { DebounceInputDirective } from '../debounce-input.directive';
-import { SecurityService } from '../../services/security.service';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import {
   AbstractTaskService,
   Task,
 } from '../../services/abstract.task.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { NavigationEnd, Router, Event } from '@angular/router';
 import { TooltipModule } from 'primeng/tooltip';
 import { DragDropModule } from 'primeng/dragdrop';
 import { TaskCardComponent } from './task-card/task-card.component';
 import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
+import { Location } from '@angular/common';
 
 export interface TaskResponse {
   event: string | { event: string };
@@ -81,14 +81,29 @@ export class BoardComponent implements OnInit {
   constructor(
     private taskService: AbstractTaskService,
     private messageService: MessageService,
-    private securityService: SecurityService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private location: Location
   ) {}
- 
+
   draggedTaskId: number | undefined;
 
   ngOnInit(): void {
+    this.router.events
+      .pipe(
+        filter((e: Event): e is NavigationEnd => {
+          if (!(e instanceof NavigationEnd)) return false;
+          const urlTree = this.router.parseUrl(e.urlAfterRedirects);
+          const outlets = urlTree.root.children;
+          return (
+            !outlets['sidebar'] &&
+            (this.location.getState() as any)?.['initNewSearch']
+          );
+        })
+      )
+      .subscribe(() => {
+        this.searchChange.next('');
+      });
+
     this.tasks$ = merge(
       fromEvent(window, 'scroll').pipe(
         filter(() => {
@@ -141,19 +156,17 @@ export class BoardComponent implements OnInit {
       );
   }
 
-  edit(task: Task): void {
-    this.navigateUserDialog(task)
-  }
-
   deleteTask(taskId: number): void {
-    this.taskService.delete(taskId).subscribe((a: any) => {
-      this.searchChange.next('');
-      this.messageService.add({
-        severity: 'success',
-        key: 'main',
-        closable: true,
-        summary: 'Task deleted',
-      });
+    this.taskService.delete(taskId).subscribe({
+      next: () => {
+        this.searchChange.next('');
+        this.messageService.add({
+          severity: 'success',
+          key: 'main',
+          closable: true,
+          summary: 'Task deleted',
+        });
+      },
     });
   }
 
@@ -166,13 +179,16 @@ export class BoardComponent implements OnInit {
   }
 
   navigateUserDialog(task: Partial<Task>): void {
-    this.router.navigate([
-    {
-      outlets: {
-        sidebar: ['user-dialog']
-      }
-    }
-  ],{ state: {initValue:task} });
+    this.router.navigate(
+      [
+        {
+          outlets: {
+            sidebar: ['user-dialog'],
+          },
+        },
+      ],
+      { state: { initValue: task } }
+    );
   }
 }
 

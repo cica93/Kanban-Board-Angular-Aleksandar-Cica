@@ -1,15 +1,13 @@
-<div
-  class="flex justify-content-center flex-column align-items-center h-screen"
->
-
-
+<div class="flex justify-content-center flex-column align-items-center h-screen">
       <div class="form flex flex-column w-3 md:w-4 sm:w-6">
         <form class="form flex flex-column gap-3" [formGroup]="form">
            <h1 class="text-center">Login</h1>
-          <label for="title">Email</label>
+          <label for="email">Email</label>
             <input placeholder="Email"
                   formControlName="email"
                   pInputText
+                  id="email"
+                  styleClass="full-width"
                   class="flex-auto"
           />
           <label for="title">Password</label>
@@ -17,6 +15,7 @@
                 formControlName="password"
                 [toggleMask]="true"
                 [feedback]="true"
+                [attr.id]="'title'"
                 styleClass="full-width"
               >
             </p-password>

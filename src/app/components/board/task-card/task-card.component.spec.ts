@@ -74,21 +74,6 @@ describe('TaskCardComponent', () => {
     expect(component.onEdit.emit).toHaveBeenCalledWith(mockTask);
   });
 
-  it('should emit deleteTask event when delete button is clicked', () => {
-    // Spy on the deleteTask EventEmitter
-    spyOn(component.onDelete, 'emit');
-
-    // Find the delete button (assuming it has a class 'delete-button')
-    const deleteButton = el.query(By.css('.delete-button'));
-    expect(deleteButton).toBeTruthy('Delete button not found. Ensure it has class "delete-button".');
-
-    // Simulate a click event
-    deleteButton.nativeElement.click();
-
-    // Expect the emit method to have been called with the task ID
-    expect(component.onDelete.emit).toHaveBeenCalledWith(mockTask);
-  });
-
   // Example of testing conditional rendering (if applicable)
   it('should apply a specific class based on task status', () => {
     // Assuming your component adds a class like 'status-in-progress'

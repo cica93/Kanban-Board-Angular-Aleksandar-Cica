@@ -1,0 +1,5 @@
+#app-header {
+    a:not(.router-link-active) {
+        text-decoration: none;
+    }
+}
