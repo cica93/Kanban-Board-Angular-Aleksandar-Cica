@@ -4,23 +4,28 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MessageService, PrimeTemplate } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
+import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelect } from 'primeng/multiselect';
-import { SidebarModule } from 'primeng/sidebar';
-import { Observable, shareReplay } from 'rxjs';
-import { AbstractTaskService, Task } from 'src/app/services/abstract.task.service';
+import {
+  AbstractTaskService,
+  Task,
+} from 'src/app/services/abstract.task.service';
 import { User, UserService } from 'src/app/services/user.service';
 import { Router } from '@angular/router';
 import { RippleModule } from 'primeng/ripple';
 import { Location } from '@angular/common';
 import { ReplacePipe } from 'src/app/pipes/replace.pipe';
+import { shareReplay } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { AutoFocusModule } from 'primeng/autofocus';
 
 @Component({
   selector: 'app-task-dialog',
   imports: [
     Button,
     MultiSelect,
-    SidebarModule,
+    DialogModule,
     InputTextModule,
     AsyncPipe,
     DropdownModule,
@@ -28,6 +33,7 @@ import { ReplacePipe } from 'src/app/pipes/replace.pipe';
     RippleModule,
     ReplacePipe,
     PrimeTemplate,
+    AutoFocusModule,
   ],
   templateUrl: './task-dialog.component.html',
 })
@@ -37,6 +43,7 @@ export class TaskDialogComponent {
   form!: FormGroup;
   users$!: Observable<User[]>;
   initValue!: Partial<Task>;
+  visibleSidebar = true;
   constructor(
     private taskService: AbstractTaskService,
     private messageService: MessageService,
@@ -90,5 +97,11 @@ export class TaskDialogComponent {
     this.router.navigate([{ outlets: { sidebar: null } }], {
       state: { initNewSearch },
     });
+  }
+
+  visibleChange(event: boolean): void {
+    if (!event) {
+      this.close(event);
+    }
   }
 }

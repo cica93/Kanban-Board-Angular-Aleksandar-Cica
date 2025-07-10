@@ -6,7 +6,7 @@ import { TaskService } from './services/task.service';
 import { TaskGraphQlService } from './services/task.graphql.service';
 import { AbstractTaskService } from './services/abstract.task.service';
 import { User } from './services/user.service';
-import { BoardComponent } from './components/board/board.component';
+import { sidebarGuard } from './guards/sidebar.guard';
 
 const loginGuard = () => {
   const security = inject(SecurityService);
@@ -38,6 +38,7 @@ export const routes: Routes = [
   {
     path: 'rest',
     title: 'Rest',
+    canDeactivate: [sidebarGuard],
     loadComponent: () =>
       import('./components/board/board.component').then(
         (c) => c.BoardComponent
@@ -57,6 +58,7 @@ export const routes: Routes = [
   {
     path: '',
     title: 'Rest',
+    canDeactivate: [sidebarGuard],
     loadComponent: () =>
       import('./components/board/board.component').then(
         (c) => c.BoardComponent
@@ -67,6 +69,7 @@ export const routes: Routes = [
   {
     path: 'graphql',
     title: 'Graphql',
+    canDeactivate: [sidebarGuard],
     loadComponent: () =>
       import('./components/board/board.component').then(
         (c) => c.BoardComponent

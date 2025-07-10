@@ -8,6 +8,10 @@ body {
    margin: 0;
 }
 
+.p-dialog {
+    max-height: 100vh !important
+}
+
 .p-password-input, .p-password, .p-dropdown {
    width: 100%;
 }

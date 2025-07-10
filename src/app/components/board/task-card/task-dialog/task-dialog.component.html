@@ -1,9 +1,12 @@
-<p-sidebar
-  [visible]="true"
-  [dismissible]="false"
-  [showCloseIcon]="false"
-  position="right"
-  styleClass="p-sidebar-md w-4"
+<p-dialog
+  [(visible)]="visibleSidebar"
+  (visibleChange)="visibleChange($event)"
+  [blockScroll]="true"
+  [focusOnShow]="false"
+  [closeOnEscape]="true"
+  [draggable]="true"
+  styleClass="w-4 fixed top-0 right-0 m-0"
+  [style]="{ height:'100vh'}"
 >
   <ng-template pTemplate="header">
     <span class="font-semibold text-xl">{{initValue.id ? 'Edit':'Create'}} task</span>
@@ -12,6 +15,7 @@
     <label for="title">Title</label>
     <input
       [attr.id]="'title'"
+      [pAutoFocus]="true"
       placeholder="Enter title"
       formControlName="title"
       styleClass="w-full"
@@ -75,4 +79,4 @@
     />
     <p-button pRipple label="Save" severity="primary" (click)="save()" />
   </div>
-</p-sidebar>
+</p-dialog>

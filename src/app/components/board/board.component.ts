@@ -38,6 +38,7 @@ import { TaskCardComponent } from './task-card/task-card.component';
 import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
 import { Location } from '@angular/common';
+import { AutoFocusModule } from 'primeng/autofocus';
 
 export interface TaskResponse {
   event: string | { event: string };
@@ -63,6 +64,7 @@ export interface TaskResponse {
     TooltipModule,
     InputIcon,
     IconField,
+    AutoFocusModule,
   ],
   templateUrl: './board.component.html',
 })
