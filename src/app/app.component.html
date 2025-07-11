@@ -5,7 +5,22 @@
    <i class="pi pi-sign-out ml-auto cursor-pointer" pTooltip="Logout" (click)="logout()"></i>
   </div>
     <router-outlet></router-outlet>
-    <router-outlet name="sidebar"></router-outlet>
+    <p-dialog
+      [visible]="showDialog()"
+      (visibleChange)="dialogVisibleChange($event)"
+      (hide)="showDialog.set(false)"
+      [blockScroll]="true"
+      [focusOnShow]="false"
+      [closeOnEscape]="true"
+      [draggable]="true"
+      styleClass="w-4 fixed top-0 right-0 m-0"
+      [style]="{ height:'100vh'}"
+>
+    <ng-template pTemplate="header">
+        <span class="font-semibold text-xl">{{ modalHeader() }}</span>
+      </ng-template>
+    <router-outlet (activate)="onSidebarActivate($event)" (deactivate)="showDialog.set(false)" name="sidebar"></router-outlet>
+    </p-dialog>
 } @else {
   <router-outlet></router-outlet>
 }

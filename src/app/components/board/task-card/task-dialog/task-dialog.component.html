@@ -1,16 +1,4 @@
-<p-dialog
-  [(visible)]="visibleSidebar"
-  (visibleChange)="visibleChange($event)"
-  [blockScroll]="true"
-  [focusOnShow]="false"
-  [closeOnEscape]="true"
-  [draggable]="true"
-  styleClass="w-4 fixed top-0 right-0 m-0"
-  [style]="{ height:'100vh'}"
->
-  <ng-template pTemplate="header">
-    <span class="font-semibold text-xl">{{initValue.id ? 'Edit':'Create'}} task</span>
-  </ng-template>
+
   <form [formGroup]="form" class="flex flex-column gap-2">
     <label for="title">Title</label>
     <input
@@ -79,4 +67,3 @@
     />
     <p-button pRipple label="Save" severity="primary" (click)="save()" />
   </div>
-</p-dialog>

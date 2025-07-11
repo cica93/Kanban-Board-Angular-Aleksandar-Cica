@@ -14,6 +14,7 @@ import { SecurityService } from '../../services/security.service';
 import { JwtService } from '../../services/jwt.service';
 import { User } from '../../services/user.service';
 import { fromEvent, Subscription } from 'rxjs';
+import { AutoFocusModule } from 'primeng/autofocus';
 
 @Component({
   selector: 'app-login',
@@ -22,13 +23,13 @@ import { fromEvent, Subscription } from 'rxjs';
     ReactiveFormsModule,
     Button,
     PasswordModule,
-    InputTextModule
+    InputTextModule,
+    AutoFocusModule,
   ],
   templateUrl: './login.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoginComponent implements OnInit, AfterViewInit, OnDestroy   {
-
+export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
   form!: FormGroup;
   private fb = inject(FormBuilder);
   private loginService = inject(LoginService);
@@ -42,17 +43,26 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy   {
   ngOnInit(): void {
     this.form = this.fb.group({
       email: ['', Validators.required, Validators.email],
-      password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(120)]],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(8),
+          Validators.maxLength(120),
+        ],
+      ],
     });
   }
 
   ngAfterViewInit(): void {
-    this.subscription = fromEvent(this.passwordInput.input.nativeElement, 'keyup')  
-      .subscribe((event: any) => {
-         if (event.key === 'Enter') { 
-            this.login();
-          }
-      });
+    this.subscription = fromEvent(
+      this.passwordInput.input.nativeElement,
+      'keyup'
+    ).subscribe((event: any) => {
+      if (event.key === 'Enter') {
+        this.login();
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -62,10 +72,10 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy   {
   login(): void {
     this.loginService.login(this.form.value).subscribe({
       next: (user: User) => {
-       this.jwtService.saveToken(user.token);
-       this.securityService.user$.next(user);
-      this.router.navigate(['rest']);
-    }})
+        this.jwtService.saveToken(user.token);
+        this.securityService.user$.next(user);
+        this.router.navigate(['rest']);
+      },
+    });
   }
-
 }

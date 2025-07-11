@@ -1,7 +1,11 @@
 import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MessageService, PrimeTemplate } from 'primeng/api';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Button } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { DialogModule } from 'primeng/dialog';
@@ -12,13 +16,12 @@ import {
   Task,
 } from 'src/app/services/abstract.task.service';
 import { User, UserService } from 'src/app/services/user.service';
-import { Router } from '@angular/router';
 import { RippleModule } from 'primeng/ripple';
-import { Location } from '@angular/common';
 import { ReplacePipe } from 'src/app/pipes/replace.pipe';
 import { shareReplay } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { AutoFocusModule } from 'primeng/autofocus';
+import { BaseDialogComponent } from 'src/app/components/base-dialog/base-dialog.component';
 
 @Component({
   selector: 'app-task-dialog',
@@ -32,54 +35,53 @@ import { AutoFocusModule } from 'primeng/autofocus';
     ReactiveFormsModule,
     RippleModule,
     ReplacePipe,
-    PrimeTemplate,
     AutoFocusModule,
   ],
   templateUrl: './task-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TaskDialogComponent {
+export class TaskDialogComponent extends BaseDialogComponent<Task> {
   taskStatuses = ['TO_DO', 'IN_PROGRESS', 'DONE'];
   taskPriority = ['LOW', 'MED', 'HEIGH'];
   form!: FormGroup;
   users$!: Observable<User[]>;
-  initValue!: Partial<Task>;
   visibleSidebar = true;
   constructor(
     private taskService: AbstractTaskService,
-    private messageService: MessageService,
     private userService: UserService,
-    private fb: FormBuilder,
-    private router: Router,
-    private location: Location
-  ) {}
+    private fb: FormBuilder
+  ) {
+    super();
+  }
 
-  ngOnInit(): void {
-    this.initValue = (this.location.getState() as any)?.['initValue'] ?? {};
+  override ngOnInit(): void {
+    super.ngOnInit();
     this.form = this.fb.group(
       (this.users$ = this.userService.getUsers().pipe(shareReplay(1)))
     );
     this.form = this.fb.group({
-      description: [this.initValue.description, Validators.required],
-      title: [this.initValue.title, [Validators.required]],
-      taskStatus: [this.initValue.taskStatus, [Validators.required]],
-      taskPriority: [this.initValue.taskPriority, Validators.required],
+      description: [this.initValue?.description, Validators.required],
+      title: [this.initValue?.title, [Validators.required]],
+      taskStatus: [this.initValue?.taskStatus, [Validators.required]],
+      taskPriority: [this.initValue?.taskPriority, Validators.required],
       users: [
-        (this.initValue.users ?? []).map((user: User) => +user.id),
+        (this.initValue?.users ?? []).map((user: User) => +user.id),
         [Validators.required],
       ],
     });
   }
+
   save(): void {
-    (this.initValue.id
-      ? this.taskService.put(this.initValue.id, this.mapFormValue())
+    (this.initValue?.id
+      ? this.taskService.put(this.initValue?.id, this.mapFormValue())
       : this.taskService.post(this.mapFormValue())
     ).subscribe({
-      next: (task: any) => {
+      next: () => {
         this.messageService.add({
           severity: 'success',
           key: 'main',
           closable: true,
-          summary: this.initValue.id ? 'Task updated' : 'Task created',
+          summary: this.initValue?.id ? 'Task updated' : 'Task created',
         });
         this.close(true);
       },
@@ -93,15 +95,7 @@ export class TaskDialogComponent {
     };
   }
 
-  close(initNewSearch = false): void {
-    this.router.navigate([{ outlets: { sidebar: null } }], {
-      state: { initNewSearch },
-    });
-  }
-
-  visibleChange(event: boolean): void {
-    if (!event) {
-      this.close(event);
-    }
+  public override getModalHeader(): string {
+    return this.initValue?.id ? 'Edit task' : 'Create task';
   }
 }
