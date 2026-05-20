@@ -1,6 +1,6 @@
 {
   "/vite-api": {
-    "target": "http://localhost:4201",
+    "target": "http://localhost:4202",
     "secure": false
   }
 }

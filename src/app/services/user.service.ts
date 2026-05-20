@@ -25,4 +25,8 @@ export class UserService {
       .get<{ content: User[] }>('users')
       .pipe(map((a) => a.content));
   }
+
+  hasMail(email: string): Observable<boolean> {
+    return this.http.get<boolean>(`users/has-mail/${email}`);
+  }
 }

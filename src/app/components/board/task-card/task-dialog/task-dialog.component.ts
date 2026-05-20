@@ -49,7 +49,7 @@ export class TaskDialogComponent extends BaseDialogComponent<Task> {
   constructor(
     private taskService: AbstractTaskService,
     private userService: UserService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
   ) {
     super();
   }
@@ -57,7 +57,7 @@ export class TaskDialogComponent extends BaseDialogComponent<Task> {
   override ngOnInit(): void {
     super.ngOnInit();
     this.form = this.fb.group(
-      (this.users$ = this.userService.getUsers().pipe(shareReplay(1)))
+      (this.users$ = this.userService.getUsers().pipe(shareReplay(1))),
     );
     this.form = this.fb.group({
       description: [this.initValue?.description, Validators.required],

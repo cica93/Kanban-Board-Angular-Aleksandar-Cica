@@ -47,8 +47,6 @@ export interface TaskResponse {
 
 @Component({
   selector: 'app-board',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     AsyncPipe,
     CardModule,
@@ -60,12 +58,13 @@ export interface TaskResponse {
     DragDropModule,
     ToastModule,
     TaskCardComponent,
-    Button,
     TooltipModule,
     InputIcon,
     IconField,
+    Button,
     AutoFocusModule,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './board.component.html',
 })
 export class BoardComponent implements OnInit {
@@ -84,7 +83,7 @@ export class BoardComponent implements OnInit {
     private taskService: AbstractTaskService,
     private messageService: MessageService,
     private router: Router,
-    private location: Location
+    private location: Location,
   ) {}
 
   draggedTaskId: number | undefined;
@@ -100,7 +99,7 @@ export class BoardComponent implements OnInit {
             !outlets['sidebar'] &&
             (this.location.getState() as any)?.['initNewSearch']
           );
-        })
+        }),
       )
       .subscribe(() => {
         this.searchChange.next('');
@@ -116,22 +115,22 @@ export class BoardComponent implements OnInit {
         }),
         debounceTime(200),
         tap(() => (this.offset += this.limit)),
-        map(() => ({ event: 'scroll' }))
+        map(() => ({ event: 'scroll' })),
       ),
       this.searchChange.pipe(
         startWith(''),
         tap((e: string) => {
           this.offset = 0;
           this.filter = e;
-        })
-      )
+        }),
+      ),
     )
       .pipe(
         exhaustMap((value: string | { event: string }) =>
           this.taskService
             .get(this.filter, ['id'], 'desc', this.limit, this.offset)
-            .pipe(map((data) => ({ event: value, data } as TaskResponse)))
-        )
+            .pipe(map((data) => ({ event: value, data }) as TaskResponse)),
+        ),
       )
       .pipe(
         scan((acc: TaskResponse, next: TaskResponse) => {
@@ -154,7 +153,7 @@ export class BoardComponent implements OnInit {
             }
           });
           return r;
-        })
+        }),
       );
   }
 
@@ -189,7 +188,7 @@ export class BoardComponent implements OnInit {
           },
         },
       ],
-      { state: { initValue: task } }
+      { state: { initValue: task } },
     );
   }
 }

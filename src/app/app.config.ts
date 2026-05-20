@@ -10,7 +10,7 @@ import {
   withInMemoryScrolling,
   withRouterConfig,
 } from '@angular/router';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
 import { routes } from './app.routes';
 import { EMPTY } from 'rxjs';
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -27,6 +27,7 @@ import Aura from '@primeng/themes/aura';
 import { Title } from '@angular/platform-browser';
 import { KanbanTitle } from './services/kanban.title.service';
 import { GlobalErrorHandler } from './services/error.handler.service';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 export function initAuth(
   jwtService: JwtService,
@@ -59,7 +60,7 @@ export const appConfig: ApplicationConfig = {
       theme: { preset: Aura, options: { darkModeSelector: '.p-dark' } },
     }),
 
-    provideHttpClient(withInterceptors([apiInterceptor])),
+    provideHttpClient(withXhr(), withInterceptors([apiInterceptor])),
     {
       provide: APOLLO_OPTIONS,
       useFactory: (httpLink: HttpLink): ApolloClientOptions<any> => ({
@@ -73,6 +74,6 @@ export const appConfig: ApplicationConfig = {
       useFactory: initAuth,
       deps: [JwtService, SecurityService],
       multi: true,
-    },
+    }, provideAnimationsAsync(),
   ],
 };

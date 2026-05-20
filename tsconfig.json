@@ -3,6 +3,7 @@
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
+    "ignoreDeprecations": "6.0",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
@@ -15,16 +16,22 @@
     "sourceMap": true,
     "declaration": false,
     "experimentalDecorators": true,
-    "typeRoots": ["node_modules/@types", "src/types"],
-    "moduleResolution": "node",
+    "typeRoots": [
+      "node_modules/@types",
+      "src/types"
+    ],
+    "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",
     "useDefineForClassFields": true,
-    "lib": ["ES2022", "dom"],
     "paths": {
-      "@/domain/*": ["src/domain/*"],
-      "@/service/*": ["src/service/*"]
+      "@/domain/*": [
+        "src/domain/*"
+      ],
+      "@/service/*": [
+        "src/service/*"
+      ]
     }
   },
 

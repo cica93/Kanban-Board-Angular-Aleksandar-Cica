@@ -21,15 +21,12 @@ export class JwtService {
   }
 
   isTokenValid(): boolean {
-    const token: string | null  = this.getToken();
-    if(token){
-        const decodedToken: Token | null = this.helper.decodeToken(token);
-        if(!decodedToken || decodedToken.exp * 1000 < new Date().getTime()){
-          return false;
-        }
-        return true;
+    const token: string | null = this.getToken();
+    if (!token) {
+      return false;
     }
-    return false;
+    const decodedToken: Token | null = this.helper.decodeToken(token);
+    return !!decodedToken && decodedToken.exp * 1000 >= new Date().getTime();
   }
 }
 

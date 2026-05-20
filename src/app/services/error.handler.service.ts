@@ -21,11 +21,5 @@ export class GlobalErrorHandler implements ErrorHandler {
       // Handle Client Errors
       console.error('Client Error:', error);
     }
-
-    // Optional: Log to external service
-    // logService.log(error);
-
-    // Re-throw if you want to propagate the error
-    // throw error;
   }
 }

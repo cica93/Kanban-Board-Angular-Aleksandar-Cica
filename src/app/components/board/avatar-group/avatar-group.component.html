@@ -1,0 +1,18 @@
+<div class="avatar-group">
+    @for (user of users() | slice: 0:5; track user.id ) {
+  <div
+    class="avatar"
+    [matTooltip]="user.fullName"
+  >
+  A
+    <!-- <img [src]="user.avatarUrl" [alt]="user.name" /> -->
+  </div>
+}
+ @if ((users() ?? []).length > 5) {
+     <div class="avatar extra">
+    +{{(users() ?? []).length- 5}}
+  </div>
+}
+
+ 
+</div>

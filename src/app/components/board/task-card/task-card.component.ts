@@ -1,27 +1,28 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Output, input } from "@angular/core";
-import { CardModule } from "primeng/card";
-import { Task } from "../../../services/abstract.task.service";
-import { BadgeModule } from "primeng/badge";
-import { AvatarModule } from "primeng/avatar";
-import { AvatarGroupModule } from "primeng/avatargroup";
-import { TooltipModule } from "primeng/tooltip";
-import { Menu } from "primeng/menu";
-import { ButtonModule } from "primeng/button";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  output,
+} from '@angular/core';
+import { CardModule } from 'primeng/card';
+import { Task } from '../../../services/abstract.task.service';
+import { BadgeModule } from 'primeng/badge';
+import { AvatarModule } from 'primeng/avatar';
+import { AvatarGroupModule } from 'primeng/avatargroup';
+import { TooltipModule } from 'primeng/tooltip';
 import { SlicePipe } from '@angular/common';
+import { MenuModule } from 'primeng/menu';
 
 @Component({
   selector: 'app-task-card',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     CardModule,
     BadgeModule,
     AvatarModule,
     TooltipModule,
     AvatarGroupModule,
-    Menu,
-    ButtonModule,
     SlicePipe,
+    MenuModule,
   ],
   templateUrl: './task-card.component.html',
 })
@@ -47,6 +48,6 @@ export class TaskCardComponent {
     },
   ];
   readonly task = input.required<Task>();
-  @Output() onDelete = new EventEmitter<Task>();
-  @Output() onEdit = new EventEmitter<Task>();
+  readonly onDelete = output<Task>();
+  readonly onEdit = output<Task>();
 }

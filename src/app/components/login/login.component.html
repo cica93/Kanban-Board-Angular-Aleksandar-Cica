@@ -1,28 +1,51 @@
 <div class="flex justify-content-center flex-column align-items-center h-screen">
-  <div class="form flex flex-column w-3 md:w-4 sm:w-6">
-    <form class="form flex flex-column gap-3" [formGroup]="form">
-        <h1 class="text-center">Login</h1>
-        <label for="email">Email</label>
-          <input placeholder="Email"
-                  [pAutoFocus]="true"
-                  formControlName="email"
-                  pInputText
-                  id="email"
-                  styleClass="full-width"
-                  class="flex-auto"
-          />
-        <label for="password">Password</label>
-          <p-password #passwordInput formControlName="password"
-                [toggleMask]="true"
-                [feedback]="true"
-                [attr.id]="'password'"
-                styleClass="full-width"
-          >
-        </p-password>
+  <div class="form flex flex-column w-3 md:w-4 sm:w-6">    
+    <form class="form flex flex-column gap-1" [formRoot]="loginForm">
+    <h1 class="text-center">Login</h1>    
+    <label for="email">Email</label>
+      @let email = loginForm.email();
+      @let showEmailErrors = email.touched() && email.invalid();
+      <input 
+        placeholder="Enter email"
+        [formField]="loginForm.email"
+        [pAutoFocus]="true"
+        pInputText
+        id="email"
+        styleClass="full-width"/>
+      @if(showEmailErrors){
+        <div class="text-red-500 text-sm">
+          {{email.errorSummary()[0].message}}
+        </div>
+      }
+      <label for="password">Password</label>
+      @let password = loginForm.password();
+      @let showPasswordErrors = password.touched() && password.invalid();
+      <p-password 
+        #passwordInput 
+        placeholder="Enter password"
+        [formField]="loginForm.password"
+        [toggleMask]="true"
+        [feedback]="true"
+        [attr.id]="'password'"
+        styleClass="full-width">
+      </p-password>
+      @if(showPasswordErrors){
+        <div class="text-red-500 text-sm">
+           {{password.errorSummary()[0].message}}
+        </div>
+      }
+      <div class="mt-3">
+        @let submitting = loginForm().submitting();
+        <p-button 
+          [loading]="submitting"
+          [disabled]="submitting"
+          [label]="submitting ? 'Logging in...' : 'Login'"
+          type="submit"
+          [rounded]="true"
+          class="flex-auto"
+          styleClass="w-full"/>
+      </div>
     </form>
-    <div class="mt-3">
-      <p-button label="Login" (click)="login()" [rounded]="true" class="flex-auto" styleClass="w-full"/>
-    </div>
   </div>
 </div>
 

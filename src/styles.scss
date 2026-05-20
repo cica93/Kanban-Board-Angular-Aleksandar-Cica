@@ -24,3 +24,6 @@ p-avatar-group > p-avatar:hover {
 .p-menu-list.p-reset > li:first-child:has(span:empty) {
    display: none;
 }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
