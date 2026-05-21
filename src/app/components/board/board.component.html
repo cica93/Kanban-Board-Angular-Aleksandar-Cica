@@ -1,6 +1,6 @@
 <div class="flex my-1 mx-5 align-items-center">
   <p-iconfield class="w-3">
-      <p-inputicon class="pi pi-search" />
+    <p-inputicon class="pi pi-search" />
     <input
       placeholder="Search"
       (appDebounceInput)="searchChange.next($event)"
@@ -9,7 +9,6 @@
       class="w-full"
     />
   </p-iconfield>
-    
 </div>
 
 <div class="flex">
@@ -33,7 +32,9 @@
     <div class="flex flex-column row-gap-4">
       @for (task of item.value; track $index) {
         <app-task-card
-          pDraggable [pDraggableDisabled]="false" (onDragStart)="draggedTaskId=task.id"
+          pDraggable 
+          [pDraggableDisabled]="false" 
+          (onDragStart)="draggedTaskId=task.id"
           [task]="task"
           (onDelete)="deleteTask(task.id)"
           (onEdit)="navigateUserDialog(task)"

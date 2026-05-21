@@ -1,29 +1,31 @@
 
-  <form [formGroup]="form" class="flex flex-column gap-2">
-    <label for="title">Title</label>
+<form [formRoot]="taskForm" class="flex flex-column gap-2">
+  <app-form-value-wrapper [label]="'Title'" [name]="'title'">
     <input
       [attr.id]="'title'"
       [pAutoFocus]="true"
       placeholder="Enter title"
-      formControlName="title"
+      [formField]="taskForm.title"
       styleClass="w-full"
       pInputText
       class="flex-auto"
     />
-    <label for="description">Description</label>
+  </app-form-value-wrapper>
+  <app-form-value-wrapper [label]="'Description'" [name]="'description'">
     <input
       [attr.id]="'description'"
       placeholder="Enter description"
-      formControlName="description"
+      [formField]="taskForm.description"
       styleClass="w-full"
       pInputText
       class="flex-auto"
-    />
-    <label for="task-status">Task Status</label>
+      />
+  </app-form-value-wrapper>
+  <app-form-value-wrapper [label]="'Task Status'" [name]="'taskStatus'">
     <p-dropdown
       [attr.id]="'task-status'"
       [options]="taskStatuses"
-      formControlName="taskStatus"
+      [formField]="taskForm.taskStatus"
       placeholder="Select task status"
       class="w-full"
     >
@@ -34,36 +36,44 @@
             {{ status | replace : "_" : " " }}
       </ng-template>
     </p-dropdown>
-
-    <label for="task-priority">Task priority</label>
+  </app-form-value-wrapper>
+  <app-form-value-wrapper [label]="'Task Priority'" [name]="'taskPriority'">
     <p-dropdown
       [attr.id]="'task-priority'"
-      [options]="taskPriority"
-      formControlName="taskPriority"
+      [options]="taskPriorities"
+      [formField]="taskForm.taskPriority"
       placeholder="Select task priority"
       class="w-full"
-    >
-     
-  </p-dropdown>
-
-    <label for="users">Users</label>
+    ></p-dropdown>
+  </app-form-value-wrapper>
+  <app-form-value-wrapper [label]="'Users'" [name]="'users'">
     <p-multiSelect
       [options]="(users$ | async) ?? []"
-      optionLabel="fullName"
-      optionValue="id"
+      [optionLabel]="'fullName'"
+      [dataKey]="'id'"
       [attr.id]="'users'"
-      formControlName="users"
+      [formField]="taskForm.users"
       placeholder="Select users"
       styleClass="w-full"
     />
+    </app-form-value-wrapper>
   </form>
-  <div class="flex justify-content-end mt-3 gap-2">
-    <p-button
-      [tabindex]="-1"
-      pRipple
-      label="Cancel"
-      severity="secondary"
-      (click)="close()"
+<div class="flex justify-content-end mt-3 gap-2">
+  <p-button
+    [tabindex]="-1"
+    pRipple
+    [label]="'Cancel'"
+    severity="secondary"
+    (click)="close()"
     />
-    <p-button pRipple label="Save" severity="primary" (click)="save()" />
-  </div>
+  @let submitting = taskForm().submitting();
+  <p-button 
+    pRipple 
+    [label]="submitting ? 'Saving...' : 'Save'"
+    [severity]="'primary'" 
+    [type]="'submit'"
+    [loading]="submitting"
+    [disabled]="submitting"
+    (click)="save()" 
+    />
+</div>

@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  signal,
-} from '@angular/core';
-
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { AsyncPipe, KeyValuePipe } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import {
@@ -64,7 +58,6 @@ export interface TaskResponse {
     Button,
     AutoFocusModule,
   ],
-  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './board.component.html',
 })
 export class BoardComponent implements OnInit {
@@ -79,12 +72,10 @@ export class BoardComponent implements OnInit {
   searchChange = new Subject<string>();
   scrollToBottom = new Subject<unknown>();
 
-  constructor(
-    private taskService: AbstractTaskService,
-    private messageService: MessageService,
-    private router: Router,
-    private location: Location,
-  ) {}
+  private readonly taskService = inject(AbstractTaskService);
+  private readonly messageService = inject(MessageService);
+  private readonly router = inject(Router);
+  private readonly location = inject(Location);
 
   draggedTaskId: number | undefined;
 
@@ -192,5 +183,3 @@ export class BoardComponent implements OnInit {
     );
   }
 }
-
-

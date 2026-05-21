@@ -1,6 +1,14 @@
 {
   "CodeGPT.apiKey": "CodeGPT Plus Beta",
-  "cSpell.words": ["avatargroup", "focustrap", "inputicon", "ngrx", "primeicons", "primeng"],
+  "cSpell.words": [
+    "avatargroup",
+    "focustrap",
+    "inputicon",
+    "ngrx",
+    "primeicons",
+    "primeng",
+    "titlecase"
+  ],
   "prettier.singleQuote": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,

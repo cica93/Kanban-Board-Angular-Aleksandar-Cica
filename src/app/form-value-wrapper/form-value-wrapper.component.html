@@ -1,0 +1,13 @@
+<label [attr.for]="name()">{{ label() || (name() | titlecase) }} @if(required()){ <span class="text-red-500">*</span>}</label>
+<ng-content />
+@if(touched()){
+  @if(invalid()){
+   <app-message-wrapper>
+     {{errorMessage()}}
+    </app-message-wrapper>
+  } @else if (pending()) {
+    <app-message-wrapper type="warning">
+      Checking {{name()}}... <p-progress-spinner  ariaLabel="loading"  animationDuration=".5s" [style]="{ width: '12px', height: '12px' }"/>
+    </app-message-wrapper>
+  }
+}

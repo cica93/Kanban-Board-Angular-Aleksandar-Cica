@@ -17,9 +17,9 @@
       [style]="{ height:'100vh'}"
 >
     <ng-template pTemplate="header">
-        <span class="font-semibold text-xl">{{ modalHeader() }}</span>
+        <span class="font-semibold text-xl">{{ modalHeader | async}}</span>
       </ng-template>
-    <router-outlet (activate)="onSidebarActivate($event)" (deactivate)="showDialog.set(false)" name="sidebar"></router-outlet>
+     <router-outlet (activate)="onSidebarActivate($event)" (deactivate)="showDialog.set(false)" name="sidebar"></router-outlet>
     </p-dialog>
 } @else {
   <router-outlet></router-outlet>

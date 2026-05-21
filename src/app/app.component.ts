@@ -43,7 +43,7 @@ export class AppComponent implements OnInit {
   subscription: Subscription | undefined;
   router = inject(Router);
   showDialog = signal(false);
-  modalHeader = signal<string>('');
+  modalHeader: Observable<string> | undefined;
 
   ngOnInit(): void {
     this.user$ = this.securityService.user$;
@@ -76,6 +76,6 @@ export class AppComponent implements OnInit {
 
   onSidebarActivate(event: BaseDialogComponent): void {
     this.showDialog.set(true);
-    this.modalHeader.set(event.getModalHeader());
+    this.modalHeader = event.modalHeader.asObservable();
   }
 }

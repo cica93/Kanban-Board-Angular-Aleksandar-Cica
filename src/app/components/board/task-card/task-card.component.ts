@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  input,
-  output,
-} from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { Task } from '../../../services/abstract.task.service';
 import { BadgeModule } from 'primeng/badge';

@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Observable, shareReplay } from 'rxjs';
+import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { User } from './user.service';
 

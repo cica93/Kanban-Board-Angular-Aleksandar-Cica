@@ -19,6 +19,7 @@ import {
 } from '@angular/forms/signals';
 import { Button } from 'primeng/button';
 import { UserService } from 'src/app/services/user.service';
+import { FormValueWrapperComponent } from 'src/app/form-value-wrapper/form-value-wrapper.component';
 
 export interface LoginForm {
   email: string;
@@ -34,17 +35,18 @@ export interface LoginForm {
     AutoFocusModule,
     FormField,
     FormRoot,
+    FormValueWrapperComponent,
   ],
   templateUrl: './login.component.html',
 })
 export class LoginComponent {
-  private loginService = inject(LoginService);
-  private router = inject(Router);
-  private securityService = inject(SecurityService);
-  private jwtService = inject(JwtService);
-  private userService = inject(UserService);
+  private readonly loginService = inject(LoginService);
+  private readonly router = inject(Router);
+  private readonly securityService = inject(SecurityService);
+  private readonly jwtService = inject(JwtService);
+  private readonly userService = inject(UserService);
   protected model = signal<LoginForm>({ email: '', password: '' });
-  protected loginForm = form(
+  protected loginForm = form<LoginForm>(
     this.model,
     (path) => {
       required(path.email, { message: 'Email is required' });
@@ -57,23 +59,23 @@ export class LoginComponent {
       validate(path.password, ({ value }) => {
         const password = value() as string;
         if (!/[0-9]/.test(password)) {
-          return this.createErrorMessageObject(
+          return this.createErrorObject(
             'Password must contain at least one number',
           );
         }
         if (!/[a-z]/.test(password)) {
-          return this.createErrorMessageObject(
+          return this.createErrorObject(
             'Password must contain at least one lowercase letter',
           );
         }
 
         if (!/[A-Z]/.test(password)) {
-          return this.createErrorMessageObject(
+          return this.createErrorObject(
             'Password must contain at least one uppercase letter',
           );
         }
         if (!/[^a-zA-Z0-9]/.test(password)) {
-          return this.createErrorMessageObject(
+          return this.createErrorObject(
             'Password must contain at least one special character',
           );
         }
@@ -94,7 +96,7 @@ export class LoginComponent {
           }),
         onSuccess: (hasMail, ctx) =>
           !hasMail
-            ? this.createErrorMessageObject(
+            ? this.createErrorObject(
                 `Email ${ctx.value()} is not registered`,
                 'email-not-registered',
               )
@@ -110,21 +112,26 @@ export class LoginComponent {
               this.loginService.login(this.loginForm().value()),
             );
             this.jwtService.saveToken(response.token);
-            await firstValueFrom(this.securityService.getCurrentUser());
+            this.securityService.user$.next(response);
             this.router.navigate(['/']);
             return undefined;
           } catch (error) {
-            return {
-              kind: 'invalid-credentials',
-              message: 'Invalid email or password',
-            };
+            return this.createErrorObject(
+              'Invalid email or password',
+              'invalid-credentials',
+            );
           }
         },
+        onInvalid: () => {
+          this.loginForm().markAsTouched();
+          this.loginForm().focusBoundControl();
+        },
+        ignoreValidators: 'none',
       },
     },
   );
 
-  private createErrorMessageObject(
+  private createErrorObject(
     message: string,
     kind = 'wrong-format',
   ): {

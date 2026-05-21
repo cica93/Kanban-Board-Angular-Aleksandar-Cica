@@ -1,11 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { Component, inject, signal } from '@angular/core';
 import { Button } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { DialogModule } from 'primeng/dialog';
@@ -18,10 +12,18 @@ import {
 import { User, UserService } from 'src/app/services/user.service';
 import { RippleModule } from 'primeng/ripple';
 import { ReplacePipe } from 'src/app/pipes/replace.pipe';
-import { shareReplay } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { map, Observable, shareReplay } from 'rxjs';
 import { AutoFocusModule } from 'primeng/autofocus';
 import { BaseDialogComponent } from 'src/app/components/base-dialog/base-dialog.component';
+import {
+  form,
+  FormField,
+  FormRoot,
+  maxLength,
+  minLength,
+  required,
+} from '@angular/forms/signals';
+import { FormValueWrapperComponent } from 'src/app/form-value-wrapper/form-value-wrapper.component';
 
 @Component({
   selector: 'app-task-dialog',
@@ -32,48 +34,58 @@ import { BaseDialogComponent } from 'src/app/components/base-dialog/base-dialog.
     InputTextModule,
     AsyncPipe,
     DropdownModule,
-    ReactiveFormsModule,
     RippleModule,
     ReplacePipe,
     AutoFocusModule,
+    FormField,
+    FormRoot,
+    FormValueWrapperComponent,
   ],
   templateUrl: './task-dialog.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskDialogComponent extends BaseDialogComponent<Task> {
-  taskStatuses = ['TO_DO', 'IN_PROGRESS', 'DONE'];
-  taskPriority = ['LOW', 'MED', 'HEIGH'];
-  form!: FormGroup;
-  users$!: Observable<User[]>;
-  visibleSidebar = true;
-  constructor(
-    private taskService: AbstractTaskService,
-    private userService: UserService,
-    private fb: FormBuilder,
-  ) {
-    super();
-  }
+  readonly taskStatuses = ['TO_DO', 'IN_PROGRESS', 'DONE'];
+  readonly taskPriorities = ['LOW', 'MED', 'HEIGH'];
+  protected users$!: Observable<User[]>;
+  protected model = signal<Omit<Task, 'id'>>({
+    description: '',
+    taskPriority: this.taskPriorities[0],
+    taskStatus: this.taskStatuses[0],
+    title: '',
+    users: [],
+  });
+  protected taskForm = form<Omit<Task, 'id'>>(this.model, (path) => {
+    required(path.title, { message: 'Title is required' });
+    maxLength(path.title, 20, {
+      message: 'Title must be less than 20 characters',
+    });
+    required(path.description, { message: 'Description is required' });
+    minLength(path.description, 2, {
+      message: 'Description must be at least 2 characters long',
+    });
+    maxLength(path.description, 50, {
+      message: 'Description must be less than 50 characters',
+    });
+    required(path.taskStatus, { message: 'Task status is required' });
+    required(path.taskPriority, { message: 'Task priority is required' });
+    required(path.users, {
+      message: 'At least one user must be assigned to the task',
+    });
+  });
+  private readonly taskService = inject(AbstractTaskService);
+  private readonly userService = inject(UserService);
 
   override ngOnInit(): void {
     super.ngOnInit();
-    this.form = this.fb.group(
-      (this.users$ = this.userService.getUsers().pipe(shareReplay(1))),
-    );
-    this.form = this.fb.group({
-      description: [this.initValue?.description, Validators.required],
-      title: [this.initValue?.title, [Validators.required]],
-      taskStatus: [this.initValue?.taskStatus, [Validators.required]],
-      taskPriority: [this.initValue?.taskPriority, Validators.required],
-      users: [
-        (this.initValue?.users ?? []).map((user: User) => +user.id),
-        [Validators.required],
-      ],
-    });
+    this.users$ = this.userService.getUsers().pipe(shareReplay());
+    this.model.set({ ...this.model(), ...this.initValue() });
+    this.modalHeader.next(this.initValue()?.id ? 'Edit Task' : 'Create Task');
   }
 
   save(): void {
-    (this.initValue?.id
-      ? this.taskService.put(this.initValue?.id, this.mapFormValue())
+    const id = this.initValue()?.id ?? undefined;
+    (id
+      ? this.taskService.put(id, this.mapFormValue())
       : this.taskService.post(this.mapFormValue())
     ).subscribe({
       next: () => {
@@ -81,7 +93,7 @@ export class TaskDialogComponent extends BaseDialogComponent<Task> {
           severity: 'success',
           key: 'main',
           closable: true,
-          summary: this.initValue?.id ? 'Task updated' : 'Task created',
+          summary: id ? 'Task updated' : 'Task created',
         });
         this.close(true);
       },
@@ -90,12 +102,7 @@ export class TaskDialogComponent extends BaseDialogComponent<Task> {
 
   mapFormValue(): Partial<Task> {
     return {
-      ...this.form.value,
-      users: (this.form.value.users ?? []).map((id: number) => ({ id })),
+      ...this.taskForm().value(),
     };
-  }
-
-  public override getModalHeader(): string {
-    return this.initValue?.id ? 'Edit task' : 'Create task';
   }
 }
