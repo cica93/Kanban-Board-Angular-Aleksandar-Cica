@@ -27,8 +27,8 @@ export class AddressFormComponent {
 
 export function addressSchema() {
   return schema<Omit<Address, 'id'>>((path) => {
-    required(path.street);
-    required(path.city);
-    required(path.zipCode);
+    required(path.street, { message: 'Street is required' });
+    required(path.city, { message: 'City is required' });
+    required(path.zipCode, { message: 'ZIP code is required' });
   });
 }

@@ -113,7 +113,7 @@ export class LoginComponent {
             );
             this.jwtService.saveToken(response.token);
             this.securityService.user$.next(response);
-            this.router.navigate(['/']);
+            this.router.navigate(['/rest']);
             return undefined;
           } catch (error) {
             return this.createErrorObject(
@@ -126,7 +126,7 @@ export class LoginComponent {
           this.loginForm().markAsTouched();
           this.loginForm().focusBoundControl();
         },
-        ignoreValidators: 'none',
+        ignoreValidators: 'pending',
       },
     },
   );

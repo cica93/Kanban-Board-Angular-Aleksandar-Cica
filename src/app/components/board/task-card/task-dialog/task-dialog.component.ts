@@ -25,6 +25,9 @@ import {
 } from '@angular/forms/signals';
 import { FormValueWrapperComponent } from 'src/app/form-value-wrapper/form-value-wrapper.component';
 
+export const taskStatuses = ['TO_DO', 'IN_PROGRESS', 'DONE'];
+export const taskPriorities = ['LOW', 'MED', 'HIGH'];
+
 @Component({
   selector: 'app-task-dialog',
   imports: [
@@ -49,8 +52,8 @@ import { FormValueWrapperComponent } from 'src/app/form-value-wrapper/form-value
 export class TaskDialogComponent extends BaseDialogComponent<Task> {
   private readonly taskService = inject(AbstractTaskService);
   private readonly userService = inject(UserService);
-  readonly taskStatuses = ['TO_DO', 'IN_PROGRESS', 'DONE'];
-  readonly taskPriorities = ['LOW', 'MED', 'HEIGH'];
+  readonly taskStatuses = taskStatuses;
+  readonly taskPriorities = taskPriorities;
   protected users$!: Observable<User[]>;
   protected model = signal<Omit<Task, 'id'>>({
     description: '',

@@ -33,6 +33,8 @@ import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
 import { Location } from '@angular/common';
 import { AutoFocusModule } from 'primeng/autofocus';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { taskStatuses } from './task-card/task-dialog/task-dialog.component';
 
 export interface TaskResponse {
   event: string | { event: string };
@@ -57,6 +59,7 @@ export interface TaskResponse {
     IconField,
     Button,
     AutoFocusModule,
+    ProgressSpinnerModule,
   ],
   templateUrl: './board.component.html',
 })
@@ -68,7 +71,8 @@ export class BoardComponent implements OnInit {
   tasks$!: Observable<{ [key: string]: Task[] }>;
   showModal = signal<boolean>(false);
   taskId: number | undefined;
-
+  loading = signal(false);
+  taskStatuses = taskStatuses;
   searchChange = new Subject<string>();
   scrollToBottom = new Subject<unknown>();
 
@@ -113,6 +117,7 @@ export class BoardComponent implements OnInit {
         tap((e: string) => {
           this.offset = 0;
           this.filter = e;
+          this.loading.set(true);
         }),
       ),
     )
@@ -124,6 +129,7 @@ export class BoardComponent implements OnInit {
         ),
       )
       .pipe(
+        tap(() => this.loading.set(false)),
         scan((acc: TaskResponse, next: TaskResponse) => {
           this.hasMoreTasks = next.data.length == this.limit;
           if (typeof next.event === 'string') {
@@ -136,12 +142,9 @@ export class BoardComponent implements OnInit {
         }),
         map((taskResponse: TaskResponse) => {
           const r: { [key: string]: Task[] } = {};
+          taskStatuses.forEach((status) => (r[status] = []));
           taskResponse.data.forEach((e: Task) => {
-            if (r[e.taskStatus]) {
-              r[e.taskStatus].push(e);
-            } else {
-              r[e.taskStatus] = [e];
-            }
+            r[e.taskStatus].push(e);
           });
           return r;
         }),

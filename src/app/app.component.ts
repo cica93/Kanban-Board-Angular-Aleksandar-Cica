@@ -15,7 +15,6 @@ import { User } from './services/user.service';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 import { DialogModule } from 'primeng/dialog';
-import { TaskDialogComponent } from './components/board/task-card/task-dialog/task-dialog.component';
 import { BaseDialogComponent } from './components/base-dialog/base-dialog.component';
 
 @Component({

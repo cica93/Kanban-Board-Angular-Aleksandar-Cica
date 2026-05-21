@@ -1,13 +1,19 @@
 <div class="flex my-1 mx-5 align-items-center">
-  <p-iconfield class="w-3">
-    <p-inputicon class="pi pi-search" />
+  <p-iconfield class="w-3" iconPosition="right">
     <input
-      placeholder="Search"
+      [placeholder]="loading() ? 'Searching...' : 'Search'"
       (appDebounceInput)="searchChange.next($event)"
       pInputText
       [pAutoFocus]="true"
       class="w-full"
     />
+    @if(loading()) {
+      <p-inputicon>
+        <p-progressSpinner ariaLabel="loading"  animationDuration=".5s" [style]="{ width: '20px', height: '20px' }"/>
+      </p-inputicon>
+    } @else {
+      <p-inputicon class="pi pi-search" />
+    }
   </p-iconfield>
 </div>
 

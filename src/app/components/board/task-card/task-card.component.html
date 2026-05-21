@@ -4,22 +4,21 @@
       <div class="flex justify-content-between align-items-center mb-2">
         <h4 class="m-0">{{task().title}}</h4>
         @let taskPriority = task().taskPriority;
-        <p-badge [value]="taskPriority" [severity]="taskPriority === 'HEIGH' ? 'danger' : (taskPriority === 'MED' ? 'warn' : 'info')"></p-badge>
+        <p-badge [value]="taskPriority" [severity]="taskPriority === 'HEIGH' ? 'danger' : (taskPriority === 'MED' ? 'warn' : 'info')" />
       </div>
       <p class="text-600 mb-2">{{task().description}}</p>
       <div class="flex justify-content-between align-items-center">
         <p-avatar-group>
           @for (user of task().users | slice: 0:5; track user.id ) {
-            <p-avatar [label]="user.fullName[0]" shape="circle" size="normal"></p-avatar>
+            <p-avatar [label]="user.fullName[0]" shape="circle" size="normal" />
             @if (task().users.length > 5) {
-              <p-avatar label="+ {{task().users.length - 5}}" shape="circle" size="normal"></p-avatar>
+              <p-avatar label="+ {{task().users.length - 5}}" shape="circle" size="normal" />
             }
           }
         </p-avatar-group>
         <div class="h-2rem w-2rem surface-ground flex justify-content-center align-items-center cursor-pointer border-circle" (click)="menu.toggle($event)">
-            <i  class="pi pi-ellipsis-v"></i>
+            <i  class="pi pi-ellipsis-v" ></i>
         </div>
-        
       </div>
     </div>
   </div>
