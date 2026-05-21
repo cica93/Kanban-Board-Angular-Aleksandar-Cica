@@ -5,32 +5,31 @@ import { SecurityService } from './services/security.service';
 import { TaskService } from './services/task.service';
 import { TaskGraphQlService } from './services/task.graphql.service';
 import { AbstractTaskService } from './services/abstract.task.service';
-import { User } from './services/user.service';
 import { sidebarGuard } from './guards/sidebar.guard';
 
 const loginGuard = () => {
   const security = inject(SecurityService);
   return inject(SecurityService).user$.pipe(
-    map((user: User | null) => {
+    map((user) => {
       if (!user) {
         security.logout();
         return false;
       }
       return true;
-    })
+    }),
   );
 };
 
 const logoutGuard = () => {
   const router = inject(Router);
   return inject(SecurityService).user$.pipe(
-    map((user: User | null) => {
+    map((user) => {
       if (user) {
         router.navigate(['/rest']);
         return false;
       }
       return true;
-    })
+    }),
   );
 };
 
@@ -41,18 +40,27 @@ export const routes: Routes = [
     canDeactivate: [sidebarGuard],
     loadComponent: () =>
       import('./components/board/board.component').then(
-        (c) => c.BoardComponent
+        (c) => c.BoardComponent,
       ),
     providers: [{ provide: AbstractTaskService, useExisting: TaskService }],
+  },
+  {
+    path: 'task-dialog',
+    outlet: 'sidebar',
+    loadComponent: () =>
+      import('./components/board/task-card/task-dialog/task-dialog.component').then(
+        (c) => c.TaskDialogComponent,
+      ),
+    providers: [{ provide: AbstractTaskService, useExisting: TaskService }],
+    canActivate: [loginGuard],
   },
   {
     path: 'user-dialog',
     outlet: 'sidebar',
     loadComponent: () =>
-      import(
-        './components/board/task-card/task-dialog/task-dialog.component'
-      ).then((c) => c.TaskDialogComponent),
-    providers: [{ provide: AbstractTaskService, useExisting: TaskService }],
+      import('./components/user-form/user-form.component').then(
+        (m) => m.UserFormComponent,
+      ),
     canActivate: [loginGuard],
   },
   {
@@ -61,7 +69,7 @@ export const routes: Routes = [
     canDeactivate: [sidebarGuard],
     loadComponent: () =>
       import('./components/board/board.component').then(
-        (c) => c.BoardComponent
+        (c) => c.BoardComponent,
       ),
     providers: [{ provide: AbstractTaskService, useExisting: TaskService }],
     canActivate: [loginGuard],
@@ -72,7 +80,7 @@ export const routes: Routes = [
     canDeactivate: [sidebarGuard],
     loadComponent: () =>
       import('./components/board/board.component').then(
-        (c) => c.BoardComponent
+        (c) => c.BoardComponent,
       ),
     providers: [
       { provide: AbstractTaskService, useExisting: TaskGraphQlService },
@@ -84,7 +92,7 @@ export const routes: Routes = [
     title: 'Login',
     loadComponent: () =>
       import('./components/login/login.component').then(
-        (c) => c.LoginComponent
+        (c) => c.LoginComponent,
       ),
     canActivate: [logoutGuard],
   },

@@ -175,7 +175,7 @@ export class BoardComponent implements OnInit {
       [
         {
           outlets: {
-            sidebar: ['user-dialog'],
+            sidebar: ['task-dialog'],
           },
         },
       ],

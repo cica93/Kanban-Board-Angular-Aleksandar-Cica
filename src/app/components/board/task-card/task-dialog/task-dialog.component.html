@@ -1,5 +1,5 @@
 
-<form [formRoot]="taskForm" class="flex flex-column gap-2">
+<form [formRoot]="taskForm" class="flex flex-column gap-2 w-full">
   <app-form-value-wrapper [label]="'Title'" [name]="'title'">
     <input
       [attr.id]="'title'"
@@ -14,7 +14,7 @@
   <app-form-value-wrapper [label]="'Description'" [name]="'description'">
     <input
       [attr.id]="'description'"
-      placeholder="Enter description"
+      [placeholder]="'Enter description'"
       [formField]="taskForm.description"
       styleClass="w-full"
       pInputText
@@ -26,7 +26,7 @@
       [attr.id]="'task-status'"
       [options]="taskStatuses"
       [formField]="taskForm.taskStatus"
-      placeholder="Select task status"
+      [placeholder]="'Select task status'"
       class="w-full"
     >
       <ng-template let-status pTemplate="item">
@@ -42,9 +42,9 @@
       [attr.id]="'task-priority'"
       [options]="taskPriorities"
       [formField]="taskForm.taskPriority"
-      placeholder="Select task priority"
+      [placeholder]="'Select task priority'"
       class="w-full"
-    ></p-dropdown>
+    />
   </app-form-value-wrapper>
   <app-form-value-wrapper [label]="'Users'" [name]="'users'">
     <p-multiSelect
@@ -53,27 +53,27 @@
       [dataKey]="'id'"
       [attr.id]="'users'"
       [formField]="taskForm.users"
-      placeholder="Select users"
+      [placeholder]="'Select users'"
       styleClass="w-full"
     />
-    </app-form-value-wrapper>
-  </form>
-<div class="flex justify-content-end mt-3 gap-2">
-  <p-button
-    [tabindex]="-1"
-    pRipple
-    [label]="'Cancel'"
-    severity="secondary"
-    (click)="close()"
+  </app-form-value-wrapper>
+  <div class="flex flex-row justify-content-end gap-2 mt-auto">
+    <p-button
+      [tabindex]="-1"
+      pRipple
+      [label]="'Cancel'"
+      [severity]="'secondary'"
+      (onClick)="close()"
     />
-  @let submitting = taskForm().submitting();
-  <p-button 
-    pRipple 
-    [label]="submitting ? 'Saving...' : 'Save'"
-    [severity]="'primary'" 
-    [type]="'submit'"
-    [loading]="submitting"
-    [disabled]="submitting"
-    (click)="save()" 
+    @let submitting = taskForm().submitting();
+    <p-button 
+      pRipple 
+      [label]="submitting ? 'Saving...' : 'Save'"
+      [severity]="'primary'" 
+      [type]="'submit'"
+      [loading]="submitting"
+      [disabled]="submitting"
     />
-</div>
+  </div>
+</form>
+

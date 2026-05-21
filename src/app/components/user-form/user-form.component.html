@@ -1,0 +1,38 @@
+<form [formRoot]="userForm" class="flex flex-column gap-2 w-full">
+    <app-form-value-wrapper [label]="'Name'" [name]="'name'">
+     <input
+        [pAutoFocus]="true"
+        [attr.id]="'name'"
+        placeholder="Enter name"
+        [formField]="userForm.name"
+        styleClass="w-full"
+        pInputText
+        class="flex-auto"
+      />
+    </app-form-value-wrapper>
+      <h4>Shipping Address</h4>
+      <!-- Pass the 'address' branch of the FieldTree to the child -->
+      <app-address-form [addressFields]="userForm.address" />
+      <h4>Billing Address</h4>
+      <!-- Pass the 'address' branch of the FieldTree to the child -->
+      <app-address-form [addressFields]="userForm.billingAddress" />
+       <div class="flex flex-row justify-content-end gap-2 mt-auto">
+        <p-button
+        [tabindex]="-1"
+        pRipple
+        [label]="'Cancel'"
+        [severity]="'secondary'"
+        (onClick)="close()"
+        />
+        @let submitting = userForm().submitting();
+        <p-button 
+        pRipple 
+        [label]="submitting ? 'Saving...' : 'Save'"
+        [severity]="'primary'" 
+        [type]="'submit'"
+        [loading]="submitting"
+        [disabled]="submitting"
+    />
+  </div>
+
+</form>

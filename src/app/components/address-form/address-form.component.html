@@ -1,0 +1,37 @@
+<div class="flex gap-2 flex-column">
+  <div class="flex flex-row gap-2 w-full">
+    <app-form-value-wrapper class="col-6" [label]="'Street'" [name]="'street'">
+      <input
+        [pAutoFocus]="true"
+        [attr.id]="'street'"
+        placeholder="Enter street"
+        [formField]="addressFields().street"
+        styleClass="w-full"
+        pInputText
+        class="flex-auto"
+      />
+    </app-form-value-wrapper>
+    <app-form-value-wrapper class="col-6" [label]="'Zip Code'" [name]="'zipCode'">
+      <input
+        [attr.id]="'zip-code'"
+        placeholder="Enter zip code"
+        [formField]="addressFields().zipCode"
+        styleClass="w-full"
+        pInputText
+        class="flex-auto"
+      />
+    </app-form-value-wrapper>
+  </div>
+  <div class="flex flex-row w-full">
+      <app-form-value-wrapper class="col-12" [label]="'City'" [name]="'city'">
+      <input
+        [attr.id]="'city'"
+        placeholder="Enter city"
+        [formField]="addressFields().city"
+        styleClass="w-full"
+        pInputText
+        class="flex-auto"
+      />
+    </app-form-value-wrapper>
+  </div>
+</div>
