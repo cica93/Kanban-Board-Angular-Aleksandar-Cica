@@ -24,6 +24,7 @@ export abstract class BaseDialogComponent<T = any> implements OnInit {
   close(initNewSearch = false): void {
     this.router.navigate([{ outlets: { sidebar: null } }], {
       state: { initNewSearch },
+      replaceUrl: true,
     });
   }
 

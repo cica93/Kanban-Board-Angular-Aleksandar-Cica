@@ -104,6 +104,11 @@ export class TaskGraphQlService extends AbstractTaskService {
               description
               taskStatus
               taskPriority
+              users {
+                id
+                fullName
+                email
+              }
             }
           }
         `,
@@ -131,6 +136,11 @@ export class TaskGraphQlService extends AbstractTaskService {
               description
               taskStatus
               taskPriority
+              users {
+                id
+                fullName
+                email
+              }
             }
           }
         `,

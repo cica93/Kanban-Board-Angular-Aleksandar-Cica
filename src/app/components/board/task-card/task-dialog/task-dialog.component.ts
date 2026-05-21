@@ -120,7 +120,12 @@ export class TaskDialogComponent extends BaseDialogComponent<Task> {
   override ngOnInit(): void {
     super.ngOnInit();
     this.users$ = this.userService.getUsers().pipe(shareReplay());
-    this.model.set({ ...this.model(), ...this.initValue() });
+    this.model.set({
+      ...this.model(),
+      ...this.initValue(),
+      users:
+        this.initValue()?.users.map((u) => ({ ...u, id: Number(u.id) })) ?? [],
+    });
     this.modalHeader.next(this.initValue()?.id ? 'Edit Task' : 'Create Task');
   }
 }

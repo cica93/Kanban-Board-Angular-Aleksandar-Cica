@@ -182,7 +182,7 @@ export class BoardComponent implements OnInit {
           },
         },
       ],
-      { state: { initValue: task } },
+      { state: { initValue: task }, replaceUrl: true },
     );
   }
 }

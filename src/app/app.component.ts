@@ -9,7 +9,7 @@ import { MessageService } from 'primeng/api';
 import { MessageHandlerService } from './services/message.handler.service';
 import { SecurityService } from './services/security.service';
 import { Observable } from 'rxjs';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, TitleCasePipe } from '@angular/common';
 import { Subscription } from 'apollo-angular';
 import { User } from './services/user.service';
 import { ToastModule } from 'primeng/toast';
@@ -28,6 +28,7 @@ import { BaseDialogComponent } from './components/base-dialog/base-dialog.compon
     RouterLinkActive,
     TooltipModule,
     DialogModule,
+    TitleCasePipe,
   ],
   templateUrl: './app.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
