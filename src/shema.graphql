@@ -14,6 +14,7 @@ type Mutation {
   updateTask(id: ID!, task: Task!): OptionalTask
   patchTask(id: ID!, task: OptionalTask!): OptionalTask
   deleteTask(id: ID!): OptionalTask
+  dragTask(task: DragTask!): OptionalTask
 }
 
 type User {
@@ -29,6 +30,12 @@ type Task {
   taskStatus: String!
   taskPriority: String!
   users: [User!]
+}
+
+type DragTask {
+  taskId: ID
+  taskOrder: String!
+  taskStatus: String!
 }
 
 type OptionalTask {

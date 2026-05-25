@@ -1,3 +1,9 @@
+@let state = tasks$ | async;
+@if(state?.loading){
+  <div class="fixed top-50 left-50  align-items-center justify-content-center">
+  <p-progressSpinner />
+</div>
+}
 <div class="flex my-1 mx-5 align-items-center">
   <p-iconfield class="w-3" iconPosition="right">
     <input
@@ -7,44 +13,39 @@
       [pAutoFocus]="true"
       class="w-full"
     />
-    @if(loading()) {
-      <p-inputicon>
-        <p-progressSpinner ariaLabel="loading"  animationDuration=".5s" [style]="{ width: '20px', height: '20px' }"/>
-      </p-inputicon>
-    } @else {
-      <p-inputicon class="pi pi-search" />
-    }
+    <p-inputicon class="pi pi-search" />
   </p-iconfield>
 </div>
 
 <div class="flex">
-  @for (item of tasks$ | async | keyvalue | sortTask ; track $index) {
-  <div
-    class="flex w-4 my-1 mx-3 flex-column"
-    pDroppable
-    (onDrop)="handleDrop(item.key)"
-  >
+  @for (item of state?.data | groupAndSortTask ; track $index) {
+  <div class="flex w-4 my-1 mx-3 flex-column">
     <div class="flex flex-row align-items-center justify-content-center gap-2">
       <h2 class="text-center">
         {{ item.key | replace : "_" : " " }}
       </h2>
        <p-button
           icon="pi pi-plus"
-          (click)="navigateUserDialog({taskStatus: item.key})"
+          (click)="navigateUserDialog(item.key)"
           pTooltip="Create Task"
           size="small"
         />
     </div>
-    <div class="flex flex-column row-gap-4">
+    <div 
+      class="flex flex-column row-gap-4"
+      cdkDropList
+      [id]="item.key"
+      [cdkDropListData]="item"
+      [cdkDropListConnectedTo]="TASK_STATUS"
+      (cdkDropListDropped)="onDrop($event)">
       @for (task of item.value; track $index) {
         <app-task-card
-          pDraggable 
-          [pDraggableDisabled]="false" 
-          (onDragStart)="draggedTaskId=task.id"
+          cdkDrag
+          [cdkDragData]="task"
           [task]="task"
           (onDelete)="deleteTask(task.id)"
           (onEdit)="navigateUserDialog(task)"
-        ></app-task-card>
+        />
       }
     </div>
   </div>

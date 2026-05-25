@@ -1,22 +1,23 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { AsyncPipe, KeyValuePipe } from '@angular/common';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import {
+  catchError,
   debounceTime,
   exhaustMap,
   filter,
   fromEvent,
-  map,
-  merge,
   Observable,
-  scan,
+  of,
   startWith,
   Subject,
+  switchMap,
   tap,
 } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Button } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { SortTaskPipe } from '../../pipes/sort-task.pipe';
+import { GroupAndSortTaskPipe } from '../../pipes/group-and-sort-task.pipe';
 import { ReplacePipe } from '../../pipes/replace.pipe';
 import { DebounceInputDirective } from '../debounce-input.directive';
 import { ToastModule } from 'primeng/toast';
@@ -24,17 +25,32 @@ import { MessageService } from 'primeng/api';
 import {
   AbstractTaskService,
   Task,
+  TASK_STATUS,
+  TaskStatus,
 } from '../../services/abstract.task.service';
-import { NavigationEnd, Router, Event } from '@angular/router';
+import { Router } from '@angular/router';
 import { TooltipModule } from 'primeng/tooltip';
-import { DragDropModule } from 'primeng/dragdrop';
 import { TaskCardComponent } from './task-card/task-card.component';
 import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
-import { Location } from '@angular/common';
 import { AutoFocusModule } from 'primeng/autofocus';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { taskStatuses } from './task-card/task-dialog/task-dialog.component';
+import {
+  CdkDragDrop,
+  DragDropModule,
+  moveItemInArray,
+  transferArrayItem,
+} from '@angular/cdk/drag-drop';
+import {
+  AppState,
+  loadTasks,
+  deleteTask,
+  appendTasks,
+  loadTasksSuccess,
+  loadTasksFailure,
+} from '../store/task-store';
+import { Store } from '@ngrx/store';
+import { LoadState } from '../store/load-state';
 
 export interface TaskResponse {
   event: string | { event: string };
@@ -46,12 +62,10 @@ export interface TaskResponse {
   imports: [
     AsyncPipe,
     CardModule,
-    KeyValuePipe,
     InputTextModule,
-    SortTaskPipe,
+    GroupAndSortTaskPipe,
     ReplacePipe,
     DebounceInputDirective,
-    DragDropModule,
     ToastModule,
     TaskCardComponent,
     TooltipModule,
@@ -60,6 +74,7 @@ export interface TaskResponse {
     Button,
     AutoFocusModule,
     ProgressSpinnerModule,
+    DragDropModule,
   ],
   templateUrl: './board.component.html',
 })
@@ -68,85 +83,71 @@ export class BoardComponent implements OnInit {
   filter = '';
   limit = 20;
   hasMoreTasks = true;
-  tasks$!: Observable<{ [key: string]: Task[] }>;
+  tasks$!: Observable<LoadState<Task>>;
   showModal = signal<boolean>(false);
-  taskId: number | undefined;
   loading = signal(false);
-  taskStatuses = taskStatuses;
+  TASK_STATUS = [...TASK_STATUS];
   searchChange = new Subject<string>();
   scrollToBottom = new Subject<unknown>();
+  isLoading = false;
 
   private readonly taskService = inject(AbstractTaskService);
   private readonly messageService = inject(MessageService);
   private readonly router = inject(Router);
-  private readonly location = inject(Location);
+  private readonly store = inject(Store<AppState>);
+  private destroyRef = inject(DestroyRef);
 
   draggedTaskId: number | undefined;
 
   ngOnInit(): void {
-    this.router.events
+    this.store.dispatch(loadTasks());
+    this.tasks$ = this.store.select((state: AppState) => state.tasks);
+    fromEvent(window, 'scroll')
       .pipe(
-        filter((e: Event): e is NavigationEnd => {
-          if (!(e instanceof NavigationEnd)) return false;
-          const urlTree = this.router.parseUrl(e.urlAfterRedirects);
-          const outlets = urlTree.root.children;
-          return (
-            !outlets['sidebar'] &&
-            (this.location.getState() as any)?.['initNewSearch']
-          );
-        }),
-      )
-      .subscribe(() => {
-        this.searchChange.next('');
-      });
-
-    this.tasks$ = merge(
-      fromEvent(window, 'scroll').pipe(
         filter(() => {
           const threshold = 100;
           const position = window.innerHeight + window.scrollY;
-          const height = document.body.offsetHeight;
-          return height - position <= threshold && this.hasMoreTasks;
+          const height = document.body.scrollHeight;
+          return height - position <= threshold && !!this.hasMoreTasks;
         }),
         debounceTime(200),
-        tap(() => (this.offset += this.limit)),
-        map(() => ({ event: 'scroll' })),
-      ),
-      this.searchChange.pipe(
+        takeUntilDestroyed(this.destroyRef),
+        tap(() => {
+          this.offset += this.limit;
+          window.scrollBy({
+            top: -200,
+            behavior: 'instant',
+          });
+        }),
+        exhaustMap(() => this.fetchTasks()),
+      )
+      .subscribe((tasks) => this.store.dispatch(appendTasks({ data: tasks })));
+
+    this.searchChange
+      .pipe(
         startWith(''),
-        tap((e: string) => {
+        tap((e) => {
           this.offset = 0;
           this.filter = e;
           this.loading.set(true);
         }),
-      ),
-    )
-      .pipe(
-        exhaustMap((value: string | { event: string }) =>
-          this.taskService
-            .get(this.filter, ['id'], 'desc', this.limit, this.offset)
-            .pipe(map((data) => ({ event: value, data }) as TaskResponse)),
-        ),
+        takeUntilDestroyed(this.destroyRef),
+        switchMap(() => this.fetchTasks()),
       )
+      .subscribe((tasks) => {
+        this.loading.set(false);
+        this.store.dispatch(loadTasksSuccess({ data: tasks }));
+      });
+  }
+
+  private fetchTasks(): Observable<Task[]> {
+    this.store.dispatch(loadTasks());
+    return this.taskService
+      .get(this.filter, ['id'], 'desc', this.limit, this.offset)
       .pipe(
-        tap(() => this.loading.set(false)),
-        scan((acc: TaskResponse, next: TaskResponse) => {
-          this.hasMoreTasks = next.data.length == this.limit;
-          if (typeof next.event === 'string') {
-            return next;
-          }
-          return {
-            data: [...acc.data, ...next.data],
-            event: next.event,
-          } as TaskResponse;
-        }),
-        map((taskResponse: TaskResponse) => {
-          const r: { [key: string]: Task[] } = {};
-          taskStatuses.forEach((status) => (r[status] = []));
-          taskResponse.data.forEach((e: Task) => {
-            r[e.taskStatus].push(e);
-          });
-          return r;
+        catchError((error) => {
+          this.store.dispatch(loadTasksFailure(error));
+          return of([]);
         }),
       );
   }
@@ -154,26 +155,13 @@ export class BoardComponent implements OnInit {
   deleteTask(taskId: number): void {
     this.taskService.delete(taskId).subscribe({
       next: () => {
-        this.searchChange.next('');
-        this.messageService.add({
-          severity: 'success',
-          key: 'main',
-          closable: true,
-          summary: 'Task deleted',
-        });
+        this.store.dispatch(deleteTask({ taskId }));
+        this.showMessage('Task deleted');
       },
     });
   }
 
-  handleDrop(taskStatus: string): void {
-    this.taskService.patch(this.draggedTaskId!, { taskStatus }).subscribe({
-      next: () => {
-        this.searchChange.next('');
-      },
-    });
-  }
-
-  navigateUserDialog(task: Partial<Task>): void {
+  navigateUserDialog(task: Partial<Task> | string): void {
     this.router.navigate(
       [
         {
@@ -182,7 +170,52 @@ export class BoardComponent implements OnInit {
           },
         },
       ],
-      { state: { initValue: task }, replaceUrl: true },
+      {
+        state: {
+          initValue: typeof task === 'string' ? { taskStatus: task } : task,
+        },
+        replaceUrl: true,
+      },
     );
+  }
+
+  onDrop(
+    event: CdkDragDrop<{
+      key: TaskStatus;
+      value: Task[];
+    }>,
+  ): void {
+    const task = event.item.data;
+    const taskStatus = event.container.data.key;
+    if (event.previousContainer === event.container) {
+      moveItemInArray(
+        event.container.data.value,
+        event.previousIndex,
+        event.currentIndex,
+      );
+    } else {
+      transferArrayItem(
+        event.previousContainer.data.value,
+        event.container.data.value,
+        event.previousIndex,
+        event.currentIndex,
+      );
+    }
+    this.taskService
+      .drag({ taskId: task.id, taskStatus, taskOrder: event.currentIndex })
+      .subscribe({
+        next: () => {
+          this.showMessage('Task status changed');
+        },
+      });
+  }
+
+  private showMessage(summary: string): void {
+    this.messageService.add({
+      severity: 'success',
+      key: 'main',
+      closable: true,
+      summary,
+    });
   }
 }

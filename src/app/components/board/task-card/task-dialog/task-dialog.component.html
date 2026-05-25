@@ -24,7 +24,7 @@
   <app-form-value-wrapper [label]="'Task Status'" [name]="'taskStatus'">
     <p-dropdown
       [attr.id]="'task-status'"
-      [options]="taskStatuses"
+      [options]="TASK_STATUS"
       [formField]="taskForm.taskStatus"
       [placeholder]="'Select task status'"
       class="w-full"
@@ -40,7 +40,7 @@
   <app-form-value-wrapper [label]="'Task Priority'" [name]="'taskPriority'">
     <p-dropdown
       [attr.id]="'task-priority'"
-      [options]="taskPriorities"
+      [options]="TASK_PRIORITIES"
       [formField]="taskForm.taskPriority"
       [placeholder]="'Select task priority'"
       class="w-full"

@@ -28,6 +28,8 @@ import { Title } from '@angular/platform-browser';
 import { KanbanTitle } from './services/kanban.title.service';
 import { GlobalErrorHandler } from './services/error.handler.service';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { provideStore } from '@ngrx/store';
+import { appStore } from './components/store/store';
 
 export function initAuth(
   jwtService: JwtService,
@@ -48,13 +50,14 @@ export const appConfig: ApplicationConfig = {
       routes,
       withComponentInputBinding(),
       withInMemoryScrolling(),
-      withRouterConfig({ urlUpdateStrategy: 'deferred' })
+      withRouterConfig({ urlUpdateStrategy: 'deferred' }),
     ),
     Title,
     { provide: TitleStrategy, useClass: KanbanTitle },
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
     MessageService,
     Apollo,
+    provideStore(appStore),
     provideAnimations(),
     providePrimeNG({
       theme: { preset: Aura, options: { darkModeSelector: '.p-dark' } },
@@ -74,6 +77,7 @@ export const appConfig: ApplicationConfig = {
       useFactory: initAuth,
       deps: [JwtService, SecurityService],
       multi: true,
-    }, provideAnimationsAsync(),
+    },
+    provideAnimationsAsync(),
   ],
 };

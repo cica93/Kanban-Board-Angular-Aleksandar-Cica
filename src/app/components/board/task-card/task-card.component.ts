@@ -1,6 +1,6 @@
-import { Component, input, output } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { CardModule } from 'primeng/card';
-import { Task } from '../../../services/abstract.task.service';
+import { Task, TASK_PRIORITIES } from '../../../services/abstract.task.service';
 import { BadgeModule } from 'primeng/badge';
 import { AvatarModule } from 'primeng/avatar';
 import { AvatarGroupModule } from 'primeng/avatargroup';
@@ -22,7 +22,9 @@ import { MenuModule } from 'primeng/menu';
   templateUrl: './task-card.component.html',
 })
 export class TaskCardComponent {
-  items = [
+  protected readonly maxVisibleImages = 5;
+  TASK_PRIORITIES = TASK_PRIORITIES;
+  protected readonly items = [
     {
       items: [
         {
@@ -45,4 +47,16 @@ export class TaskCardComponent {
   readonly task = input.required<Task>();
   readonly onDelete = output<Task>();
   readonly onEdit = output<Task>();
+  taskSeverityClass = computed(() => {
+    switch (this.TASK_PRIORITIES.indexOf(this.task().taskPriority)) {
+      case 0:
+        return 'info';
+      case 1:
+        return 'warn';
+      case 2:
+        return 'danger';
+      default:
+        throw new Error('Invalid task priority');
+    }
+  });
 }
