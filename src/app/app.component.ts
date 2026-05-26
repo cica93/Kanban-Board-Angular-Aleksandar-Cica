@@ -16,6 +16,7 @@ import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 import { DialogModule } from 'primeng/dialog';
 import { BaseDialogComponent } from './components/base-dialog/base-dialog.component';
+import { SocketService } from './services/socket.service';
 
 @Component({
   selector: 'app-root',
@@ -37,15 +38,17 @@ import { BaseDialogComponent } from './components/base-dialog/base-dialog.compon
 export class AppComponent implements OnInit {
   title = 'kanban-board-angular';
   user$!: Observable<User | null>;
-  securityService = inject(SecurityService);
-  messageService = inject(MessageService);
-  messageHandler = inject(MessageHandlerService);
+  private readonly securityService = inject(SecurityService);
+  private readonly messageService = inject(MessageService);
+  private readonly messageHandler = inject(MessageHandlerService);
+  private readonly socket = inject(SocketService);
   subscription: Subscription | undefined;
   router = inject(Router);
   showDialog = signal(false);
   modalHeader: Observable<string> | undefined;
 
   ngOnInit(): void {
+    this.socket.connect();
     this.user$ = this.securityService.user$;
     this.messageHandler.errorEvent
       .asObservable()

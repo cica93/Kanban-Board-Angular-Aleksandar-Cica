@@ -12,14 +12,14 @@ import { of } from "rxjs";
 import { By } from "@angular/platform-browser";
 import { InputTextModule } from "primeng/inputtext";
 import { ButtonModule } from "primeng/button";
-import { SidebarModule } from "primeng/sidebar";
-import { DropdownModule } from "primeng/dropdown";
+import { SidebarModule } from 'primeng/sidebar';
 import { MultiSelectModule } from "primeng/multiselect";
 import { ToastModule } from "primeng/toast";
 import { MessageService } from "primeng/api";
 import { TaskService } from "../../services/task.service"; // Assuming this path
 import { UserService } from "../../services/user.service"; // Assuming this path
 import { SecurityService } from "../../services/security.service";
+import { SelectModule } from 'primeng/select';
 
 // Mock Services
 class MockSecurityService {
@@ -58,7 +58,6 @@ describe("BoardComponent", () => {
   let mockSecurityService: MockSecurityService;
   let mockTaskService: MockTaskService;
   let mockUserService: MockUserService;
-  let messageService: MessageService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -69,7 +68,7 @@ describe("BoardComponent", () => {
         InputTextModule,
         ButtonModule,
         SidebarModule,
-        DropdownModule,
+        SelectModule,
         MultiSelectModule,
         ToastModule,
         // Import other PrimeNG modules used in the template

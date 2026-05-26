@@ -1,50 +1,38 @@
-import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Injectable, signal } from '@angular/core';
+import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
+import { Observable } from 'rxjs';
+
+export interface SocketMessage {
+  type: string;
+  payload: any;
+}
 
 @Injectable({
   providedIn: 'root',
 })
-export class WebSocketService {
-  private socket: WebSocket | null = null;
-  private messageSubject = new Subject<any>();
+export class WebsocketService {
+  private socket$!: WebSocketSubject<SocketMessage>;
 
-  connect(url: string): void {
-    this.socket = new WebSocket(url);
+  connected = signal(false);
 
-    this.socket.onopen = (event) => {
-      console.log('WebSocket connected!', event);
-    };
+  connect(): void {
+    this.socket$ = webSocket<SocketMessage>({
+      url: 'ws://localhost:8080',
+    });
 
-    this.socket.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      this.messageSubject.next(data);
-    };
-
-    this.socket.onerror = (event) => {
-      console.error('WebSocket error', event);
-    };
-
-    this.socket.onclose = (event) => {
-      console.log('WebSocket closed', event);
-    };
+    this.connected.set(true);
   }
 
-  sendMessage(message: any): void {
-    if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-      this.socket.send(JSON.stringify(message));
-    } else {
-      console.error(
-        'WebSocket is not open. ReadyState:',
-        this.socket?.readyState
-      );
-    }
+  messages(): Observable<SocketMessage> {
+    return this.socket$.asObservable();
   }
 
-  getMessages(): Observable<any> {
-    return this.messageSubject.asObservable();
+  send(message: SocketMessage): void {
+    this.socket$.next(message);
   }
 
   disconnect(): void {
-    this.socket?.close();
+    this.socket$.complete();
+    this.connected.set(false);
   }
 }

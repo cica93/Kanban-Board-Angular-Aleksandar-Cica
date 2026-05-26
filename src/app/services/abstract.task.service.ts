@@ -23,6 +23,7 @@ export interface DragTask {
   taskId: number;
   taskStatus: string;
   taskOrder: number;
+  taskVersion: number;
 }
 
 

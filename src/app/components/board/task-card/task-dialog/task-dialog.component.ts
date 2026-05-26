@@ -1,55 +1,31 @@
-import { AsyncPipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { Button } from 'primeng/button';
-import { DropdownModule } from 'primeng/dropdown';
 import { DialogModule } from 'primeng/dialog';
-import { InputTextModule } from 'primeng/inputtext';
-import { MultiSelect } from 'primeng/multiselect';
 import {
   AbstractTaskService,
   Task,
   TASK_PRIORITIES,
   TASK_STATUS,
 } from 'src/app/services/abstract.task.service';
-import { User, UserService } from 'src/app/services/user.service';
-import { RippleModule } from 'primeng/ripple';
-import { ReplacePipe } from 'src/app/pipes/replace.pipe';
-import { firstValueFrom, Observable, shareReplay } from 'rxjs';
-import { AutoFocusModule } from 'primeng/autofocus';
+import { firstValueFrom } from 'rxjs';
 import { BaseDialogComponent } from 'src/app/components/base-dialog/base-dialog.component';
 import {
   form,
-  FormField,
   FormRoot,
   maxLength,
   minLength,
   required,
   validate,
 } from '@angular/forms/signals';
-import { FormValueWrapperComponent } from 'src/app/form-value-wrapper/form-value-wrapper.component';
 import { AppState, saveTask, updateTask } from 'src/app/store/task-store';
 import { Store } from '@ngrx/store';
-import { TextareaModule } from 'primeng/textarea';
+import { TaskFormComponent } from './task-form/task-form.component';
 
 export type TaskForm = Omit<Task, 'id' | 'taskOrder' | 'version'>;
 
 @Component({
   selector: 'app-task-dialog',
-  imports: [
-    Button,
-    MultiSelect,
-    DialogModule,
-    InputTextModule,
-    AsyncPipe,
-    DropdownModule,
-    RippleModule,
-    ReplacePipe,
-    AutoFocusModule,
-    FormField,
-    FormRoot,
-    FormValueWrapperComponent,
-    TextareaModule,
-  ],
+  imports: [Button, DialogModule, FormRoot, TaskFormComponent],
   templateUrl: './task-dialog.component.html',
   host: {
     class: 'flex h-full',
@@ -57,11 +33,9 @@ export type TaskForm = Omit<Task, 'id' | 'taskOrder' | 'version'>;
 })
 export class TaskDialogComponent extends BaseDialogComponent<Task> {
   private readonly taskService = inject(AbstractTaskService);
-  private readonly userService = inject(UserService);
   private readonly store = inject(Store<AppState>);
   protected TASK_STATUS = [...TASK_STATUS];
   protected TASK_PRIORITIES = [...TASK_PRIORITIES];
-  protected users$!: Observable<User[]>;
   protected model = signal<TaskForm>({
     description: '',
     taskPriority: this.TASK_PRIORITIES[0],
@@ -137,7 +111,6 @@ export class TaskDialogComponent extends BaseDialogComponent<Task> {
 
   override ngOnInit(): void {
     super.ngOnInit();
-    this.users$ = this.userService.getUsers().pipe(shareReplay());
     this.model.set({
       ...this.model(),
       ...this.initValue(),

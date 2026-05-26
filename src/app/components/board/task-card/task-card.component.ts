@@ -23,7 +23,7 @@ import { MenuModule } from 'primeng/menu';
 })
 export class TaskCardComponent {
   protected readonly maxVisibleImages = 5;
-  TASK_PRIORITIES = TASK_PRIORITIES;
+  private readonly TASK_PRIORITIES = TASK_PRIORITIES;
   protected readonly items = [
     {
       items: [

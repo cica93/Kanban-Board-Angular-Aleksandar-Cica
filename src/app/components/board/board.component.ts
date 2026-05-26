@@ -32,12 +32,7 @@ import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
 import { AutoFocusModule } from 'primeng/autofocus';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import {
-  CdkDragDrop,
-  DragDropModule,
-  moveItemInArray,
-  transferArrayItem,
-} from '@angular/cdk/drag-drop';
+import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import {
   AppState,
   loadTasks,
@@ -186,17 +181,19 @@ export class BoardComponent implements OnInit {
     const taskStatus = event.container.data.key;
     const taskOrder = event.currentIndex;
 
-    this.store.dispatch(dragTask({ data: task, taskStatus, taskOrder }));
-    this.showMessage('Task status changed');
-
-    // this.taskService
-    //   .drag({ taskId: task.id, taskStatus, taskOrder })
-    //   .subscribe({
-    //     next: () => {
-    //       this.store.dispatch(dragTask({ data: task, taskStatus, taskOrder }));
-    //       this.showMessage('Task status changed');
-    //     },
-    //   });
+    this.taskService
+      .drag({
+        taskId: task.id,
+        taskStatus,
+        taskOrder,
+        taskVersion: task.version,
+      })
+      .subscribe({
+        next: () => {
+          this.store.dispatch(dragTask({ data: task, taskStatus, taskOrder }));
+          this.showMessage('Task status changed');
+        },
+      });
   }
 
   private showMessage(summary: string): void {
