@@ -20,8 +20,6 @@ import { InputTextModule } from 'primeng/inputtext';
 import { GroupAndSortTaskPipe } from '../../pipes/group-and-sort-task.pipe';
 import { ReplacePipe } from '../../pipes/replace.pipe';
 import { DebounceInputDirective } from '../debounce-input.directive';
-import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
 import {
   AbstractTaskService,
   Task,
@@ -29,7 +27,6 @@ import {
   TaskStatus,
 } from '../../services/abstract.task.service';
 import { Router } from '@angular/router';
-import { TooltipModule } from 'primeng/tooltip';
 import { TaskCardComponent } from './task-card/task-card.component';
 import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
@@ -48,9 +45,11 @@ import {
   appendTasks,
   loadTasksSuccess,
   loadTasksFailure,
-} from '../store/task-store';
+  dragTask,
+} from '../../store/task-store';
 import { Store } from '@ngrx/store';
-import { LoadState } from '../store/load-state';
+import { LoadState } from '../../store/load-state';
+import { MessageHandlerService } from 'src/app/services/message.handler.service';
 
 export interface TaskResponse {
   event: string | { event: string };
@@ -66,9 +65,7 @@ export interface TaskResponse {
     GroupAndSortTaskPipe,
     ReplacePipe,
     DebounceInputDirective,
-    ToastModule,
     TaskCardComponent,
-    TooltipModule,
     InputIcon,
     IconField,
     Button,
@@ -81,7 +78,7 @@ export interface TaskResponse {
 export class BoardComponent implements OnInit {
   offset = 0;
   filter = '';
-  limit = 20;
+  limit = 5;
   hasMoreTasks = true;
   tasks$!: Observable<LoadState<Task>>;
   showModal = signal<boolean>(false);
@@ -92,7 +89,7 @@ export class BoardComponent implements OnInit {
   isLoading = false;
 
   private readonly taskService = inject(AbstractTaskService);
-  private readonly messageService = inject(MessageService);
+  private readonly messageHandler = inject(MessageHandlerService);
   private readonly router = inject(Router);
   private readonly store = inject(Store<AppState>);
   private destroyRef = inject(DestroyRef);
@@ -125,12 +122,12 @@ export class BoardComponent implements OnInit {
 
     this.searchChange
       .pipe(
-        startWith(''),
         tap((e) => {
           this.offset = 0;
           this.filter = e;
           this.loading.set(true);
         }),
+        startWith(''),
         takeUntilDestroyed(this.destroyRef),
         switchMap(() => this.fetchTasks()),
       )
@@ -152,16 +149,16 @@ export class BoardComponent implements OnInit {
       );
   }
 
-  deleteTask(taskId: number): void {
-    this.taskService.delete(taskId).subscribe({
+  deleteTask(task: Task): void {
+    this.taskService.delete(task.id, task.version).subscribe({
       next: () => {
-        this.store.dispatch(deleteTask({ taskId }));
+        this.store.dispatch(deleteTask({ task }));
         this.showMessage('Task deleted');
       },
     });
   }
 
-  navigateUserDialog(task: Partial<Task> | string): void {
+  navigateUserDialog(task?: Partial<Task>): void {
     this.router.navigate(
       [
         {
@@ -172,7 +169,7 @@ export class BoardComponent implements OnInit {
       ],
       {
         state: {
-          initValue: typeof task === 'string' ? { taskStatus: task } : task,
+          initValue: task ?? {},
         },
         replaceUrl: true,
       },
@@ -187,35 +184,25 @@ export class BoardComponent implements OnInit {
   ): void {
     const task = event.item.data;
     const taskStatus = event.container.data.key;
-    if (event.previousContainer === event.container) {
-      moveItemInArray(
-        event.container.data.value,
-        event.previousIndex,
-        event.currentIndex,
-      );
-    } else {
-      transferArrayItem(
-        event.previousContainer.data.value,
-        event.container.data.value,
-        event.previousIndex,
-        event.currentIndex,
-      );
-    }
-    this.taskService
-      .drag({ taskId: task.id, taskStatus, taskOrder: event.currentIndex })
-      .subscribe({
-        next: () => {
-          this.showMessage('Task status changed');
-        },
-      });
+    const taskOrder = event.currentIndex;
+
+    this.store.dispatch(dragTask({ data: task, taskStatus, taskOrder }));
+    this.showMessage('Task status changed');
+
+    // this.taskService
+    //   .drag({ taskId: task.id, taskStatus, taskOrder })
+    //   .subscribe({
+    //     next: () => {
+    //       this.store.dispatch(dragTask({ data: task, taskStatus, taskOrder }));
+    //       this.showMessage('Task status changed');
+    //     },
+    //   });
   }
 
   private showMessage(summary: string): void {
-    this.messageService.add({
-      severity: 'success',
-      key: 'main',
-      closable: true,
+    this.messageHandler.successEvent.next({
       summary,
+      detail: 'Task status changed successfully',
     });
   }
 }

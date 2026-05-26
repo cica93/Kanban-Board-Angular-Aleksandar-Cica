@@ -12,14 +12,15 @@
     />
   </app-form-value-wrapper>
   <app-form-value-wrapper [label]="'Description'" [name]="'description'">
-    <input
+    <textarea
       [attr.id]="'description'"
-      [placeholder]="'Enter description'"
       [formField]="taskForm.description"
+      pTextarea
+      rows="5"
+      cols="40"
       styleClass="w-full"
-      pInputText
-      class="flex-auto"
-      />
+      placeholder="Enter description"
+    ></textarea>
   </app-form-value-wrapper>
   <app-form-value-wrapper [label]="'Task Status'" [name]="'taskStatus'">
     <p-dropdown

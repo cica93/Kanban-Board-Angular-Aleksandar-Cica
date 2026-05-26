@@ -24,15 +24,14 @@ import {
   maxLength,
   minLength,
   required,
+  validate,
 } from '@angular/forms/signals';
 import { FormValueWrapperComponent } from 'src/app/form-value-wrapper/form-value-wrapper.component';
-import {
-  AppState,
-  saveTask,
-  updateTask,
-} from 'src/app/components/store/task-store';
+import { AppState, saveTask, updateTask } from 'src/app/store/task-store';
 import { Store } from '@ngrx/store';
+import { TextareaModule } from 'primeng/textarea';
 
+export type TaskForm = Omit<Task, 'id' | 'taskOrder' | 'version'>;
 
 @Component({
   selector: 'app-task-dialog',
@@ -49,6 +48,7 @@ import { Store } from '@ngrx/store';
     FormField,
     FormRoot,
     FormValueWrapperComponent,
+    TextareaModule,
   ],
   templateUrl: './task-dialog.component.html',
   host: {
@@ -59,17 +59,17 @@ export class TaskDialogComponent extends BaseDialogComponent<Task> {
   private readonly taskService = inject(AbstractTaskService);
   private readonly userService = inject(UserService);
   private readonly store = inject(Store<AppState>);
-  TASK_STATUS = [...TASK_STATUS];
-  TASK_PRIORITIES = [...TASK_PRIORITIES];
+  protected TASK_STATUS = [...TASK_STATUS];
+  protected TASK_PRIORITIES = [...TASK_PRIORITIES];
   protected users$!: Observable<User[]>;
-  protected model = signal<Omit<Task, 'id'>>({
+  protected model = signal<TaskForm>({
     description: '',
     taskPriority: this.TASK_PRIORITIES[0],
     taskStatus: this.TASK_STATUS[0],
     title: '',
     users: [],
   });
-  protected taskForm = form<Omit<Task, 'id'>>(
+  protected taskForm = form<TaskForm>(
     this.model,
     (path) => {
       required(path.title, { message: 'Title is required' });
@@ -85,8 +85,14 @@ export class TaskDialogComponent extends BaseDialogComponent<Task> {
       });
       required(path.taskStatus, { message: 'Task status is required' });
       required(path.taskPriority, { message: 'Task priority is required' });
-      required(path.users, {
-        message: 'At least one user must be assigned to the task',
+      validate(path.users, ({ value }) => {
+        if (!value() || (Array.isArray(value()) && value().length === 0)) {
+          return {
+            kind: 'required',
+            message: 'At least one user must be assigned to the task',
+          };
+        }
+        return undefined;
       });
     },
     {
@@ -104,12 +110,12 @@ export class TaskDialogComponent extends BaseDialogComponent<Task> {
               this.store.dispatch(
                 updateTask({ data: { ...savedTask!, ...formValue } }),
               );
-              this.showMessage('Task updated');
+              this.showMessage('Task updated', 'Task updated successfully');
             } else {
               this.store.dispatch(
                 saveTask({ data: { ...savedTask!, ...formValue } }),
               );
-              this.showMessage('Task Saved');
+              this.showMessage('Task Saved', 'Task saved successfully');
             }
             this.close(true);
             return undefined;
@@ -141,14 +147,5 @@ export class TaskDialogComponent extends BaseDialogComponent<Task> {
       })),
     });
     this.modalHeader.next(this.initValue()?.id ? 'Edit Task' : 'Create Task');
-  }
-
-  private showMessage(summary: string): void {
-    this.messageService.add({
-      severity: 'success',
-      key: 'main',
-      closable: true,
-      summary,
-    });
   }
 }

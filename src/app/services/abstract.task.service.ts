@@ -11,6 +11,8 @@ export type TaskStatus = (typeof TASK_STATUS)[number];
 export interface Task {
   id: number;
   title: string;
+  version: number;
+  taskOrder: number;
   description: string;
   taskStatus: TaskStatus;
   taskPriority: TaskPriority;
@@ -50,7 +52,10 @@ export abstract class AbstractTaskService {
 
   abstract post(task: Partial<Task>): Observable<Task | null | undefined>;
 
-  abstract delete(id: number): Observable<Task | null | undefined>;
+  abstract delete(
+    id: number,
+    version: number,
+  ): Observable<Task | null | undefined>;
 
   abstract drag(dragTask: DragTask): Observable<Task | null | undefined>;
 }

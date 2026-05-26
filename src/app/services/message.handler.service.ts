@@ -5,21 +5,21 @@ import { Observable, Subject } from 'rxjs';
   providedIn: 'root',
 })
 export class MessageHandlerService {
-  public successEvent: Subject<{ summary?: string; detail: string }> =
-    new Subject<{ summary?: string; detail: string }>();
+  public successEvent: Subject<{ summary?: string; detail?: string }> =
+    new Subject<{ summary?: string; detail?: string }>();
   public successEventAsObservable(): Observable<{
     summary?: string;
-    detail: string;
+    detail?: string;
   }> {
     return this.successEvent.asObservable();
   }
 
-  public errorEvent: Subject<{ summary?: string; detail: string }> =
-    new Subject<{ summary?: string; detail: string }>();
+  public errorEvent: Subject<{ summary?: string; detail?: string }> =
+    new Subject<{ summary?: string; detail?: string }>();
   public errorEventAsObservable(): Observable<{
     summary?: string;
-    detail: string;
+    detail?: string;
   }> {
-    return this.successEvent.asObservable();
+    return this.errorEvent.asObservable();
   }
 }

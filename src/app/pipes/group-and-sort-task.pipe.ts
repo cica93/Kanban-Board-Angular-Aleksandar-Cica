@@ -28,9 +28,18 @@ export class GroupAndSortTaskPipe implements PipeTransform {
     tasks: Record<TaskStatus, Task[]>,
   ): { key: TaskStatus; value: Task[] }[] {
     return [
-      { key: 'TO_DO', value: tasks.TO_DO },
-      { key: 'IN_PROGRESS', value: tasks.IN_PROGRESS },
-      { key: 'DONE', value: tasks.DONE },
+      {
+        key: 'TO_DO',
+        value: tasks.TO_DO.sort((a, b) => a.taskOrder - b.taskOrder),
+      },
+      {
+        key: 'IN_PROGRESS',
+        value: tasks.IN_PROGRESS.sort((a, b) => a.taskOrder - b.taskOrder),
+      },
+      {
+        key: 'DONE',
+        value: tasks.DONE.sort((a, b) => a.taskOrder - b.taskOrder),
+      },
     ];
   }
 }

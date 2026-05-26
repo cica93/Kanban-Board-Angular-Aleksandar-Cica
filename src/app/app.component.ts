@@ -60,6 +60,19 @@ export class AppComponent implements OnInit {
           });
         }
       });
+    this.messageHandler.successEvent
+      .asObservable()
+      .subscribe(({ summary, detail }) => {
+        if (summary && detail) {
+          this.messageService.add({
+            severity: 'success',
+            key: 'main',
+            closable: true,
+            summary,
+            detail,
+          });
+        }
+      });
   }
 
   logout(): void {

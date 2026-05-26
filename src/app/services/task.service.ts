@@ -43,8 +43,8 @@ export class TaskService extends AbstractTaskService {
     return this.http.post<Task>('tasks', task);
   }
 
-  override delete(id: number): Observable<Task> {
-    return this.http.delete<Task>('tasks/' + id);
+  override delete(id: number, version: number): Observable<Task> {
+    return this.http.delete<Task>('tasks/' + id + '/' + version);
   }
 
   override drag(dragTask: DragTask): Observable<Task> {

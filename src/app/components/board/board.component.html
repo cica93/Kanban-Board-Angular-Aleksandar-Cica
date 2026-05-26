@@ -4,7 +4,7 @@
   <p-progressSpinner />
 </div>
 }
-<div class="flex my-1 mx-5 align-items-center">
+<div class="flex my-1 mx-5 justify-content-between">
   <p-iconfield class="w-3" iconPosition="right">
     <input
       [placeholder]="loading() ? 'Searching...' : 'Search'"
@@ -13,8 +13,14 @@
       [pAutoFocus]="true"
       class="w-full"
     />
-    <p-inputicon class="pi pi-search" />
+    <p-inputicon class="pi pi-search" style="transform: translateY(-2px);" />
   </p-iconfield>
+    <p-button
+      icon="pi pi-plus"
+      (click)="navigateUserDialog()"
+      [size]="'large'"
+      [label]="'Create Task'"
+    />
 </div>
 
 <div class="flex">
@@ -24,12 +30,6 @@
       <h2 class="text-center">
         {{ item.key | replace : "_" : " " }}
       </h2>
-       <p-button
-          icon="pi pi-plus"
-          (click)="navigateUserDialog(item.key)"
-          pTooltip="Create Task"
-          size="small"
-        />
     </div>
     <div 
       class="flex flex-column row-gap-4"
@@ -43,7 +43,7 @@
           cdkDrag
           [cdkDragData]="task"
           [task]="task"
-          (onDelete)="deleteTask(task.id)"
+          (onDelete)="deleteTask(task)"
           (onEdit)="navigateUserDialog(task)"
         />
       }
@@ -51,5 +51,3 @@
   </div>
   }
 </div>
-
-<p-toast position="top-right" key="main" />

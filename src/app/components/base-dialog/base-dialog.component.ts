@@ -1,8 +1,8 @@
 import { Location } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { MessageService } from 'primeng/api';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
+import { MessageHandlerService } from 'src/app/services/message.handler.service';
 
 @Component({
   selector: 'app-base-dialog',
@@ -11,7 +11,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export abstract class BaseDialogComponent<T = any> implements OnInit {
   private readonly location = inject(Location);
-  protected readonly messageService = inject(MessageService);
+  private readonly messageHandler = inject(MessageHandlerService);
   private readonly router = inject(Router);
   protected initValue = signal<T>({} as T);
   public modalHeader = new BehaviorSubject<string>('');
@@ -21,16 +21,23 @@ export abstract class BaseDialogComponent<T = any> implements OnInit {
     this.initValue.set(initValue);
   }
 
-  close(initNewSearch = false): void {
+  protected close(initNewSearch = false): void {
     this.router.navigate([{ outlets: { sidebar: null } }], {
       state: { initNewSearch },
       replaceUrl: true,
     });
   }
 
-  visibleChange(event: boolean): void {
+  protected visibleChange(event: boolean): void {
     if (!event) {
       this.close(event);
     }
+  }
+
+  protected showMessage(summary: string, detail?: string): void {
+    this.messageHandler.successEvent.next({
+      summary,
+      detail,
+    });
   }
 }

@@ -29,7 +29,7 @@ import { KanbanTitle } from './services/kanban.title.service';
 import { GlobalErrorHandler } from './services/error.handler.service';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideStore } from '@ngrx/store';
-import { appStore } from './components/store/store';
+import { appStore } from './store/store';
 
 export function initAuth(
   jwtService: JwtService,

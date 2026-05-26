@@ -31,6 +31,7 @@ export class TaskGraphQlService extends AbstractTaskService {
         description
         taskStatus
         taskPriority
+        version
         users {
           id
           fullName
@@ -48,6 +49,7 @@ export class TaskGraphQlService extends AbstractTaskService {
         description
         taskStatus
         taskPriority
+        version
         users {
           id
           fullName
@@ -104,6 +106,7 @@ export class TaskGraphQlService extends AbstractTaskService {
               description
               taskStatus
               taskPriority
+              version
               users {
                 id
                 fullName
@@ -136,6 +139,7 @@ export class TaskGraphQlService extends AbstractTaskService {
               description
               taskStatus
               taskPriority
+              version
               users {
                 id
                 fullName
@@ -151,18 +155,20 @@ export class TaskGraphQlService extends AbstractTaskService {
       .pipe(map((r: MutationResult<Task>) => r.data));
   }
 
-  delete(id: number): Observable<Task | null | undefined> {
+  delete(id: number, version: number): Observable<Task | null | undefined> {
     return this.apollo
       .mutate<Task>({
         mutation: gql`
-          mutation deleteTask($id: ID!) {
-            deleteTask(id: $id) {
+          mutation deleteTask($id: ID!, $version: Int!) {
+            deleteTask(id: $id, version: $version) {
               id
+              version
             }
           }
         `,
         variables: {
           id,
+          version,
         },
       })
       .pipe(map((r: MutationResult<Task>) => r.data));

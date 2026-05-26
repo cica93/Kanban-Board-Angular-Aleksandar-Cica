@@ -1,19 +1,19 @@
 type Query {
-  getTaskById(id: ID!): OptionalTask!
+  getTaskById(id: ID!): Task!
   getTasks(
     page: number
     pageSize: number
     columns: [String!]
     order: String
     description: String
-  ): [OptionalTask!]!
+  ): [Task!]!
 }
 
 type Mutation {
   createTask(task: Task!): OptionalTask
   updateTask(id: ID!, task: Task!): OptionalTask
   patchTask(id: ID!, task: OptionalTask!): OptionalTask
-  deleteTask(id: ID!): OptionalTask
+  deleteTask(id: ID!, version: Int!): OptionalTask
   dragTask(task: DragTask!): OptionalTask
 }
 
@@ -29,6 +29,7 @@ type Task {
   description: String!
   taskStatus: String!
   taskPriority: String!
+  version: Int!
   users: [User!]
 }
 
@@ -44,5 +45,6 @@ type OptionalTask {
   description: String
   taskStatus: String
   taskPriority: String
+  version: Int
   users: [User!]
 }
