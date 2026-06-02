@@ -2,6 +2,7 @@ import {
   APP_INITIALIZER,
   ApplicationConfig,
   ErrorHandler,
+  provideZoneChangeDetection,
 } from '@angular/core';
 import {
   provideRouter,
@@ -52,6 +53,7 @@ export const appConfig: ApplicationConfig = {
       withInMemoryScrolling(),
       withRouterConfig({ urlUpdateStrategy: 'deferred' }),
     ),
+    provideZoneChangeDetection(),
     Title,
     { provide: TitleStrategy, useClass: KanbanTitle },
     { provide: ErrorHandler, useClass: GlobalErrorHandler },

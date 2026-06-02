@@ -80,7 +80,9 @@ export const TasksReducer = createReducer(
     return {
       ...state,
       data: state.data.map((task) => {
-        return task.id !== data.id ? task : { ...task, ...data };
+        return task.id !== data.id
+          ? task
+          : { ...task, ...data, version: task.version + 1 };
       }),
     };
   }),
@@ -90,7 +92,7 @@ export const TasksReducer = createReducer(
       ...state,
       data: [data, ...state.data.map(t => {
         if (t.taskStatus === data.taskStatus) {
-          return { ...t, taskOrder: t.taskOrder + 1 };
+          return { ...t, taskOrder: t.taskOrder + 1, version: 1 };
         }
         return t;
       })]

@@ -1,29 +1,34 @@
-import { Directive, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { debounceTime, distinctUntilChanged, fromEvent, map, Subscription } from 'rxjs';
+import {
+  DestroyRef,
+  Directive,
+  ElementRef,
+  inject,
+  Input,
+  OnInit,
+  output,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { debounceTime, distinctUntilChanged, fromEvent, map } from 'rxjs';
 
 @Directive({
   selector: '[appDebounceInput]',
-  standalone: true,
 })
-export class DebounceInputDirective implements OnInit, OnDestroy {
+export class DebounceInputDirective implements OnInit {
   @Input() debounceTime = 300;
-  @Output() appDebounceInput = new EventEmitter<string>();
-  constructor(private el: ElementRef<HTMLInputElement>) {}
-  subscription: Subscription | undefined;
+  appDebounceInput = output<string>();
+  private readonly el = inject(ElementRef<HTMLInputElement>);
+  private readonly destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
-    fromEvent(this.el.nativeElement, 'input')
+    fromEvent<InputEvent>(this.el.nativeElement, 'input')
       .pipe(
         map((e) => (e.target as HTMLInputElement).value),
         debounceTime(this.debounceTime),
-        distinctUntilChanged()
+        distinctUntilChanged(),
+        takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe((e: string | null) => {
-        this.appDebounceInput.emit(e ?? '');
+      .subscribe((e) => {
+        this.appDebounceInput.emit(e);
       });
-  }
-
-  ngOnDestroy(): void {
-    this.subscription?.unsubscribe();
   }
 }

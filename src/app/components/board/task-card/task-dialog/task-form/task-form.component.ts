@@ -13,6 +13,7 @@ import { FormValueWrapperComponent } from 'src/app/form-value-wrapper/form-value
 import { ReplacePipe } from 'src/app/pipes/replace.pipe';
 import { TASK_STATUS, TASK_PRIORITIES, Task } from 'src/app/services/abstract.task.service';
 import { User, UserService } from 'src/app/services/user.service';
+import { TaskForm } from '../task-dialog.component';
 
 @Component({
   selector: 'app-task-form',
@@ -44,12 +45,14 @@ import { User, UserService } from 'src/app/services/user.service';
 export class TaskFormComponent implements OnInit {
   protected TASK_STATUS = [...TASK_STATUS];
   protected TASK_PRIORITIES = [...TASK_PRIORITIES];
-  protected formRoot = inject(FormRoot<Task>);
-  protected taskForm!: FieldTree<Task>;
+  protected formRoot = inject(FormRoot<TaskForm>);
+  protected taskForm!: FieldTree<TaskForm, string | number, 'writable'>;
   private readonly userService = inject(UserService);
   protected users$!: Observable<User[]>;
   ngOnInit(): void {
     this.taskForm = this.formRoot.fieldTree();
+    this.taskForm().submitting;
+
     this.users$ = this.userService.getUsers();
   }
 }

@@ -81,13 +81,12 @@ export class BoardComponent implements OnInit {
   TASK_STATUS = [...TASK_STATUS];
   searchChange = new Subject<string>();
   scrollToBottom = new Subject<unknown>();
-  isLoading = false;
 
   private readonly taskService = inject(AbstractTaskService);
   private readonly messageHandler = inject(MessageHandlerService);
   private readonly router = inject(Router);
   private readonly store = inject(Store<AppState>);
-  private destroyRef = inject(DestroyRef);
+  private readonly destroyRef = inject(DestroyRef);
 
   draggedTaskId: number | undefined;
 

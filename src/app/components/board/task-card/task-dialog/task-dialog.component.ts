@@ -20,12 +20,13 @@ import {
 import { AppState, saveTask, updateTask } from 'src/app/store/task-store';
 import { Store } from '@ngrx/store';
 import { TaskFormComponent } from './task-form/task-form.component';
+import { RippleModule } from 'primeng/ripple';
 
-export type TaskForm = Omit<Task, 'id' | 'taskOrder' | 'version'>;
-
+export type NoTUpdatableTaskFields = 'id' | 'taskOrder' | 'version';
+export type TaskForm = Omit<Task, NoTUpdatableTaskFields>; 
 @Component({
   selector: 'app-task-dialog',
-  imports: [Button, DialogModule, FormRoot, TaskFormComponent],
+  imports: [Button, DialogModule, FormRoot, TaskFormComponent, RippleModule],
   templateUrl: './task-dialog.component.html',
   host: {
     class: 'flex h-full',

@@ -8,9 +8,9 @@ import {
 import { MessageService } from 'primeng/api';
 import { MessageHandlerService } from './services/message.handler.service';
 import { SecurityService } from './services/security.service';
+import { JwtService } from './services/jwt.service';
 import { Observable } from 'rxjs';
 import { AsyncPipe, TitleCasePipe } from '@angular/common';
-import { Subscription } from 'apollo-angular';
 import { User } from './services/user.service';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
@@ -39,16 +39,27 @@ export class AppComponent implements OnInit {
   title = 'kanban-board-angular';
   user$!: Observable<User | null>;
   private readonly securityService = inject(SecurityService);
+  private readonly jwtService = inject(JwtService);
   private readonly messageService = inject(MessageService);
   private readonly messageHandler = inject(MessageHandlerService);
   private readonly socket = inject(SocketService);
-  subscription: Subscription | undefined;
-  router = inject(Router);
-  showDialog = signal(false);
-  modalHeader: Observable<string> | undefined;
+  private readonly router = inject(Router);
+  protected showDialog = signal(false);
+  protected modalHeader?: Observable<string>;
 
   ngOnInit(): void {
-    this.socket.connect();
+    if (this.jwtService.isTokenValid()) {
+      this.socket.connect();
+    }
+
+    this.securityService.user$
+      .asObservable()
+      .subscribe((user) => {
+        if (user) {
+          this.socket.connect();
+        }
+      });
+
     this.user$ = this.securityService.user$;
     this.messageHandler.errorEvent
       .asObservable()
