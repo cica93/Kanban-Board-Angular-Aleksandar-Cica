@@ -5,8 +5,13 @@ import { User } from './user.service';
 export const TASK_PRIORITIES = ['LOW', 'MED', 'HIGH'] as const;
 export type TaskPriority = (typeof TASK_PRIORITIES)[number];
 
-export const TASK_STATUS = ['TO_DO', 'IN_PROGRESS', 'DONE'] as const;
-export type TaskStatus = (typeof TASK_STATUS)[number];
+export const TASK_STATUSES = ['TO_DO', 'IN_PROGRESS', 'DONE'] as const;
+
+// type ReplaceSpaces<S extends string> = S extends `${infer Head} ${infer Tail}`
+//   ? `${Head}_${ReplaceSpaces<Tail>}`
+//   : S;
+
+export type TaskStatus = (typeof TASK_STATUSES)[number];
 
 export interface Task {
   id: number;
@@ -21,7 +26,7 @@ export interface Task {
 
 export interface DragTask {
   taskId: number;
-  taskStatus: string;
+  taskStatus: TaskStatus;
   taskOrder: number;
   taskVersion: number;
 }

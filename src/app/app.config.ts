@@ -1,7 +1,8 @@
 import {
-  APP_INITIALIZER,
   ApplicationConfig,
   ErrorHandler,
+  inject,
+  provideAppInitializer,
   provideZoneChangeDetection,
 } from '@angular/core';
 import {
@@ -11,9 +12,12 @@ import {
   withInMemoryScrolling,
   withRouterConfig,
 } from '@angular/router';
-import { provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
+import {
+  provideHttpClient,
+  withInterceptors,
+  withXhr,
+} from '@angular/common/http';
 import { routes } from './app.routes';
-import { EMPTY } from 'rxjs';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { MessageService } from 'primeng/api';
 import { ApiInterceptor } from './interceptors/api.interceptor';
@@ -31,17 +35,8 @@ import { GlobalErrorHandler } from './services/error.handler.service';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideStore } from '@ngrx/store';
 import { appStore } from './store/store';
-
-export function initAuth(
-  jwtService: JwtService,
-  securityService: SecurityService
-) {
-  if (!jwtService.isTokenValid()) {
-    securityService.logout();
-    return () => EMPTY;
-  }
-  return () => securityService.getCurrentUser();
-}
+import { DialogService } from 'primeng/dynamicdialog';
+import { EMPTY } from 'rxjs/internal/observable/empty';
 
 const apiInterceptor = ApiInterceptor;
 
@@ -55,6 +50,7 @@ export const appConfig: ApplicationConfig = {
     ),
     provideZoneChangeDetection(),
     Title,
+    DialogService,
     { provide: TitleStrategy, useClass: KanbanTitle },
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
     MessageService,
@@ -74,12 +70,15 @@ export const appConfig: ApplicationConfig = {
       }),
       deps: [HttpLink],
     },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: initAuth,
-      deps: [JwtService, SecurityService],
-      multi: true,
-    },
+    provideAppInitializer(() => {
+      const jwtService = inject(JwtService);
+      const securityService = inject(SecurityService);
+      if (!jwtService.isTokenValid()) {
+        securityService.logout();
+        return EMPTY;
+      }
+      return securityService.getCurrentUser();
+    }),
     provideAnimationsAsync(),
   ],
 };

@@ -23,7 +23,7 @@ import { DebounceInputDirective } from '../debounce-input.directive';
 import {
   AbstractTaskService,
   Task,
-  TASK_STATUS,
+  TASK_STATUSES,
   TaskStatus,
 } from '../../services/abstract.task.service';
 import { Router } from '@angular/router';
@@ -78,7 +78,7 @@ export class BoardComponent implements OnInit {
   tasks$!: Observable<LoadState<Task>>;
   showModal = signal<boolean>(false);
   loading = signal(false);
-  TASK_STATUS = [...TASK_STATUS];
+  TASK_STATUSES = [...TASK_STATUSES];
   searchChange = new Subject<string>();
   scrollToBottom = new Subject<unknown>();
 
@@ -87,8 +87,6 @@ export class BoardComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly store = inject(Store<AppState>);
   private readonly destroyRef = inject(DestroyRef);
-
-  draggedTaskId: number | undefined;
 
   ngOnInit(): void {
     this.store.dispatch(loadTasks());

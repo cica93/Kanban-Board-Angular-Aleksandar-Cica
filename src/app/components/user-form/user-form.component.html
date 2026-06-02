@@ -22,7 +22,7 @@
         pRipple
         [label]="'Cancel'"
         [severity]="'secondary'"
-        (onClick)="close()"
+        (onClick)="closeModal()"
         />
         @let submitting = userForm().submitting();
         <p-button 
@@ -34,5 +34,4 @@
         [disabled]="submitting"
     />
   </div>
-
 </form>

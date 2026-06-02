@@ -1,7 +1,8 @@
 import { Location } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { BehaviorSubject, config, Subject } from 'rxjs';
 import { MessageHandlerService } from 'src/app/services/message.handler.service';
 
 @Component({
@@ -9,15 +10,20 @@ import { MessageHandlerService } from 'src/app/services/message.handler.service'
   imports: [],
   template: '',
 })
-export abstract class BaseDialogComponent<T = any> implements OnInit {
+export class BaseDialogComponent<T = any> implements OnInit {
   private readonly location = inject(Location);
   private readonly messageHandler = inject(MessageHandlerService);
   private readonly router = inject(Router);
   protected initValue = signal<T>({} as T);
   public modalHeader = new BehaviorSubject<string>('');
+  protected onSuccess = new Subject<T>();
+  public onCancel = new Subject<void>();
+  protected onError = new Subject<string>();
+  public ref = inject(DynamicDialogRef, { optional: true });
+  public config = inject(DynamicDialogConfig, { optional: true });
 
   ngOnInit(): void {
-    const initValue = (this.location.getState() as any)?.['initValue'] ?? {};
+    const initValue = (this.location.getState() as any)?.['initValue'] ?? this.config?.data?.['initValue'] ?? ({} as T);
     this.initValue.set(initValue);
   }
 
@@ -39,5 +45,9 @@ export abstract class BaseDialogComponent<T = any> implements OnInit {
       summary,
       detail,
     });
+  }
+
+  protected closeModal(): void {
+    this.ref?.close();
   }
 }

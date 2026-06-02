@@ -5,7 +5,7 @@ import {
   AbstractTaskService,
   Task,
   TASK_PRIORITIES,
-  TASK_STATUS,
+  TASK_STATUSES,
 } from 'src/app/services/abstract.task.service';
 import { firstValueFrom } from 'rxjs';
 import { BaseDialogComponent } from 'src/app/components/base-dialog/base-dialog.component';
@@ -35,12 +35,12 @@ export type TaskForm = Omit<Task, NoTUpdatableTaskFields>;
 export class TaskDialogComponent extends BaseDialogComponent<Task> {
   private readonly taskService = inject(AbstractTaskService);
   private readonly store = inject(Store<AppState>);
-  protected TASK_STATUS = [...TASK_STATUS];
+  protected TASK_STATUSES = [...TASK_STATUSES];
   protected TASK_PRIORITIES = [...TASK_PRIORITIES];
   protected model = signal<TaskForm>({
     description: '',
     taskPriority: this.TASK_PRIORITIES[0],
-    taskStatus: this.TASK_STATUS[0],
+    taskStatus: this.TASK_STATUSES[0],
     title: '',
     users: [],
   });

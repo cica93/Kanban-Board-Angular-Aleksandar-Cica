@@ -6,6 +6,8 @@ import { TaskService } from './services/task.service';
 import { TaskGraphQlService } from './services/task.graphql.service';
 import { AbstractTaskService } from './services/abstract.task.service';
 import { sidebarGuard } from './guards/sidebar.guard';
+import { UserFormComponent } from './components/user-form/user-form.component';
+import { DIALOG_COMPONENT } from './components/users/users.component';
 
 const loginGuard = () => {
   const security = inject(SecurityService);
@@ -62,6 +64,16 @@ export const routes: Routes = [
         (m) => m.UserFormComponent,
       ),
     canActivate: [loginGuard],
+  },
+  {
+    path: 'users',
+    title: 'Users',
+    loadComponent: () =>
+      import('./components/users/users.component').then(
+        (m) => m.UsersComponent,
+      ),
+    canActivate: [loginGuard],
+    providers: [{ provide: DIALOG_COMPONENT, useValue: UserFormComponent }],
   },
   {
     path: '',

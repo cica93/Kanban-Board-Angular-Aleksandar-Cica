@@ -36,7 +36,7 @@
       cdkDropList
       [id]="item.key"
       [cdkDropListData]="item"
-      [cdkDropListConnectedTo]="TASK_STATUS"
+      [cdkDropListConnectedTo]="TASK_STATUSES"
       (cdkDropListDropped)="onDrop($event)">
       @for (task of item.value; track $index) {
         <app-task-card

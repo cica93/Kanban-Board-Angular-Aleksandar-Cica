@@ -1,11 +1,23 @@
 import { Component, signal } from '@angular/core';
-import { Address, AddressFormComponent, addressSchema } from '../address-form/address-form.component';
-import { apply, form, FormField, FormRoot, required } from '@angular/forms/signals';
+import {
+  Address,
+  AddressFormComponent,
+  addressSchema,
+} from '../address-form/address-form.component';
+import {
+  apply,
+  form,
+  FormField,
+  FormRoot,
+  required,
+} from '@angular/forms/signals';
 import { FormValueWrapperComponent } from 'src/app/form-value-wrapper/form-value-wrapper.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { AutoFocus } from 'primeng/autofocus';
 import { Button } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
+import { User } from 'src/app/services/user.service';
+import { BaseDialogComponent } from '../base-dialog/base-dialog.component';
 
 @Component({
   selector: 'app-user-form',
@@ -21,7 +33,7 @@ import { RippleModule } from 'primeng/ripple';
   ],
   templateUrl: './user-form.component.html',
 })
-export class UserFormComponent {
+export class UserFormComponent extends BaseDialogComponent<User> {
   userModel = signal<{
     name: string;
     address: Omit<Address, 'id'>;
@@ -55,6 +67,4 @@ export class UserFormComponent {
       },
     },
   );
-
-  close(): void {}
 }
