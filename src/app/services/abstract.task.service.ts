@@ -6,13 +6,14 @@ export type TaskPriority = (typeof TASK_PRIORITIES)[number];
 
 export const TASK_STATUSES = ['TO_DO', 'IN_PROGRESS', 'DONE'] as const;
 export type TaskStatus = (typeof TASK_STATUSES)[number];
-export type BadgeColor = 'info' | 'warn' | 'danger';
 
-export const BADGE_COLOR_MAP: Record<TaskPriority, BadgeColor> = {
-  [TASK_PRIORITIES[0]]: 'info',
-  [TASK_PRIORITIES[1]]: 'warn',
-  [TASK_PRIORITIES[2]]: 'danger',
-};
+const BADGE_COLORS = ['info', 'warn', 'danger'] as const;
+export type BadgeColor = (typeof BADGE_COLORS)[number];
+
+export const BADGE_COLOR_MAP = Object.fromEntries(
+  TASK_PRIORITIES.map((priority, index) => [priority, BADGE_COLORS[index]]),
+) as Record<TaskPriority, BadgeColor>;
+
 
 
 export interface Task {

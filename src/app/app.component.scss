@@ -1,8 +1,28 @@
-#app-header {
+.app-header {
   z-index: 1000;
-    a:not(.router-link-active) {
-        text-decoration: none;
+
+  a {
+    padding: 4px 8px;
+    border-radius: 8px;
+
+    &:not(.router-link-active) {
+      text-decoration: none;
+      color: #ffffff;
+
+      &:hover {
+        color: var(--p-badge-info-background);
+        background-color: #ffffff;
+      }
     }
+
+    &.router-link-active {
+      color: var(--p-primary-color);
+      background-color: #ffffff;
+      cursor: default;
+    }
+
+  
+  }
 }
 
 .avatar-group {

@@ -54,6 +54,7 @@ export const appConfig: ApplicationConfig = {
         'invalid-input': ({ state }) => state().invalid() && state().touched(),
         'valid-input': ({ state }) => state().valid(),
         'touched-input': ({ state }) => state().touched(),
+        'pending-input': ({ state }) => state().pending(),
       },
     }),
     provideZoneChangeDetection(),

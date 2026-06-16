@@ -95,7 +95,6 @@ export class TaskGraphQlService extends AbstractTaskService {
     id: number,
     task: Partial<Task>,
   ): Observable<Task | null | undefined> {
-    console.log(task);
     return this.apollo
       .mutate<Task>({
         mutation: gql`

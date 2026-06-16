@@ -44,6 +44,11 @@ app-form-value-wrapper {
    --p-multiselect-focus-border-color: var(--p-button-danger-background);
 }
 
+.pending-input {
+   --p-inputtext-border-color: var(--p-button-warning-background);
+   --p-inputtext-focus-border-color: var(--p-button-warning-background);
+}
+
 .valid-input {
    --p-inputtext-border-color: var(--p-button-primary-background);
    --p-inputtext-focus-border-color: var(--p-button-primary-background);
