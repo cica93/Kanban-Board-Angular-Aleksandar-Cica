@@ -1,14 +1,18 @@
 import { Injectable, inject } from '@angular/core';
 import { Client } from '@stomp/stompjs';
 import { JwtService } from './jwt.service';
+import { MessageHandlerService } from './message.handler.service';
+import { Task } from './abstract.task.service';
+import { User } from './user.service';
 
 @Injectable({ providedIn: 'root' })
 export class SocketService {
   private client!: Client;
   private readonly jwtService = inject(JwtService);
+  private readonly messageHandler = inject(MessageHandlerService);
 
-  connect() {
-    if (this.client?.active) {
+  connect(user: User | null) {
+    if (this.client?.active || !user) {
       return;
     }
 
@@ -29,7 +33,18 @@ export class SocketService {
         console.log('CONNECTED');
 
         this.client.subscribe('/topic/updates', (msg) => {
-          console.log('MESSAGE:', msg.body);
+          const task = JSON.parse(msg.body);
+          if (this.isTask(task)) {
+            if (
+              (user.email !== task.createdBy && task.version === 0) ||
+              (user.email !== task.updatedBy && task.version > 0)
+            )
+              this.messageHandler.successEvent.next({
+                detail: this.createMessage(task),
+                summary: 'New Changes',
+                life: 5000,
+              });
+          }
         });
       },
       onStompError: (frame) => {
@@ -48,5 +63,16 @@ export class SocketService {
       destination: '/app/chat',
       body: msg,
     });
+  }
+
+  private isTask(task: any): task is Task {
+    return !!task && typeof task === 'object' && 'version' in task && task.id;
+  }
+
+  private createMessage(task: Task): string {
+    if (task.version === 0) {
+      return 'New task is created by ' + task.createdBy;
+    }
+    return 'Task with id: ' + task.id + ' is updated by ' + task.updatedBy;
   }
 }

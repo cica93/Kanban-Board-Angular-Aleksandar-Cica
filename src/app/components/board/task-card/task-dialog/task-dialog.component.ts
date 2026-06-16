@@ -22,7 +22,12 @@ import { Store } from '@ngrx/store';
 import { TaskFormComponent } from './task-form/task-form.component';
 import { RippleModule } from 'primeng/ripple';
 
-export type NoTUpdatableTaskFields = 'id' | 'taskOrder' | 'version';
+export type NoTUpdatableTaskFields =
+  | 'id'
+  | 'taskOrder'
+  | 'version'
+  | 'createdBy'
+  | 'updatedBy';
 export type TaskForm = Omit<Task, NoTUpdatableTaskFields>; 
 @Component({
   selector: 'app-task-dialog',
@@ -60,6 +65,7 @@ export class TaskDialogComponent extends BaseDialogComponent<Task> {
       });
       required(path.taskStatus, { message: 'Task status is required' });
       required(path.taskPriority, { message: 'Task priority is required' });
+      required(path.users, { message: 'Users are required' });
       validate(path.users, ({ value }) => {
         if (!value() || (Array.isArray(value()) && value().length === 0)) {
           return {

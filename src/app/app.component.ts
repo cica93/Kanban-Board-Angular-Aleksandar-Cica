@@ -1,4 +1,10 @@
-import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   Router,
   RouterLink,
@@ -8,8 +14,7 @@ import {
 import { MessageService } from 'primeng/api';
 import { MessageHandlerService } from './services/message.handler.service';
 import { SecurityService } from './services/security.service';
-import { JwtService } from './services/jwt.service';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { AsyncPipe, TitleCasePipe } from '@angular/common';
 import { User } from './services/user.service';
 import { ToastModule } from 'primeng/toast';
@@ -17,6 +22,8 @@ import { TooltipModule } from 'primeng/tooltip';
 import { DialogModule } from 'primeng/dialog';
 import { BaseDialogComponent } from './components/base-dialog/base-dialog.component';
 import { SocketService } from './services/socket.service';
+import { Store } from '@ngrx/store';
+import { AppState } from './store/task-store';
 
 @Component({
   selector: 'app-root',
@@ -32,14 +39,12 @@ import { SocketService } from './services/socket.service';
     TitleCasePipe,
   ],
   templateUrl: './app.component.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit {
-  title = 'kanban-board-angular';
-  user$!: Observable<User | null>;
+  protected user$!: Observable<User | null>;
   private readonly securityService = inject(SecurityService);
-  private readonly jwtService = inject(JwtService);
   private readonly messageService = inject(MessageService);
   private readonly messageHandler = inject(MessageHandlerService);
   private readonly socket = inject(SocketService);
@@ -48,19 +53,12 @@ export class AppComponent implements OnInit {
   protected modalHeader?: Observable<string>;
 
   ngOnInit(): void {
-    if (this.jwtService.isTokenValid()) {
-      this.socket.connect();
-    }
+    this.user$ = this.securityService.user$.asObservable().pipe(
+      tap((user) => {
+        this.socket.connect(user);
+      }),
+    );
 
-    this.securityService.user$
-      .asObservable()
-      .subscribe((user) => {
-        if (user) {
-          this.socket.connect();
-        }
-      });
-
-    this.user$ = this.securityService.user$;
     this.messageHandler.errorEvent
       .asObservable()
       .subscribe(({ summary, detail }) => {
@@ -74,13 +72,15 @@ export class AppComponent implements OnInit {
           });
         }
       });
+
     this.messageHandler.successEvent
       .asObservable()
-      .subscribe(({ summary, detail }) => {
+      .subscribe(({ summary, detail, life }) => {
         if (summary && detail) {
           this.messageService.add({
             severity: 'success',
             key: 'main',
+            life: life ?? 3000,
             closable: true,
             summary,
             detail,

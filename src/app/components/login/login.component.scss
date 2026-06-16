@@ -1,0 +1,7 @@
+:host {
+  ::ng-deep app-form-value-wrapper {
+    .text-red-500  {
+      display: none !important;
+    }
+  }
+}

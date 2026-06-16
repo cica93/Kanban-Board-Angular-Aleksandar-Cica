@@ -1,4 +1,8 @@
-<label [attr.for]="name()">{{ label() || (name() | titlecase) }} @if(required()){ <span class="text-red-500">*</span>}</label>
+<label [attr.for]="name()">{{ label() || (name() | titlecase) }} 
+  @if(required()){ 
+    <span class="text-red-500">*</span>
+  }
+</label>
 <ng-content />
 @if(touched()){
   @if(invalid()){

@@ -1,4 +1,3 @@
-import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { User } from './user.service';
 
@@ -6,12 +5,12 @@ export const TASK_PRIORITIES = ['LOW', 'MED', 'HIGH'] as const;
 export type TaskPriority = (typeof TASK_PRIORITIES)[number];
 
 export const TASK_STATUSES = ['TO_DO', 'IN_PROGRESS', 'DONE'] as const;
+export type TaskStatus = (typeof TASK_STATUSES)[number];
 
 // type ReplaceSpaces<S extends string> = S extends `${infer Head} ${infer Tail}`
 //   ? `${Head}_${ReplaceSpaces<Tail>}`
 //   : S;
 
-export type TaskStatus = (typeof TASK_STATUSES)[number];
 
 export interface Task {
   id: number;
@@ -21,6 +20,8 @@ export interface Task {
   description: string;
   taskStatus: TaskStatus;
   taskPriority: TaskPriority;
+  createdBy: string;
+  updatedBy: string;
   users: User[];
 }
 
@@ -31,10 +32,6 @@ export interface DragTask {
   taskVersion: number;
 }
 
-
-@Injectable({
-  providedIn: 'root',
-})
 export abstract class AbstractTaskService {
   abstract get(
     description: string,
@@ -65,5 +62,3 @@ export abstract class AbstractTaskService {
 
   abstract drag(dragTask: DragTask): Observable<Task | null | undefined>;
 }
-
-

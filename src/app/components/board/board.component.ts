@@ -46,11 +46,6 @@ import { Store } from '@ngrx/store';
 import { LoadState } from '../../store/load-state';
 import { MessageHandlerService } from 'src/app/services/message.handler.service';
 
-export interface TaskResponse {
-  event: string | { event: string };
-  data: Task[];
-}
-
 @Component({
   selector: 'app-board',
   imports: [
@@ -89,7 +84,6 @@ export class BoardComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
-    this.store.dispatch(loadTasks());
     this.tasks$ = this.store.select((state: AppState) => state.tasks);
     fromEvent(window, 'scroll')
       .pipe(

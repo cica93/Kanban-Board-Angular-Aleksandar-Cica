@@ -16,7 +16,7 @@ export class SecurityService {
 
   getCurrentUser(): Observable<User | null> {
     return this.userService.currentUser().pipe(
-      tap((user: User) => {
+      tap((user) => {
         this.user$.next(user);
       }),
       catchError(async () => {

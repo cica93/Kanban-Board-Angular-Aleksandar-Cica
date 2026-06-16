@@ -38,6 +38,7 @@ export interface LoginForm {
     FormValueWrapperComponent,
   ],
   templateUrl: './login.component.html',
+  styleUrl: './login.component.scss',
 })
 export class LoginComponent {
   private readonly loginService = inject(LoginService);

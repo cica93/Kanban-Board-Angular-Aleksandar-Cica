@@ -1,6 +1,6 @@
 @let state = tasks$ | async;
 @if(state?.loading){
-  <div class="fixed top-50 left-50  align-items-center justify-content-center">
+<div class="fixed top-50 left-50  align-items-center justify-content-center">
   <p-progressSpinner />
 </div>
 }
@@ -23,7 +23,7 @@
     />
 </div>
 
-<div class="flex">
+<div #mainContainer class="flex">
   @for (item of state?.data | groupAndSortTask ; track $index) {
   <div class="flex w-4 my-1 mx-3 flex-column">
     <div class="flex flex-row align-items-center justify-content-center gap-2">
@@ -41,6 +41,7 @@
       @for (task of item.value; track $index) {
         <app-task-card
           cdkDrag
+          [cdkDragBoundary]="mainContainer"
           [cdkDragData]="task"
           [task]="task"
           (onDelete)="deleteTask(task)"
