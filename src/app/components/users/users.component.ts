@@ -4,7 +4,7 @@ import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { User, UserService } from 'src/app/services/user.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { UserFormComponent } from '../user-form/user-form.component';
+import { take } from 'rxjs';
 
 export const DIALOG_COMPONENT = new InjectionToken<Type<any>>(
   'DIALOG_COMPONENT',
@@ -24,16 +24,7 @@ export class UsersComponent {
   injector = inject(Injector);
 
   editUser(user: User): void {
-    const injector = Injector.create({
-      providers: [
-        {
-          provide: DIALOG_COMPONENT,
-          useClass: UserFormComponent,
-        },
-      ],
-      parent: this.injector,
-    });
-    this.ref = this.dialogService.open(this.dialogComponent, {
+    this.ref = this.dialogService.open<Type<any>>(this.dialogComponent, {
       header: 'My Dynamic Modal',
       width: '50vw',
       data: { initValue: user }, // Data passed to the modal
@@ -43,9 +34,9 @@ export class UsersComponent {
       focusTrap: false,
       closable: true,
     });
-    // this.ref.onClose.pipe(take(1)).subscribe(() => {
-    //   //this.ref.close();
-    // })
+    this.ref.onClose.pipe(take(1)).subscribe(() => {
+      this.ref.close();
+    });
   }
 
   deleteUser(user: User): void {}

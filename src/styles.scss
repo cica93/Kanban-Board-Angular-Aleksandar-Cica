@@ -34,3 +34,22 @@ app-form-value-wrapper {
       max-height: 37px;
    }
 }
+
+.invalid-input {
+   --p-inputtext-border-color: var(--p-button-danger-background);
+   --p-inputtext-focus-border-color: var(--p-button-danger-background);
+   --p-textarea-border-color: var(--p-button-danger-background);
+   --p-textarea-focus-border-color: var(--p-button-danger-background);
+   --p-multiselect-border-color: var(--p-button-danger-background);
+   --p-multiselect-focus-border-color: var(--p-button-danger-background);
+}
+
+.valid-input {
+   --p-inputtext-border-color: var(--p-button-primary-background);
+   --p-inputtext-focus-border-color: var(--p-button-primary-background);
+   --p-textarea-border-color: var(--p-button-primary-background);
+   --p-textarea-focus-border-color: var(--p-button-primary-background);
+   --p-multiselect-border-color: var(--p-button-primary-background);
+   --p-multiselect-focus-border-color: var(--p-button-primary-background);
+}
+

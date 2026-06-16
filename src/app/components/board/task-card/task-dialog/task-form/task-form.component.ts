@@ -32,12 +32,6 @@ import { TaskForm } from '../task-dialog.component';
     AsyncPipe,
   ],
   templateUrl: './task-form.component.html',
-  // providers: [
-  //   {
-  //     provide: FormRoot,
-  //     useFactory: () => inject(FormRoot, { skipSelf: true, optional: true }),
-  //   },
-  // ],
   host: {
     class: 'flex flex-column gap-2',
   },

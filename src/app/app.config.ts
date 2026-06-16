@@ -37,6 +37,7 @@ import { provideStore } from '@ngrx/store';
 import { appStore } from './store/store';
 import { DialogService } from 'primeng/dynamicdialog';
 import { EMPTY } from 'rxjs/internal/observable/empty';
+import { provideSignalFormsConfig } from '@angular/forms/signals';
 
 const apiInterceptor = ApiInterceptor;
 
@@ -48,6 +49,13 @@ export const appConfig: ApplicationConfig = {
       withInMemoryScrolling(),
       withRouterConfig({ urlUpdateStrategy: 'deferred' }),
     ),
+    provideSignalFormsConfig({
+      classes: {
+        'invalid-input': ({ state }) => state().invalid() && state().touched(),
+        'valid-input': ({ state }) => state().valid(),
+        'touched-input': ({ state }) => state().touched(),
+      },
+    }),
     provideZoneChangeDetection(),
     Title,
     DialogService,

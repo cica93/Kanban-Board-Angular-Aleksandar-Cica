@@ -8,7 +8,8 @@
     <p-avatar-group>
       @let users = task().users;
       @for (user of users | slice: 0 : maxVisibleImages; track user.id ) {
-        <p-avatar [label]="user.fullName | slice: 0:1" [shape]="'circle'" [size]="'normal'" />
+        @let fullName = user.fullName;
+        <p-avatar [pTooltip]="fullName" [tooltipPosition]="'bottom'"  [label]="fullName | slice: 0:1" [shape]="'circle'" [size]="'normal'" />
       }
       @let length = users.length;
       @if (length > maxVisibleImages) {

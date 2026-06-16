@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, output, signal } from '@angular/core';
 import {
   Address,
   AddressFormComponent,
@@ -9,6 +9,7 @@ import {
   form,
   FormField,
   FormRoot,
+  minLength,
   required,
 } from '@angular/forms/signals';
 import { FormValueWrapperComponent } from 'src/app/form-value-wrapper/form-value-wrapper.component';
@@ -18,6 +19,8 @@ import { Button } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
 import { User } from 'src/app/services/user.service';
 import { BaseDialogComponent } from '../base-dialog/base-dialog.component';
+
+export type AddressFormInput = Omit<Address, 'id'>;
 
 @Component({
   selector: 'app-user-form',
@@ -34,36 +37,42 @@ import { BaseDialogComponent } from '../base-dialog/base-dialog.component';
   templateUrl: './user-form.component.html',
 })
 export class UserFormComponent extends BaseDialogComponent<User> {
+  formSubmitted = output<any>();
   userModel = signal<{
     name: string;
-    address: Omit<Address, 'id'>;
-    billingAddress: Omit<Address, 'id'>;
+    address: AddressFormInput;
+    billingAddress: AddressFormInput;
   }>({
     name: '',
-    address: { street: '', city: '', zipCode: '' } as Omit<Address, 'id'>,
-    billingAddress: { street: '', city: '', zipCode: '' } as Omit<
-      Address,
-      'id'
-    >,
+    address: { street: '', city: '', zipCode: '' } as AddressFormInput,
+    billingAddress: { street: '', city: '', zipCode: '' } as AddressFormInput,
   });
   userForm = form<{
     name: string;
-    address: Omit<Address, 'id'>;
-    billingAddress: Omit<Address, 'id'>;
+    address: AddressFormInput;
+    billingAddress: AddressFormInput;
   }>(
     this.userModel,
     (path) => {
-      required(path.name);
+      required(path.name, { message: 'name is required' });
+      minLength(path.name, 3, {
+        message: 'name should have the least 3 characters',
+      });
       apply(path.address, addressSchema());
       apply(path.billingAddress, addressSchema());
     },
     {
       submission: {
-        action: async () => {},
+        action: async () => {
+          alert('submit');
+          this.formSubmitted.emit(this.userForm().value);
+          this.closeModal();
+        },
         onInvalid: () => {
           this.userForm().markAsDirty();
           this.userForm().focusBoundControl();
         },
+        ignoreValidators: 'pending',
       },
     },
   );

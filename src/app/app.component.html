@@ -1,6 +1,6 @@
 @if (user$ | async; as user) {
   <div id="app-header" class="sticky top-0 right-0 flex mb-3 align-items-center w-full h-3rem gap-3 bg-primary px-5 text-white text-lg">
-    @for(link of ['rest', 'graphql']; track link) {
+    @for(link of ['rest', 'graphql', 'users']; track link) {
       <a [routerLink]="['/' + link]" routerLinkActive="router-link-active" class="text-white" >{{ link | titlecase }}</a>
     }
     <i class="pi pi-sign-out ml-auto cursor-pointer" pTooltip="Logout" (click)="logout()"></i>

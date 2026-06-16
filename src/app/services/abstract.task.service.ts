@@ -6,10 +6,13 @@ export type TaskPriority = (typeof TASK_PRIORITIES)[number];
 
 export const TASK_STATUSES = ['TO_DO', 'IN_PROGRESS', 'DONE'] as const;
 export type TaskStatus = (typeof TASK_STATUSES)[number];
+export type BadgeColor = 'info' | 'warn' | 'danger';
 
-// type ReplaceSpaces<S extends string> = S extends `${infer Head} ${infer Tail}`
-//   ? `${Head}_${ReplaceSpaces<Tail>}`
-//   : S;
+export const BADGE_COLOR_MAP: Record<TaskPriority, BadgeColor> = {
+  [TASK_PRIORITIES[0]]: 'info',
+  [TASK_PRIORITIES[1]]: 'warn',
+  [TASK_PRIORITIES[2]]: 'danger',
+};
 
 
 export interface Task {
