@@ -1,6 +1,64 @@
 
 <form [formRoot]="taskForm" class="flex flex-column gap-2 w-full">
-  <app-task-form />
+ <app-form-value-wrapper [label]="'Title'" [name]="'title'">
+    <input
+      [attr.id]="'title'"
+      [pAutoFocus]="true"
+      placeholder="Enter title"
+      [formField]="taskForm.title"
+      styleClass="w-full"
+      pInputText
+      class="flex-auto"
+    />
+  </app-form-value-wrapper>
+  <app-form-value-wrapper [label]="'Description'" [name]="'description'">
+    <textarea
+      [attr.id]="'description'"
+      [formField]="taskForm.description"
+      pTextarea
+      rows="5"
+      cols="40"
+      styleClass="w-full"
+      placeholder="Enter description"
+    ></textarea>
+  </app-form-value-wrapper>
+  <app-form-value-wrapper [label]="'Task Status'" [name]="'taskStatus'">
+    <p-select
+      [attr.id]="'task-status'"
+      [options]="TASK_STATUSES"
+      [formField]="taskForm.taskStatus"
+      [placeholder]="'Select task status'"
+      class="w-full"
+    >
+      <ng-template let-status pTemplate="item">
+            {{ status | replace : "_" : " " }}
+      </ng-template>
+      <ng-template let-status pTemplate="selectedItem">
+            {{ status | replace : "_" : " " }}
+      </ng-template>
+    </p-select>
+  </app-form-value-wrapper>
+  <app-form-value-wrapper [label]="'Task Priority'" [name]="'taskPriority'">
+    <p-select
+      [attr.id]="'task-priority'"
+      [options]="TASK_PRIORITIES"
+      [formField]="taskForm.taskPriority"
+      [placeholder]="'Select task priority'"
+      class="w-full"
+    />
+  </app-form-value-wrapper>
+<app-form-value-wrapper [label]="'Users'" [name]="'users'">
+  <p-multiSelect
+    [options]="(users$ | async) ?? []"
+    [optionLabel]="'fullName'"
+    [dataKey]="'id'"
+    [attr.id]="'users'"
+    [formField]="taskForm.users"
+    [placeholder]="'Select users'"
+    styleClass="w-full"
+  />
+</app-form-value-wrapper>
+
   <div class="flex flex-row justify-content-end gap-2 mt-auto">
     <p-button
       [tabindex]="-1"
@@ -12,6 +70,7 @@
     @let submitting = taskForm().submitting();
     <p-button 
       pRipple 
+      id="save-button"
       [label]="submitting ? 'Saving...' : 'Save'"
       [severity]="'primary'" 
       [type]="'submit'"

@@ -11,6 +11,7 @@ import { firstValueFrom } from 'rxjs';
 import { BaseDialogComponent } from 'src/app/components/base-dialog/base-dialog.component';
 import {
   form,
+  FormField,
   FormRoot,
   maxLength,
   minLength,
@@ -19,8 +20,16 @@ import {
 } from '@angular/forms/signals';
 import { AppState, saveTask, updateTask } from 'src/app/store/task-store';
 import { Store } from '@ngrx/store';
-import { TaskFormComponent } from './task-form/task-form.component';
 import { RippleModule } from 'primeng/ripple';
+import { AsyncPipe } from '@angular/common';
+import { AutoFocusModule } from 'primeng/autofocus';
+import { InputTextModule } from 'primeng/inputtext';
+import { MultiSelect } from 'primeng/multiselect';
+import { SelectModule } from 'primeng/select';
+import { TextareaModule } from 'primeng/textarea';
+import { FormValueWrapperComponent } from 'src/app/form-value-wrapper/form-value-wrapper.component';
+import { ReplacePipe } from 'src/app/pipes/replace.pipe';
+import { UserService } from 'src/app/services/user.service';
 
 export type NoTUpdatableTaskFields =
   | 'id'
@@ -31,7 +40,23 @@ export type NoTUpdatableTaskFields =
 export type TaskForm = Omit<Task, NoTUpdatableTaskFields>; 
 @Component({
   selector: 'app-task-dialog',
-  imports: [Button, DialogModule, FormRoot, TaskFormComponent, RippleModule],
+  imports: [
+    Button,
+    DialogModule,
+    FormRoot,
+    RippleModule,
+    MultiSelect,
+    DialogModule,
+    InputTextModule,
+    SelectModule,
+    ReplacePipe,
+    AutoFocusModule,
+    TextareaModule,
+    FormField,
+    FormValueWrapperComponent,
+    TextareaModule,
+    AsyncPipe,
+  ],
   templateUrl: './task-dialog.component.html',
   host: {
     class: 'flex h-full',
@@ -40,6 +65,7 @@ export type TaskForm = Omit<Task, NoTUpdatableTaskFields>;
 export class TaskDialogComponent extends BaseDialogComponent<Task> {
   private readonly taskService = inject(AbstractTaskService);
   private readonly store = inject(Store<AppState>);
+  protected users$ = inject(UserService).getUsers();
   protected TASK_STATUSES = [...TASK_STATUSES];
   protected TASK_PRIORITIES = [...TASK_PRIORITIES];
   protected model = signal<TaskForm>({
@@ -49,7 +75,7 @@ export class TaskDialogComponent extends BaseDialogComponent<Task> {
     title: '',
     users: [],
   });
-  protected taskForm = form<TaskForm>(
+  taskForm = form<TaskForm>(
     this.model,
     (path) => {
       required(path.title, { message: 'Title is required' });

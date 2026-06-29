@@ -11,7 +11,7 @@ export class SocketService {
   private readonly jwtService = inject(JwtService);
   private readonly messageHandler = inject(MessageHandlerService);
 
-  connect(user: User | null) {
+  connect(user: User | null): void {
     if (this.client?.active || !user) {
       return;
     }

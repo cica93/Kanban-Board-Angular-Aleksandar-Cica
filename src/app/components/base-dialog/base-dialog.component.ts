@@ -23,11 +23,14 @@ export class BaseDialogComponent<T = any> implements OnInit {
   public config = inject(DynamicDialogConfig, { optional: true });
 
   ngOnInit(): void {
-    const initValue = (this.location.getState() as any)?.['initValue'] ?? this.config?.data?.['initValue'] ?? ({} as T);
+    const initValue =
+      (this.location.getState() as any)?.['initValue'] ??
+      this.config?.data?.['initValue'] ??
+      ({} as T);
     this.initValue.set(initValue);
   }
 
-  protected close(initNewSearch = false): void {
+  public close(initNewSearch = false): void {
     this.router.navigate([{ outlets: { sidebar: null } }], {
       state: { initNewSearch },
       replaceUrl: true,

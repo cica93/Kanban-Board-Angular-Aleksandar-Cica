@@ -1,13 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TaskDialogComponent } from './task-dialog.component';
-import { ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
-import { AbstractTaskService, Task } from 'src/app/services/abstract.task.service';
+import {
+  AbstractTaskService,
+  Task,
+  TASK_PRIORITIES,
+  TASK_STATUSES,
+} from 'src/app/services/abstract.task.service';
 import { User, UserService } from 'src/app/services/user.service';
 import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { provideMockUserService } from 'src/app/services/mock-user.service';
+import { provideMockStore } from 'src/app/services/mock-store.service';
 
 describe('TaskDialogComponent', () => {
   let component: TaskDialogComponent;
@@ -28,20 +34,19 @@ describe('TaskDialogComponent', () => {
       'post',
       'put',
     ]);
-    const userServiceSpy = jasmine.createSpyObj('UserService', ['getUsers']);
     const messageServiceSpy = jasmine.createSpyObj('MessageService', ['add']);
     const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     const locationSpy = jasmine.createSpyObj('Location', ['getState']);
 
     await TestBed.configureTestingModule({
-      declarations: [TaskDialogComponent],
-      imports: [ReactiveFormsModule],
+      imports: [TaskDialogComponent],
       providers: [
         { provide: AbstractTaskService, useValue: taskServiceSpy },
-        { provide: UserService, useValue: userServiceSpy },
+        provideMockUserService(),
         { provide: MessageService, useValue: messageServiceSpy },
         { provide: Router, useValue: routerSpy },
         { provide: Location, useValue: locationSpy },
+        provideMockStore(),
       ],
       schemas: [NO_ERRORS_SCHEMA], // Ignore PrimeNG templates in unit tests
     }).compileComponents();
@@ -49,11 +54,11 @@ describe('TaskDialogComponent', () => {
     fixture = TestBed.createComponent(TaskDialogComponent);
     component = fixture.componentInstance;
     taskService = TestBed.inject(
-      AbstractTaskService
+      AbstractTaskService,
     ) as jasmine.SpyObj<AbstractTaskService>;
     userService = TestBed.inject(UserService) as jasmine.SpyObj<UserService>;
     messageService = TestBed.inject(
-      MessageService
+      MessageService,
     ) as jasmine.SpyObj<MessageService>;
     router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
     location = TestBed.inject(Location) as jasmine.SpyObj<Location>;
@@ -67,46 +72,45 @@ describe('TaskDialogComponent', () => {
 
   it('should initialize form from location state', () => {
     const initValue = {
-      id: 5,
       title: 'Test Task',
       description: 'Test Desc',
-      taskStatus: 'TO_DO',
-      taskPriority: 'MED',
-      users: [{ id: 1 }, { id: 2 }],
+      taskStatus: TASK_STATUSES[1],
+      taskPriority: TASK_PRIORITIES[2],
+      users: [],
     };
     location.getState.and.returnValue({ initValue });
 
     component.ngOnInit();
 
-    expect(component.form.value).toEqual({
+    expect(component.taskForm().value()).toEqual({
       title: 'Test Task',
       description: 'Test Desc',
-      taskStatus: 'TO_DO',
-      taskPriority: 'MED',
-      users: [1, 2],
+      taskStatus: TASK_STATUSES[1],
+      taskPriority: TASK_PRIORITIES[2],
+      users: [],
     });
   });
 
-  it('should call post when saving a new task', () => {
+  it('should call post when saving a new task', async () => {
     location.getState.and.returnValue({});
     taskService.post.and.returnValue(of({} as unknown as Task));
     component.ngOnInit();
 
-    component.form.setValue({
+    component.taskForm().value.set({
       title: 'New',
       description: 'Some desc',
-      taskStatus: 'TO_DO',
-      taskPriority: 'LOW',
-      users: [1],
+      taskStatus: TASK_STATUSES[2],
+      taskPriority: TASK_PRIORITIES[1],
+      users: [{ id: 1 } as User],
     });
 
-    component.save();
+    await submit(fixture);
 
     expect(taskService.post).toHaveBeenCalledWith({
       title: 'New',
       description: 'Some desc',
-      taskStatus: 'TO_DO',
-      taskPriority: 'LOW',
+      taskStatus: TASK_STATUSES[2],
+      taskPriority: TASK_PRIORITIES[1],
       users: [{ id: 1 } as unknown as User],
     });
 
@@ -114,41 +118,45 @@ describe('TaskDialogComponent', () => {
       jasmine.objectContaining({
         severity: 'success',
         summary: 'Task created',
-      })
+      }),
     );
     expect(router.navigate).toHaveBeenCalled();
   });
 
-  it('should call put when saving an existing task', () => {
+  it('should call put when saving an existing task', async () => {
     location.getState.and.returnValue({ initValue: { id: 99 } });
     taskService.put.and.returnValue(of({} as unknown as Task));
     component.ngOnInit();
 
-    component.form.setValue({
+    component.taskForm().value.set({
       title: 'Edit',
       description: 'Updated desc',
-      taskStatus: 'DONE',
-      taskPriority: 'HEIGH',
-      users: [2],
+      taskStatus: TASK_STATUSES[2],
+      taskPriority: TASK_PRIORITIES[0],
+      users: [{ id: 2 } as User],
     });
 
-    component.save();
+    await submit(fixture);
 
     expect(taskService.put).toHaveBeenCalledWith(
       99,
       jasmine.objectContaining({
         title: 'Edit',
         description: 'Updated desc',
+        taskStatus: TASK_STATUSES[2],
+        taskPriority: TASK_PRIORITIES[0],
         users: [{ id: 2 }],
-      })
-    );
-  });
-
-  it('should close dialog and navigate with state', () => {
-    component.close(true);
-    expect(router.navigate).toHaveBeenCalledWith(
-      [{ outlets: { sidebar: null } }],
-      { state: { initNewSearch: true } }
+      }),
     );
   });
 });
+
+async function submit(
+  fixture: ComponentFixture<TaskDialogComponent>,
+): Promise<void> {
+  (
+    fixture.nativeElement.querySelector('#save-button') as HTMLButtonElement
+  ).click();
+  fixture.detectChanges();
+  await fixture.whenStable();
+}

@@ -14,8 +14,6 @@ export const BADGE_COLOR_MAP = Object.fromEntries(
   TASK_PRIORITIES.map((priority, index) => [priority, BADGE_COLORS[index]]),
 ) as Record<TaskPriority, BadgeColor>;
 
-
-
 export interface Task {
   id: number;
   title: string;

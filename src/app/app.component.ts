@@ -1,10 +1,4 @@
-import {
-  Component,
-  inject,
-  OnInit,
-  signal,
-  ChangeDetectionStrategy,
-} from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import {
   Router,
   RouterLink,
@@ -15,15 +9,14 @@ import { MessageService } from 'primeng/api';
 import { MessageHandlerService } from './services/message.handler.service';
 import { SecurityService } from './services/security.service';
 import { Observable, tap } from 'rxjs';
-import { AsyncPipe, TitleCasePipe } from '@angular/common';
+import { AsyncPipe, SlicePipe, TitleCasePipe } from '@angular/common';
 import { User } from './services/user.service';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 import { DialogModule } from 'primeng/dialog';
 import { BaseDialogComponent } from './components/base-dialog/base-dialog.component';
 import { SocketService } from './services/socket.service';
-import { Store } from '@ngrx/store';
-import { AppState } from './store/task-store';
+import { AvatarModule } from 'primeng/avatar';
 
 @Component({
   selector: 'app-root',
@@ -37,9 +30,10 @@ import { AppState } from './store/task-store';
     TooltipModule,
     DialogModule,
     TitleCasePipe,
+    AvatarModule,
+    SlicePipe,
   ],
   templateUrl: './app.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit {
@@ -49,7 +43,7 @@ export class AppComponent implements OnInit {
   private readonly messageHandler = inject(MessageHandlerService);
   private readonly socket = inject(SocketService);
   private readonly router = inject(Router);
-  protected showDialog = signal(false);
+  public showDialog = signal(false);
   protected modalHeader?: Observable<string>;
 
   ngOnInit(): void {
