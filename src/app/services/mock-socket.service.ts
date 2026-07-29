@@ -1,4 +1,5 @@
 import { Provider } from "@angular/core";
+import { SocketService } from './socket.service';
 
 export class SocketServiceMock  {
   connect = jasmine.createSpy('connect');
@@ -6,5 +7,5 @@ export class SocketServiceMock  {
 }
 
 export function provideSocketMock(): Provider {
-  return { provide: SocketServiceMock, useClass: SocketServiceMock };
+  return { provide: SocketService, useClass: SocketServiceMock };
 }

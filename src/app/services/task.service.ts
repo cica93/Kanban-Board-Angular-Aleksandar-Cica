@@ -7,7 +7,7 @@ import { AbstractTaskService, DragTask, Task } from './abstract.task.service';
   providedIn: 'root',
 })
 export class TaskService extends AbstractTaskService {
-  public http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   override get(
     description: string,

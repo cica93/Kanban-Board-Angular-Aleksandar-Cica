@@ -7,9 +7,13 @@ import { User } from './user.service';
   providedIn: 'root',
 })
 export class LoginService {
-  http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   login(user: Partial<User>): Observable<User> {
-    return this.http.post<User>('login', user);
+    return this.http.post<User>('login', user, {
+      headers: {
+        'skip-interceptor': 'true',
+      },
+    });
   }
 }

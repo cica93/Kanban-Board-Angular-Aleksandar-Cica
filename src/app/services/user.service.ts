@@ -14,7 +14,7 @@ export interface User {
   providedIn: 'root',
 })
 export class UserService {
-  http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
 
   currentUser(): Observable<User> {
     return this.http.get<User>('users/current').pipe(shareReplay(1));
@@ -27,6 +27,10 @@ export class UserService {
   }
 
   hasMail(email: string): Observable<boolean> {
-    return this.http.get<boolean>(`users/has-mail/${email}`);
+    return this.http.get<boolean>(`users/has-mail/${email}`, {
+      headers: {
+        'skip-interceptor': 'true',
+      },
+    });
   }
 }
