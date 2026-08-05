@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Apollo, gql, MutationResult } from 'apollo-angular';
-import {  map, Observable, of } from "rxjs";
+import { map, Observable } from 'rxjs';
 import { AbstractTaskService, DragTask, Task } from './abstract.task.service';
 
 @Injectable({
@@ -12,20 +12,8 @@ export class TaskGraphQlService extends AbstractTaskService {
   }
 
   GET_TASKS_QUERY = gql`
-    query getTasks(
-      $page: Int!
-      $pageSize: Int!
-      $columns: [String!]
-      $order: String
-      $description: String
-    ) {
-      getTasks(
-        page: $page
-        pageSize: $pageSize
-        columns: $columns
-        order: $order
-        description: $description
-      ) {
+    query getTasks($description: String, $limit: Int!, $offset: Int!) {
+      getTasks(description: $description, limit: $limit, offset: $offset) {
         id
         title
         description
@@ -42,7 +30,7 @@ export class TaskGraphQlService extends AbstractTaskService {
   `;
 
   GET_TASK_BY_ID_QUERY = gql`
-    query getTaskById($id: ID!) {
+    query getTaskById($id: Int!) {
       getTaskById(id: $id) {
         id
         title
@@ -70,22 +58,14 @@ export class TaskGraphQlService extends AbstractTaskService {
       .valueChanges.pipe(map((result: any) => result.data.getTaskById));
   }
 
-  override get(
-    description = '',
-    columns: ['id'],
-    order = 'desc',
-    limit = 20,
-    offset = 0,
-  ): Observable<Task[]> {
+  override get(description = '', limit = 20, offset = 0): Observable<Task[]> {
     return this.apollo
       .watchQuery({
         query: this.GET_TASKS_QUERY,
         variables: {
-          page: offset / limit,
-          pageSize: limit,
-          columns,
-          order,
           description,
+          limit,
+          offset,
         },
       })
       .valueChanges.pipe(map((result: any) => result.data.getTasks));
@@ -98,7 +78,7 @@ export class TaskGraphQlService extends AbstractTaskService {
     return this.apollo
       .mutate<Task>({
         mutation: gql`
-          mutation updateTask($id: ID!, $task: TaskInput!) {
+          mutation updateTask($id: Int!, $task: TaskInput!) {
             updateTask(id: $id, task: $task) {
               id
               title
@@ -121,12 +101,7 @@ export class TaskGraphQlService extends AbstractTaskService {
       })
       .pipe(map((r: MutationResult<Task>) => r.data));
   }
-  override patch(
-    id: number,
-    task: Partial<Task>,
-  ): Observable<Task | null | undefined> {
-    return of(null);
-  }
+
   override post(task: Partial<Task>): Observable<Task | null | undefined> {
     return this.apollo
       .mutate<Task>({
@@ -158,7 +133,7 @@ export class TaskGraphQlService extends AbstractTaskService {
     return this.apollo
       .mutate<Task>({
         mutation: gql`
-          mutation deleteTask($id: ID!, $version: Int!) {
+          mutation deleteTask($id: Int!, $version: Int!) {
             deleteTask(id: $id, version: $version) {
               id
               version
@@ -170,25 +145,23 @@ export class TaskGraphQlService extends AbstractTaskService {
           version,
         },
       })
-      .pipe(map((r: MutationResult<Task>) => r.data));
+      .pipe(
+        map((r: MutationResult<Task>) => {
+          if (r.errors?.length) {
+            return null;
+          }
+          return r.data ?? null;
+        }),
+      );
   }
 
-  override drag(dragTask: DragTask): Observable<Task | null | undefined> {
+  override drag(dragTask: DragTask): Observable<DragTask | null | undefined> {
     return this.apollo
-      .mutate<Task>({
+      .mutate<DragTask>({
         mutation: gql`
-          mutation createTask($dragTask: DragTaskInput!) {
+          mutation dragTask($dragTask: DragTaskInput!) {
             dragTask(dragTask: $dragTask) {
               id
-              title
-              description
-              taskStatus
-              taskPriority
-              users {
-                id
-                fullName
-                email
-              }
             }
           }
         `,
@@ -196,6 +169,13 @@ export class TaskGraphQlService extends AbstractTaskService {
           dragTask,
         },
       })
-      .pipe(map((r: MutationResult<Task>) => r.data));
+      .pipe(
+        map((r: MutationResult<DragTask>) => {
+          if (r.errors?.length) {
+            return null;
+          }
+          return r.data ?? null;
+        }),
+      );
   }
 }

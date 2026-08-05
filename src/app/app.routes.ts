@@ -15,9 +15,8 @@ const loginGuard = () => {
     map((user) => {
       if (!user) {
         security.logout();
-        return false;
       }
-      return true;
+      return !!user;
     }),
   );
 };
@@ -28,9 +27,8 @@ const logoutGuard = () => {
     map((user) => {
       if (user) {
         router.navigate(['/rest']);
-        return false;
       }
-      return true;
+      return !user;
     }),
   );
 };

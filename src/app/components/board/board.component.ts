@@ -125,14 +125,12 @@ export class BoardComponent implements OnInit {
 
   private fetchTasks(): Observable<Task[]> {
     this.store.dispatch(loadTasks());
-    return this.taskService
-      .get(this.filter, ['id'], 'desc', this.limit, this.offset)
-      .pipe(
-        catchError((error) => {
-          this.store.dispatch(loadTasksFailure(error));
-          return of([]);
-        }),
-      );
+    return this.taskService.get(this.filter, this.limit, this.offset).pipe(
+      catchError((error) => {
+        this.store.dispatch(loadTasksFailure(error));
+        return of([]);
+      }),
+    );
   }
 
   deleteTask(task: Task): void {

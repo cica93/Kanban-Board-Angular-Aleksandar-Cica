@@ -1,33 +1,31 @@
-import { Injectable } from "@angular/core";
-import { JwtHelperService } from '@auth0/angular-jwt';
-
 export interface Token {
   exp: number;
 }
 
-@Injectable({ providedIn: "root" })
-export class JwtService {
-  helper = new JwtHelperService();
-  getToken(): string | null {
-    return window.localStorage.getItem("jwtToken");
+export class JwtUtils {
+  static getToken(): string | null {
+    return window.localStorage.getItem('jwtToken');
   }
 
-  saveToken(token: string): void {
-    window.localStorage.setItem("jwtToken", token);
+  static saveToken(token: string): void {
+    window.localStorage.setItem('jwtToken', token);
   }
 
-  destroyToken(): void {
-    window.localStorage.removeItem("jwtToken");
+  static destroyToken(): void {
+    window.localStorage.removeItem('jwtToken');
   }
 
-  isTokenValid(): boolean {
+  static isTokenValid(): boolean {
     const token: string | null = this.getToken();
     if (!token) {
       return false;
     }
-    const decodedToken: Token | null = this.helper.decodeToken(token);
-    return !!decodedToken && decodedToken.exp * 1000 >= new Date().getTime();
+    const { exp } = this.decodeJwt(token);
+    return exp * 1000 < Date.now();
+  }
+
+  static decodeJwt(token: string) {
+    const payload = token.split('.')[1];
+    return JSON.parse(atob(payload));
   }
 }
-
-

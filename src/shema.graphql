@@ -1,30 +1,34 @@
-type Query {
-  getTaskById(id: ID!): Task!
-  getTasks(
-    page: number
-    pageSize: number
-    columns: [String!]
-    order: String
-    description: String
-  ): [Task!]!
+input UserInput {
+  id: Int
+  fullName: String
+  email: String
+  token: String
+  password: String
+  image: String
 }
 
-type Mutation {
-  createTask(task: Task!): OptionalTask
-  updateTask(id: ID!, task: Task!): OptionalTask
-  patchTask(id: ID!, task: OptionalTask!): OptionalTask
-  deleteTask(id: ID!, version: Int!): OptionalTask
-  dragTask(task: DragTask!): OptionalTask
+input TaskInput {
+  title: String!
+  description: String!
+  taskStatus: String!
+  taskPriority: String!
+  users: [UserInput!]
+}
+
+input DragTaskInput {
+  taskId: Int!
+  taskOrder: Int!
+  taskStatus: String!
 }
 
 type User {
-  id: ID!
+  id: Int!
   fullName: String!
   email: String!
 }
 
 type Task {
-  id: ID
+  id: Int!
   title: String!
   description: String!
   taskStatus: String!
@@ -33,18 +37,24 @@ type Task {
   users: [User!]
 }
 
-type DragTask {
-  taskId: ID
-  taskOrder: String!
-  taskStatus: String!
-}
-
 type OptionalTask {
-  id: ID
+  id: Int
   title: String
   description: String
   taskStatus: String
   taskPriority: String
   version: Int
   users: [User!]
+}
+
+type Query {
+  getTaskById(id: Int!): Task!
+  getTasks(limit: Int!, offset: Int!, description: String): [Task!]!
+}
+
+type Mutation {
+  createTask(task: TaskInput!): OptionalTask
+  updateTask(id: Int!, task: TaskInput!): OptionalTask
+  deleteTask(id: Int!, version: Int!): OptionalTask
+  dragTask(task: DragTaskInput!): OptionalTask
 }

@@ -36,9 +36,7 @@ export interface DragTask {
 
 export abstract class AbstractTaskService {
   abstract get(
-    description: string,
-    column?: string[],
-    order?: string,
+    description?: string,
     limit?: number,
     offset?: number,
   ): Observable<Task[]>;
@@ -50,11 +48,6 @@ export abstract class AbstractTaskService {
     task: Partial<Task>,
   ): Observable<Task | null | undefined>;
 
-  abstract patch(
-    id: number,
-    task: Partial<Task>,
-  ): Observable<Task | null | undefined>;
-
   abstract post(task: Partial<Task>): Observable<Task | null | undefined>;
 
   abstract delete(
@@ -62,5 +55,5 @@ export abstract class AbstractTaskService {
     version: number,
   ): Observable<Task | null | undefined>;
 
-  abstract drag(dragTask: DragTask): Observable<Task | null | undefined>;
+  abstract drag(dragTask: DragTask): Observable<DragTask | null | undefined>;
 }

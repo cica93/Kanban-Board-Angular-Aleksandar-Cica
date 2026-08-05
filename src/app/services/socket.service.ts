@@ -1,78 +1,81 @@
 import { Injectable, inject } from '@angular/core';
-import { Client } from '@stomp/stompjs';
-import { JwtService } from './jwt.service';
 import { MessageHandlerService } from './message.handler.service';
 import { Task } from './abstract.task.service';
 import { User } from './user.service';
+import { JwtUtils } from './jwt.service';
 
 @Injectable({ providedIn: 'root' })
 export class SocketService {
-  private client!: Client;
-  private readonly jwtService = inject(JwtService);
+  private socket?: WebSocket;
   private readonly messageHandler = inject(MessageHandlerService);
 
   connect(user: User | null): void {
-    if (this.client?.active || !user) {
+    if (!user || this.socket?.readyState === WebSocket.OPEN) {
       return;
     }
 
-    const token = this.jwtService.getToken();
+    const token = JwtUtils.getToken();
     if (!token) {
       console.warn('[SocketService] Cannot connect: no JWT token found.');
       return;
     }
 
-    this.client = new Client({
-      brokerURL: 'ws://localhost:3033/ws',
-      connectHeaders: {
-        Authorization: `Bearer ${token}`,
-      },
-      reconnectDelay: 5000,
-      debug: (msg) => console.log('[STOMP]', msg),
-      onConnect: () => {
-        console.log('CONNECTED');
+    this.socket = new WebSocket('ws://localhost:3033/ws');
 
-        this.client.subscribe('/topic/updates', (msg) => {
-          const task = JSON.parse(msg.body);
-          if (this.isTask(task)) {
-            if (
-              (user.email !== task.createdBy && task.version === 0) ||
-              (user.email !== task.updatedBy && task.version > 0)
-            )
-              this.messageHandler.successEvent.next({
-                detail: this.createMessage(task),
-                summary: 'New Changes',
-                life: 5000,
-              });
+    this.socket.onopen = () => {
+      console.log('WS CONNECTED');
+    };
+
+    this.socket.onmessage = (event) => {
+      console.log('[SocketService] Raw event data:', event.data);
+      try {
+        const message = JSON.parse(event.data);
+        const task = message?.entity;
+        if (this.isTask(task)) {
+          const isNewTask = message?.type === 'CREATED';
+          const isUpdatedTask = message?.type === 'UPDATED';
+          const shouldNotify =
+            (user?.email !== task.createdBy && isNewTask) ||
+            (user?.email !== task.updatedBy && isUpdatedTask);
+
+          if (shouldNotify || true) {
+            this.messageHandler.successEvent.next({
+              detail: this.createMessage(task, message?.type),
+              summary: isUpdatedTask ? 'Task updated' : 'New task created',
+              life: 5000,
+            });
           }
-        });
-      },
-      onStompError: (frame) => {
-        console.error('STOMP ERROR', frame);
-      },
-      onWebSocketError: (err) => {
-        console.error('WS ERROR', err);
-      },
-    });
+        }
+      } catch (error) {
+        console.error(
+          '[SocketService] Failed to parse websocket message',
+          error,
+        );
+      }
+    };
 
-    this.client.activate();
+    this.socket.onerror = (error) => {
+      console.error('WS ERROR', error);
+    };
+
+    this.socket.onclose = () => {
+      console.log('WS CLOSED');
+      this.socket = undefined;
+    };
   }
 
   sendMessage(msg: string) {
-    this.client.publish({
-      destination: '/app/chat',
-      body: msg,
-    });
+    this.socket?.send(msg);
   }
 
   private isTask(task: any): task is Task {
     return !!task && typeof task === 'object' && 'version' in task && task.id;
   }
 
-  private createMessage(task: Task): string {
-    if (task.version === 0) {
-      return 'New task is created by ' + task.createdBy;
+  private createMessage(task: Task, eventType?: string): string {
+    if (eventType === 'CREATED' || task.version === 0) {
+      return 'New task created by ' + task.createdBy;
     }
-    return 'Task with id: ' + task.id + ' is updated by ' + task.updatedBy;
+    return 'Task with id ' + task.id + ' was updated by ' + task.updatedBy;
   }
 }

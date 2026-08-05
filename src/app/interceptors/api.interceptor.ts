@@ -3,11 +3,10 @@ import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 import { SecurityService } from '../services/security.service';
 import { MessageHandlerService } from '../services/message.handler.service';
-import { JwtService } from '../services/jwt.service';
+import { JwtUtils } from '../services/jwt.service';
 
 export const ApiInterceptor: HttpInterceptorFn = (req, next) => {
-  const jwtService = inject(JwtService);
-  const token = jwtService.getToken();
+  const token = JwtUtils.getToken();
 
   const errorHandlerService = inject(MessageHandlerService);
   const securityService = inject(SecurityService);

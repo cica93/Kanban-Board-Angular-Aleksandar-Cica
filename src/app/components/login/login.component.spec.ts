@@ -9,7 +9,6 @@ import { LoginService } from 'src/app/services/login.service';
 import { provideSecurityService } from 'src/app/services/mock-security.service';
 import { provideMockUserService } from 'src/app/services/mock-user.service';
 import { By } from '@angular/platform-browser';
-import { provideMockJwtService } from 'src/app/services/mock-jwt.service';
 import { provideMockRouter } from 'src/app/services/mock-router.service';
 
 describe('LoginComponent', () => {
@@ -24,7 +23,6 @@ describe('LoginComponent', () => {
         provideMockUserService(),
         LoginService,
         provideMockRouter(),
-        provideMockJwtService(),
       ],
     }).compileComponents();
 

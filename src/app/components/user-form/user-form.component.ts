@@ -64,7 +64,6 @@ export class UserFormComponent extends BaseDialogComponent<User> {
     {
       submission: {
         action: async () => {
-          alert('submit');
           this.formSubmitted.emit(this.userForm().value);
           this.closeModal();
         },

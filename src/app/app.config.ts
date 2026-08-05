@@ -21,7 +21,7 @@ import { routes } from './app.routes';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { MessageService } from 'primeng/api';
 import { ApiInterceptor } from './interceptors/api.interceptor';
-import { JwtService } from './services/jwt.service';
+import { JwtUtils } from './services/jwt.service';
 import { SecurityService } from './services/security.service';
 
 import { ApolloClientOptions, InMemoryCache } from '@apollo/client/core';
@@ -81,9 +81,8 @@ export const appConfig: ApplicationConfig = {
       deps: [HttpLink],
     },
     provideAppInitializer(() => {
-      const jwtService = inject(JwtService);
       const securityService = inject(SecurityService);
-      if (!jwtService.isTokenValid()) {
+      if (!JwtUtils.isTokenValid()) {
         securityService.logout();
         return EMPTY;
       }
