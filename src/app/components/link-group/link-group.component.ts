@@ -1,7 +1,17 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, contentChildren, OnInit } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { RouterLinkActive } from '@angular/router';
-import { combineLatest, map, merge, Observable, scan, Subject } from 'rxjs';
+import {
+  combineLatest,
+  map,
+  merge,
+  Observable,
+  scan,
+  startWith,
+  Subject,
+  switchMap,
+} from 'rxjs';
 
 @Component({
   selector: 'app-link-group',
@@ -9,22 +19,43 @@ import { combineLatest, map, merge, Observable, scan, Subject } from 'rxjs';
   templateUrl: './link-group.component.html',
 })
 export class LinkGroupComponent implements OnInit {
-  links = contentChildren('a[routerLinkActive]',
-    { descendants: true, read: RouterLinkActive });
+  links = contentChildren(RouterLinkActive, {
+    descendants: true,
+  });
+  links$ = toObservable(this.links);
   isActive$!: Observable<boolean>;
-  toggle = new Subject<{event:'click' | 'navigate', value: boolean}>();
+  toggle = new Subject<{ event: 'click' | 'navigate'; value?: boolean }>();
   ngOnInit(): void {
     this.isActive$ = merge(
-      this.toggle,
-      combineLatest(this.links().map((x) => x.isActiveChange)).pipe(
-        map((x) => ({ event: 'navigate', value: x.some((y) => y) })),
+      this.links$.pipe(
+        switchMap((links) =>
+          combineLatest(
+            links.map((e) =>
+              e.isActiveChange.asObservable().pipe(startWith(false)),
+            ),
+          ).pipe(
+            map((isActiveAnyLink) => ({
+              event: 'navigate',
+              value: isActiveAnyLink.some(Boolean),
+            })),
+          ),
+        ),
       ),
-    ).pipe(scan((acc, curr) => {
-      if (curr.event === 'click') {
-        return !acc;
-      } else {
-        return curr.value;
-      }
-    }, false));
+      this.toggle.asObservable(),
+    ).pipe(
+      scan((acc, cur) => {
+        if (cur.event === 'click') {
+          return !acc;
+        }
+        return cur.value ?? false;
+      }, false),
+    );
+  }
+
+  onClick(event: PointerEvent): void {
+    const { tagName } = event.target as HTMLElement;
+    if (tagName !== 'A') {
+      this.toggle.next({ event: 'click' });
+    }
   }
 }

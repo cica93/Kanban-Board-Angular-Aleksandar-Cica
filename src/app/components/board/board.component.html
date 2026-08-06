@@ -1,5 +1,4 @@
-@let state = tasks$ | async;
-@if(state?.loading){
+@if(loading()){
 <div class="fixed top-50 left-50  align-items-center justify-content-center">
   <p-progressspinner />
 </div>
@@ -8,7 +7,7 @@
   <p-iconfield class="w-3" iconPosition="right">
     <input
       [placeholder]="loading() ? 'Searching...' : 'Search'"
-      (appDebounceInput)="searchChange.next($event)"
+      (appDebounceInput)="search = $event"
       pInputText
       [pAutoFocus]="true"
       class="w-full"
@@ -23,8 +22,11 @@
     />
 </div>
 
-<div #mainContainer class="flex">
-  @for (item of state?.data | groupAndSortTask ; track $index) {
+<div #mainContainer class="flex" 
+  (appFetchData)="tasks = $event" 
+  [filterParams]="search" 
+  (loadingChange)="loading.set($event)">
+  @for (item of tasks | groupAndSortTask ; track item.key) {
   <div class="flex w-4 my-1 mx-3 flex-column">
     <div class="flex flex-row align-items-center justify-content-center gap-2">
       <h2 class="text-center">

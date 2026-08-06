@@ -17,8 +17,6 @@ import {
   required,
   validate,
 } from '@angular/forms/signals';
-import { AppState, saveTask, updateTask } from 'src/app/store/task-store';
-import { Store } from '@ngrx/store';
 import { RippleModule } from 'primeng/ripple';
 import { AsyncPipe } from '@angular/common';
 import { AutoFocusModule } from 'primeng/autofocus';
@@ -63,7 +61,6 @@ export type TaskForm = Omit<Task, NoTUpdatableTaskFields>;
 })
 export class TaskDialogComponent extends BaseDialogComponent<Task> {
   private readonly taskService = inject(AbstractTaskService);
-  private readonly store = inject(Store<AppState>);
   users$ = inject(UserService).getUsers();
   TASK_STATUSES = TASK_STATUSES;
   TASK_PRIORITIES = TASK_PRIORITIES;
@@ -113,14 +110,16 @@ export class TaskDialogComponent extends BaseDialogComponent<Task> {
                 : this.taskService.post(formValue),
             );
             if (id) {
-              this.store.dispatch(
-                updateTask({ data: { ...savedTask!, ...formValue } }),
-              );
+              this.taskService.taskChange.next({
+                entity: { ...savedTask!, ...formValue },
+                event: 'update',
+              });
               this.showMessage('Task updated', 'Task updated successfully');
             } else {
-              this.store.dispatch(
-                saveTask({ data: { ...savedTask!, ...formValue } }),
-              );
+              this.taskService.taskChange.next({
+                entity: { ...savedTask!, ...formValue },
+                event: 'create',
+              });
               this.showMessage('Task Saved', 'Task saved successfully');
             }
             this.close(true);

@@ -13,7 +13,6 @@ import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { provideMockUserService } from '@service/mock-user.service';
-import { provideMockStore } from '@service/mock-store.service';
 
 describe('TaskDialogComponent', () => {
   let component: TaskDialogComponent;
@@ -46,7 +45,6 @@ describe('TaskDialogComponent', () => {
         { provide: MessageService, useValue: messageServiceSpy },
         { provide: Router, useValue: routerSpy },
         { provide: Location, useValue: locationSpy },
-        provideMockStore(),
       ],
       schemas: [NO_ERRORS_SCHEMA], // Ignore PrimeNG templates in unit tests
     }).compileComponents();

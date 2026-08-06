@@ -1,5 +1,5 @@
-export interface LoadState<T> {
-  data: T[];
-  loading: boolean;
-  error: string;
-}
+// export interface LoadState<T> {
+//   data: T[];
+//   loading: boolean;
+//   error: string;
+// }

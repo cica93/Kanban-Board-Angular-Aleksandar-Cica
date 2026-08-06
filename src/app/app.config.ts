@@ -33,8 +33,6 @@ import { Title } from '@angular/platform-browser';
 import { KanbanTitle } from '@service/kanban.title.service';
 import { GlobalErrorHandler } from '@service/error.handler.service';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { provideStore } from '@ngrx/store';
-import { appStore } from './store/store';
 import { DialogService } from 'primeng/dynamicdialog';
 import { EMPTY } from 'rxjs/internal/observable/empty';
 import { provideSignalFormsConfig } from '@angular/forms/signals';
@@ -65,7 +63,6 @@ export const appConfig: ApplicationConfig = {
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
     MessageService,
     Apollo,
-    provideStore(appStore),
     provideAnimations(),
     providePrimeNG({
       theme: { preset: Aura, options: { darkModeSelector: '.p-dark' } },

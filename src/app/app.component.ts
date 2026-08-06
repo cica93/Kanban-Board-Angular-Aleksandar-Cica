@@ -17,6 +17,7 @@ import { DialogModule } from 'primeng/dialog';
 import { BaseDialogComponent } from './components/base-dialog/base-dialog.component';
 import { SocketService } from '@service/socket.service';
 import { AvatarModule } from 'primeng/avatar';
+import { LinkGroupComponent } from '@components/link-group/link-group.component';
 
 @Component({
   selector: 'app-root',
@@ -32,6 +33,7 @@ import { AvatarModule } from 'primeng/avatar';
     TitleCasePipe,
     AvatarModule,
     SlicePipe,
+    LinkGroupComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',

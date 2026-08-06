@@ -1,6 +1,5 @@
 @let isActive  = isActive$ | async;
-<div [class.active]="isActive" class="flex gap-2">
-    <h3>Link Group {{isActive}}</h3>
+<div [class.active]="isActive" class="flex flex-row gap-2" (click)="onClick($event)">
     <ng-content select="a[routerLinkActive]" />
 </div>
 

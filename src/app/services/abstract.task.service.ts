@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { User } from './user.service';
 
 export const TASK_PRIORITIES = ['LOW', 'MED', 'HIGH'] as const;
@@ -34,7 +34,13 @@ export interface DragTask {
   taskVersion: number;
 }
 
+export interface EntityChange<T> {
+  entity: T;
+  event: 'delete' | 'update' | 'create';
+}
+
 export abstract class AbstractTaskService {
+  taskChange = new Subject<EntityChange<Task>>();
   abstract get(
     description?: string,
     limit?: number,
