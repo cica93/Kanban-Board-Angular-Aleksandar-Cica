@@ -1,4 +1,10 @@
-import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import {
@@ -25,9 +31,9 @@ import {
   Task,
   TASK_STATUSES,
   TaskStatus,
-} from '../../services/abstract.task.service';
+} from '@service/abstract.task.service';
 import { Router } from '@angular/router';
-import { TaskCardComponent } from './task-card/task-card.component';
+import { TaskCardComponent } from '@components/board/task-card/task-card.component';
 import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
 import { AutoFocusModule } from 'primeng/autofocus';
@@ -44,7 +50,7 @@ import {
 } from '../../store/task-store';
 import { Store } from '@ngrx/store';
 import { LoadState } from '../../store/load-state';
-import { MessageHandlerService } from 'src/app/services/message.handler.service';
+import { MessageHandlerService } from '@service/message.handler.service';
 
 @Component({
   selector: 'app-board',
@@ -78,10 +84,10 @@ export class BoardComponent implements OnInit {
   scrollToBottom = new Subject<unknown>();
 
   private readonly taskService = inject(AbstractTaskService);
-  private readonly messageHandler = inject(MessageHandlerService);
   private readonly router = inject(Router);
   private readonly store = inject(Store<AppState>);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly messageService = inject(MessageHandlerService);
 
   ngOnInit(): void {
     this.tasks$ = this.store.select((state: AppState) => state.tasks);
@@ -142,7 +148,7 @@ export class BoardComponent implements OnInit {
     });
   }
 
-  navigateUserDialog(task?: Partial<Task>): void {
+  navigateToTaskDialog(task?: Partial<Task>): void {
     this.router.navigate(
       [
         {
@@ -186,7 +192,7 @@ export class BoardComponent implements OnInit {
   }
 
   private showMessage(summary: string): void {
-    this.messageHandler.successEvent.next({
+    this.messageService.successEvent.next({
       summary,
       detail: 'Task status changed successfully',
     });

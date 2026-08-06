@@ -3,7 +3,7 @@ import {
   Task,
   TASK_STATUSES,
   TaskStatus,
-} from '../services/abstract.task.service';
+} from '@service/abstract.task.service';
 
 @Pipe({
   name: 'groupAndSortTask',

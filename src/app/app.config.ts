@@ -21,17 +21,17 @@ import { routes } from './app.routes';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { MessageService } from 'primeng/api';
 import { ApiInterceptor } from './interceptors/api.interceptor';
-import { JwtUtils } from './services/jwt.service';
-import { SecurityService } from './services/security.service';
+import { JwtUtils } from '@service/jwt.service';
+import { SecurityService } from '@service/security.service';
 
-import { ApolloClientOptions, InMemoryCache } from '@apollo/client/core';
+import { InMemoryCache } from '@apollo/client/core';
 import { HttpLink } from 'apollo-angular/http';
 import { Apollo, APOLLO_OPTIONS } from 'apollo-angular';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeng/themes/aura';
 import { Title } from '@angular/platform-browser';
-import { KanbanTitle } from './services/kanban.title.service';
-import { GlobalErrorHandler } from './services/error.handler.service';
+import { KanbanTitle } from '@service/kanban.title.service';
+import { GlobalErrorHandler } from '@service/error.handler.service';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideStore } from '@ngrx/store';
 import { appStore } from './store/store';
@@ -74,7 +74,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withXhr(), withInterceptors([apiInterceptor])),
     {
       provide: APOLLO_OPTIONS,
-      useFactory: (httpLink: HttpLink): ApolloClientOptions<any> => ({
+      useFactory: (httpLink: HttpLink) => ({
         link: httpLink.create({ uri: 'http://localhost:3033/graphql' }),
         cache: new InMemoryCache({ resultCaching: false }),
       }),

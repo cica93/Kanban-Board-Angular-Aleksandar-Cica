@@ -1,10 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Service } from '@angular/core';
 import { ToastMessageOptions } from 'primeng/api';
 import { Observable, Subject } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class MessageHandlerService {
   public successEvent = new Subject<ToastMessageOptions>();
   public successEventAsObservable(): Observable<ToastMessageOptions> {

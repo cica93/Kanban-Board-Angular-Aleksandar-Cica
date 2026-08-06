@@ -1,6 +1,6 @@
 import { Component, computed, input, output } from '@angular/core';
 import { CardModule } from 'primeng/card';
-import { BADGE_COLOR_MAP, Task } from '../../../services/abstract.task.service';
+import { BADGE_COLOR_MAP, Task } from '@service/abstract.task.service';
 import { BadgeModule } from 'primeng/badge';
 import { AvatarModule } from 'primeng/avatar';
 import { AvatarGroupModule } from 'primeng/avatargroup';

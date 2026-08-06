@@ -12,25 +12,27 @@
         styleClass="full-width"/>
      </app-form-value-wrapper>
      <app-form-value-wrapper [label]="'Password'" [name]="'password'">
+  
       <p-password 
         placeholder="Enter password"
-        [formField]="loginForm.password"
-        [toggleMask]="true"
-        [feedback]="false"
+        [formField]="$any(loginForm.password)"
         [attr.id]="'password'"
-        styleClass="full-width">
+        [toggleMask]="true"
+        [style]="'full-width'"
+        >
       </p-password>
      </app-form-value-wrapper>
       <div class="mt-3">
         @let submitting = loginForm().submitting();
-        <p-button 
-          [loading]="submitting"
+        <button pButton
           [disabled]="submitting"
-          [label]="submitting ? 'Logging in...' : 'Login'"
           [type]="'submit'"
           [rounded]="true"
           class="flex-auto"
-          styleClass="w-full"/>
+          style="width: 100%;">
+         {{submitting ? 'Logging in...' : 'Login'}}  @if (submitting) { 
+      <i class="pi pi-spin pi-spinner"></i> 
+       }   </button>
       </div>
     </form>
   </div>

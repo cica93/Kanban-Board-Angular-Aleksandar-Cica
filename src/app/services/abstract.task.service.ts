@@ -55,5 +55,5 @@ export abstract class AbstractTaskService {
     version: number,
   ): Observable<Task | null | undefined>;
 
-  abstract drag(dragTask: DragTask): Observable<DragTask | null | undefined>;
+  abstract drag(dragTask: DragTask): Observable<Task | null | undefined>;
 }

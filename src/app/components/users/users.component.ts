@@ -2,7 +2,7 @@ import { AsyncPipe } from '@angular/common';
 import { Component, inject, InjectionToken, Injector, Type } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
-import { User, UserService } from 'src/app/services/user.service';
+import { User, UserService } from '@service/user.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { take } from 'rxjs';
 
@@ -33,11 +33,13 @@ export class UsersComponent {
       focusOnShow: false,
       focusTrap: false,
       closable: true,
-    });
+    })!;
     this.ref.onClose.pipe(take(1)).subscribe(() => {
       this.ref.close();
     });
   }
 
-  deleteUser(user: User): void {}
+  deleteUser({ id }: User): void {
+    console.log(id);
+  }
 }

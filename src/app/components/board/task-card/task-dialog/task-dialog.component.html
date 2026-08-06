@@ -11,7 +11,7 @@
       class="flex-auto"
     />
   </app-form-value-wrapper>
-  <app-form-value-wrapper [label]="'Description'" [name]="'description'">
+  <app-form-value-wrapper [label]="'Description'" [name]="'description'"> 
     <textarea
       [attr.id]="'description'"
       [formField]="taskForm.description"
@@ -25,8 +25,8 @@
   <app-form-value-wrapper [label]="'Task Status'" [name]="'taskStatus'">
     <p-select
       [attr.id]="'task-status'"
-      [options]="TASK_STATUSES"
-      [formField]="taskForm.taskStatus"
+      [options]="[...TASK_STATUSES]"
+      [formField]="$any(taskForm.taskStatus)"
       [placeholder]="'Select task status'"
       class="w-full"
     >
@@ -41,42 +41,44 @@
   <app-form-value-wrapper [label]="'Task Priority'" [name]="'taskPriority'">
     <p-select
       [attr.id]="'task-priority'"
-      [options]="TASK_PRIORITIES"
-      [formField]="taskForm.taskPriority"
+      [options]="[...TASK_PRIORITIES]"
+      [formField]="$any(taskForm.taskPriority)"
       [placeholder]="'Select task priority'"
       class="w-full"
     />
-  </app-form-value-wrapper>
+ </app-form-value-wrapper>
 <app-form-value-wrapper [label]="'Users'" [name]="'users'">
   <p-multiSelect
     [options]="(users$ | async) ?? []"
     [optionLabel]="'fullName'"
     [dataKey]="'id'"
     [attr.id]="'users'"
-    [formField]="taskForm.users"
+    [formField]="$any(taskForm.users)"
     [placeholder]="'Select users'"
     styleClass="w-full"
   />
 </app-form-value-wrapper>
 
   <div class="flex flex-row justify-content-end gap-2 mt-auto">
-    <p-button
+    <button
+      pButton
       [tabindex]="-1"
       pRipple
-      [label]="'Cancel'"
-      [severity]="'secondary'"
-      (onClick)="close()"
-    />
+      [severity]="'danger'"
+      (click)="closeDialog($event)"
+    >Cancel</button>
     @let submitting = taskForm().submitting();
-    <p-button 
+    <button 
+      pButton
       pRipple 
       id="save-button"
-      [label]="submitting ? 'Saving...' : 'Save'"
       [severity]="'primary'" 
       [type]="'submit'"
-      [loading]="submitting"
       [disabled]="submitting"
-    />
+    >{{submitting ? 'Saving...' : 'Save'}} 
+      @if (submitting) { 
+      <i class="pi pi-spin pi-spinner"></i> 
+    } </button>
   </div>
 </form>
 

@@ -1,9 +1,5 @@
 import { Component, inject, resource, signal } from '@angular/core';
-import { PasswordModule } from 'primeng/password';
 import { InputTextModule } from 'primeng/inputtext';
-import { LoginService } from '../../services/login.service';
-import { Router } from '@angular/router';
-import { SecurityService } from '../../services/security.service';
 import { firstValueFrom } from 'rxjs';
 import { AutoFocusModule } from 'primeng/autofocus';
 import {
@@ -16,10 +12,15 @@ import {
   FormRoot,
   validateAsync,
 } from '@angular/forms/signals';
-import { Button } from 'primeng/button';
-import { UserService } from 'src/app/services/user.service';
+import { ButtonModule } from 'primeng/button';
 import { FormValueWrapperComponent } from 'src/app/form-value-wrapper/form-value-wrapper.component';
-import { JwtUtils } from 'src/app/services/jwt.service';
+import { PasswordModule } from 'primeng/password';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { LoginService } from '@service/login.service';
+import { SecurityService } from '@service/security.service';
+import { UserService } from '@service/user.service';
+import { JwtUtils } from '@service/jwt.service';
 
 export interface LoginForm {
   email: string;
@@ -29,23 +30,24 @@ export interface LoginForm {
 @Component({
   selector: 'app-login',
   imports: [
-    Button,
-    PasswordModule,
+    ButtonModule,
     InputTextModule,
     AutoFocusModule,
     FormField,
     FormRoot,
     FormValueWrapperComponent,
+    PasswordModule,
+    FormsModule,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
 export class LoginComponent {
+  protected model = signal<LoginForm>({ email: '', password: '' });
   private readonly loginService = inject(LoginService);
   private readonly router = inject(Router);
   private readonly securityService = inject(SecurityService);
   private readonly userService = inject(UserService);
-  protected model = signal<LoginForm>({ email: '', password: '' });
   protected loginForm = form<LoginForm>(
     this.model,
     (path) => {

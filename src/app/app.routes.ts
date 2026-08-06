@@ -1,10 +1,10 @@
 import { Router, Routes } from '@angular/router';
 import { inject } from '@angular/core';
 import { map } from 'rxjs';
-import { SecurityService } from './services/security.service';
-import { TaskService } from './services/task.service';
-import { TaskGraphQlService } from './services/task.graphql.service';
-import { AbstractTaskService } from './services/abstract.task.service';
+import { SecurityService } from '@service/security.service';
+import { TaskService } from '@service/task.service';
+import { TaskGraphQlService } from '@service/task.graphql.service';
+import { AbstractTaskService } from '@service/abstract.task.service';
 import { sidebarGuard } from './guards/sidebar.guard';
 import { UserFormComponent } from './components/user-form/user-form.component';
 import { DIALOG_COMPONENT } from './components/users/users.component';

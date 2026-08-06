@@ -1,14 +1,13 @@
 import { Component, inject, signal } from '@angular/core';
-import { Button } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import {
   AbstractTaskService,
   Task,
   TASK_PRIORITIES,
   TASK_STATUSES,
-} from 'src/app/services/abstract.task.service';
+} from '@service/abstract.task.service';
 import { firstValueFrom } from 'rxjs';
-import { BaseDialogComponent } from 'src/app/components/base-dialog/base-dialog.component';
+import { BaseDialogComponent } from '@components/base-dialog/base-dialog.component';
 import {
   form,
   FormField,
@@ -24,12 +23,13 @@ import { RippleModule } from 'primeng/ripple';
 import { AsyncPipe } from '@angular/common';
 import { AutoFocusModule } from 'primeng/autofocus';
 import { InputTextModule } from 'primeng/inputtext';
-import { MultiSelect } from 'primeng/multiselect';
 import { SelectModule } from 'primeng/select';
-import { TextareaModule } from 'primeng/textarea';
 import { FormValueWrapperComponent } from 'src/app/form-value-wrapper/form-value-wrapper.component';
 import { ReplacePipe } from 'src/app/pipes/replace.pipe';
-import { UserService } from 'src/app/services/user.service';
+import { UserService } from '@service/user.service';
+import { ButtonModule } from 'primeng/button';
+import { MultiSelect } from 'primeng/multiselect';
+import { TextareaModule } from 'primeng/textarea';
 
 export type NoTUpdatableTaskFields =
   | 'id'
@@ -37,23 +37,22 @@ export type NoTUpdatableTaskFields =
   | 'version'
   | 'createdBy'
   | 'updatedBy';
-export type TaskForm = Omit<Task, NoTUpdatableTaskFields>; 
+export type TaskForm = Omit<Task, NoTUpdatableTaskFields>;
 @Component({
   selector: 'app-task-dialog',
   imports: [
-    Button,
+    ButtonModule,
     DialogModule,
     FormRoot,
     RippleModule,
-    MultiSelect,
     DialogModule,
     InputTextModule,
     SelectModule,
     ReplacePipe,
     AutoFocusModule,
-    TextareaModule,
     FormField,
     FormValueWrapperComponent,
+    MultiSelect,
     TextareaModule,
     AsyncPipe,
   ],
@@ -65,9 +64,9 @@ export type TaskForm = Omit<Task, NoTUpdatableTaskFields>;
 export class TaskDialogComponent extends BaseDialogComponent<Task> {
   private readonly taskService = inject(AbstractTaskService);
   private readonly store = inject(Store<AppState>);
-  protected users$ = inject(UserService).getUsers();
-  protected TASK_STATUSES = [...TASK_STATUSES];
-  protected TASK_PRIORITIES = [...TASK_PRIORITIES];
+  users$ = inject(UserService).getUsers();
+  TASK_STATUSES = TASK_STATUSES;
+  TASK_PRIORITIES = TASK_PRIORITIES;
   protected model = signal<TaskForm>({
     description: '',
     taskPriority: this.TASK_PRIORITIES[0],

@@ -1,5 +1,5 @@
-import { Task } from "src/app/services/abstract.task.service";
-import { LoadState } from "./load-state";
+import { Task } from '@service/abstract.task.service';
+import { LoadState } from './load-state';
 
 export const taskInitState: LoadState<Task> = {
   data: [],

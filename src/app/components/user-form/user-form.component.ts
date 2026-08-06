@@ -17,7 +17,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { AutoFocus } from 'primeng/autofocus';
 import { Button } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
-import { User } from 'src/app/services/user.service';
+import { User } from '@service/user.service';
 import { BaseDialogComponent } from '../base-dialog/base-dialog.component';
 
 export type AddressFormInput = Omit<Address, 'id'>;

@@ -21,11 +21,11 @@ export class JwtUtils {
       return false;
     }
     const { exp } = this.decodeJwt(token);
-    return exp * 1000 < Date.now();
+    return exp * 1000 > Date.now();
   }
 
-  static decodeJwt(token: string) {
+  static decodeJwt(token: string): Token {
     const payload = token.split('.')[1];
-    return JSON.parse(atob(payload));
+    return JSON.parse(atob(payload ?? '')) as Token;
   }
 }

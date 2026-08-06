@@ -1,6 +1,6 @@
 import { TitleCasePipe } from '@angular/common';
-import { Component, computed, contentChild, input, signal } from '@angular/core';
-import { MessageWrapperComponent } from '../components/message-wrapper.component';
+import { Component, computed, contentChild, input } from '@angular/core';
+import { MessageWrapperComponent } from '@components/message-wrapper.component';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { FormField } from '@angular/forms/signals';
 

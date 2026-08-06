@@ -6,14 +6,14 @@ import {
   Task,
   TASK_PRIORITIES,
   TASK_STATUSES,
-} from 'src/app/services/abstract.task.service';
-import { User, UserService } from 'src/app/services/user.service';
+} from '@service/abstract.task.service';
+import { User, UserService } from '@service/user.service';
 import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { provideMockUserService } from 'src/app/services/mock-user.service';
-import { provideMockStore } from 'src/app/services/mock-store.service';
+import { provideMockUserService } from '@service/mock-user.service';
+import { provideMockStore } from '@service/mock-store.service';
 
 describe('TaskDialogComponent', () => {
   let component: TaskDialogComponent;

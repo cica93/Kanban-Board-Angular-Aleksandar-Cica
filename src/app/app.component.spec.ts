@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import { provideSecurityService } from './services/mock-security.service';
+import { provideSecurityService } from '@service/mock-security.service';
 import { provideRouter } from '@angular/router';
-import { provideMockMessageHandler } from './services/mock-message-handler.service';
 import { By } from '@angular/platform-browser';
-import { provideSocketMock } from './services/mock-socket.service';
-import { provideMockRouter } from './services/mock-router.service';
-import { provideMockMessage } from './services/mock-message.service';
+import { provideSocketMock } from '@service/mock-socket.service';
+import { provideMockRouter } from '@service/mock-router.service';
+import { provideMockMessage } from '@service/mock-message.service';
 import { APP_INITIALIZER, NO_ERRORS_SCHEMA } from '@angular/core';
 import { BehaviorSubject, of } from 'rxjs';
-import { provideMockActivatedRoute } from './services/mock-activated-route.service';
-import { SecurityService } from './services/security.service';
+import { provideMockActivatedRoute } from '@service/mock-activated-route.service';
+import { SecurityService } from '@service/security.service';
 import { BaseDialogComponent } from './components/base-dialog/base-dialog.component';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { provideMockMessageHandler } from '@service/mock-message-handler.service';
 
 describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;

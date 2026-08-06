@@ -6,16 +6,16 @@ import {
   RouterOutlet,
 } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { MessageHandlerService } from './services/message.handler.service';
-import { SecurityService } from './services/security.service';
+import { MessageHandlerService } from '@service/message.handler.service';
+import { SecurityService } from '@service/security.service';
 import { Observable, tap } from 'rxjs';
 import { AsyncPipe, SlicePipe, TitleCasePipe } from '@angular/common';
-import { User } from './services/user.service';
+import { User } from '@service/user.service';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 import { DialogModule } from 'primeng/dialog';
 import { BaseDialogComponent } from './components/base-dialog/base-dialog.component';
-import { SocketService } from './services/socket.service';
+import { SocketService } from '@service/socket.service';
 import { AvatarModule } from 'primeng/avatar';
 
 @Component({
@@ -40,9 +40,9 @@ export class AppComponent implements OnInit {
   protected user$!: Observable<User | null>;
   private readonly securityService = inject(SecurityService);
   private readonly messageService = inject(MessageService);
-  private readonly messageHandler = inject(MessageHandlerService);
   private readonly socket = inject(SocketService);
   private readonly router = inject(Router);
+  private readonly messageHandlerService = inject(MessageHandlerService);
   public showDialog = signal(false);
   protected modalHeader?: Observable<string>;
 
@@ -53,7 +53,7 @@ export class AppComponent implements OnInit {
       }),
     );
 
-    this.messageHandler.errorEvent
+    this.messageHandlerService.errorEvent
       .asObservable()
       .subscribe(({ summary, detail }) => {
         if (summary && detail) {
@@ -67,7 +67,7 @@ export class AppComponent implements OnInit {
         }
       });
 
-    this.messageHandler.successEvent
+    this.messageHandlerService.successEvent
       .asObservable()
       .subscribe(({ summary, detail, life }) => {
         if (summary && detail) {

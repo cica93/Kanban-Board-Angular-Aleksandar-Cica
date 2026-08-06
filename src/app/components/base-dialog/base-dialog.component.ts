@@ -1,9 +1,9 @@
 import { Location } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { MessageHandlerService } from '@service/message.handler.service';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { BehaviorSubject, config, Subject } from 'rxjs';
-import { MessageHandlerService } from 'src/app/services/message.handler.service';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-base-dialog',
@@ -12,10 +12,10 @@ import { MessageHandlerService } from 'src/app/services/message.handler.service'
 })
 export class BaseDialogComponent<T = any> implements OnInit {
   private readonly location = inject(Location);
-  private readonly messageHandler = inject(MessageHandlerService);
   private readonly router = inject(Router);
   protected initValue = signal<T>({} as T);
   public modalHeader = new BehaviorSubject<string>('');
+  private readonly messageHandlerService = inject(MessageHandlerService);
   protected onSuccess = new Subject<T>();
   public onCancel = new Subject<void>();
   protected onError = new Subject<string>();
@@ -28,6 +28,11 @@ export class BaseDialogComponent<T = any> implements OnInit {
       this.config?.data?.['initValue'] ??
       ({} as T);
     this.initValue.set(initValue);
+  }
+
+  public closeDialog(event: PointerEvent) {
+    event.preventDefault();
+    this.close();
   }
 
   public close(initNewSearch = false): void {
@@ -44,7 +49,7 @@ export class BaseDialogComponent<T = any> implements OnInit {
   }
 
   protected showMessage(summary: string, detail?: string): void {
-    this.messageHandler.successEvent.next({
+    this.messageHandlerService.successEvent.next({
       summary,
       detail,
     });

@@ -5,15 +5,17 @@ import {
   tick,
 } from '@angular/core/testing';
 import { LoginComponent } from './login.component';
-import { LoginService } from 'src/app/services/login.service';
-import { provideSecurityService } from 'src/app/services/mock-security.service';
-import { provideMockUserService } from 'src/app/services/mock-user.service';
+import { LoginService } from '@service/login.service';
+import { provideSecurityService } from '@service/mock-security.service';
+import { provideMockUserService } from '@service/mock-user.service';
 import { By } from '@angular/platform-browser';
-import { provideMockRouter } from 'src/app/services/mock-router.service';
+import { provideMockRouter } from '@service/mock-router.service';
+import { DebugElement } from '@angular/core';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
+  let el: DebugElement;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -29,10 +31,11 @@ describe('LoginComponent', () => {
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    el = fixture.debugElement;
   });
 
   function submitButtonClick() {
-    const button = fixture.debugElement.query(By.css('button'));
+    const button = el.query(By.css('button'));
     expect(button.nativeElement).toBeTruthy();
     button.nativeElement.click();
     fixture.detectChanges();
@@ -43,7 +46,7 @@ describe('LoginComponent', () => {
   });
 
   it('should focus email when is invalid', fakeAsync(() => {
-    const email = fixture.debugElement.query(By.css('#email'));
+    const email = el.query(By.css('#email'));
     const form = component['loginForm']();
     spyOn(form, 'markAsTouched');
     spyOn(form, 'focusBoundControl');

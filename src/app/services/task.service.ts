@@ -35,8 +35,8 @@ export class TaskService extends AbstractTaskService {
     return this.http.delete<Task>('tasks/' + id + '/' + version);
   }
 
-  override drag(dragTask: DragTask): Observable<DragTask> {
-    return this.http.put<DragTask>('tasks/drag', dragTask);
+  override drag(dragTask: DragTask): Observable<Task> {
+    return this.http.put<Task>('tasks/drag', dragTask);
   }
 }
 

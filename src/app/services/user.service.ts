@@ -1,14 +1,23 @@
 import { inject, Injectable } from '@angular/core';
-import { map, Observable, shareReplay } from 'rxjs';
+import { Observable, shareReplay } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { z } from 'zod';
 
-export interface User {
-  id: number;
-  fullName: string;
-  email: string;
+export const userSchema = z.object({
+  id: z.number().int().positive(),
+
+  fullName: z.string().trim().min(1, 'Full name is required'),
+
+  email: z.email('Invalid email address'),
+
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+});
+
+export type User = z.infer<typeof userSchema> & {
   token: string;
-  password: string;
-}
+  tasks: Task[];
+};
+
 
 @Injectable({
   providedIn: 'root',
@@ -21,9 +30,7 @@ export class UserService {
   }
 
   getUsers(): Observable<User[]> {
-    return this.http
-      .get<{ content: User[] }>('users')
-      .pipe(map((a) => a.content));
+    return this.http.get<User[]>('users');
   }
 
   hasMail(email: string): Observable<boolean> {

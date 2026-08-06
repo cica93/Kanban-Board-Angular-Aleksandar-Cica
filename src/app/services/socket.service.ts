@@ -1,13 +1,14 @@
 import { Injectable, inject } from '@angular/core';
+import { Task } from '@service/abstract.task.service';
+import { User } from '@service/user.service';
+import { JwtUtils } from '@service/jwt.service';
 import { MessageHandlerService } from './message.handler.service';
-import { Task } from './abstract.task.service';
-import { User } from './user.service';
-import { JwtUtils } from './jwt.service';
 
 @Injectable({ providedIn: 'root' })
 export class SocketService {
   private socket?: WebSocket;
-  private readonly messageHandler = inject(MessageHandlerService);
+
+  private readonly messageHandlerService = inject(MessageHandlerService);
 
   connect(user: User | null): void {
     if (!user || this.socket?.readyState === WebSocket.OPEN) {
@@ -38,8 +39,8 @@ export class SocketService {
             (user?.email !== task.createdBy && isNewTask) ||
             (user?.email !== task.updatedBy && isUpdatedTask);
 
-          if (shouldNotify || true) {
-            this.messageHandler.successEvent.next({
+          if (shouldNotify) {
+            this.messageHandlerService.successEvent.next({
               detail: this.createMessage(task, message?.type),
               summary: isUpdatedTask ? 'Task updated' : 'New task created',
               life: 5000,

@@ -1,7 +1,7 @@
 @let state = tasks$ | async;
 @if(state?.loading){
 <div class="fixed top-50 left-50  align-items-center justify-content-center">
-  <p-progressSpinner />
+  <p-progressspinner />
 </div>
 }
 <div class="flex my-1 mx-5 justify-content-between">
@@ -13,11 +13,11 @@
       [pAutoFocus]="true"
       class="w-full"
     />
-    <p-inputicon class="pi pi-search" style="transform: translateY(-2px);" />
+    <p-inputicon class="pi pi-search"  />
   </p-iconfield>
     <p-button
       icon="pi pi-plus"
-      (click)="navigateUserDialog()"
+      (click)="navigateToTaskDialog()"
       [size]="'large'"
       [label]="'Create Task'"
     />
@@ -45,7 +45,7 @@
           [cdkDragData]="task"
           [task]="task"
           (onDelete)="deleteTask(task)"
-          (onEdit)="navigateUserDialog(task)"
+          (onEdit)="navigateToTaskDialog(task)"
         />
       }
     </div>

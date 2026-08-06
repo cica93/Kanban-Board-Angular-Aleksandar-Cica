@@ -6,7 +6,7 @@ import {
   Task,
   TASK_PRIORITIES,
   TASK_STATUSES,
-} from 'src/app/services/abstract.task.service';
+} from '@service/abstract.task.service';
 import { By } from '@angular/platform-browser';
 
 describe('TaskCardComponent', () => {
@@ -62,7 +62,7 @@ describe('TaskCardComponent', () => {
 
   it('should display the task status', () => {
     // This might be a class, a text, or a specific element
-    const badge = fixture.debugElement.query(By.css('p-badge'));
+    const badge = el.query(By.css('p-badge'));
 
     expect(badge.componentInstance.severity()).toBe('info');
 

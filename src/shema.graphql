@@ -15,11 +15,7 @@ input TaskInput {
   users: [UserInput!]
 }
 
-input DragTaskInput {
-  taskId: Int!
-  taskOrder: Int!
-  taskStatus: String!
-}
+
 
 type User {
   id: Int!
@@ -56,5 +52,5 @@ type Mutation {
   createTask(task: TaskInput!): OptionalTask
   updateTask(id: Int!, task: TaskInput!): OptionalTask
   deleteTask(id: Int!, version: Int!): OptionalTask
-  dragTask(task: DragTaskInput!): OptionalTask
+  dragTask(taskId: Int!, taskStatus: String!, taskOrder: Int!, taskVersion: Int): OptionalTask
 }

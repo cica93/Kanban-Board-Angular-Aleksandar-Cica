@@ -5,6 +5,8 @@ import { SecurityService } from '../services/security.service';
 import { MessageHandlerService } from '../services/message.handler.service';
 import { JwtUtils } from '../services/jwt.service';
 
+const apiBaseUrl = 'http://localhost:3033';
+
 export const ApiInterceptor: HttpInterceptorFn = (req, next) => {
   const token = JwtUtils.getToken();
 
@@ -15,9 +17,9 @@ export const ApiInterceptor: HttpInterceptorFn = (req, next) => {
   const authReq = req.clone({
     url: isSkip
       ? req.url
-      : req.url.endsWith("/graphql")
-      ? req.url
-      : `http://localhost:3033/api/${req.url}`,
+      : req.url.endsWith('/graphql')
+        ? req.url
+        : `${apiBaseUrl}/api/${req.url}`,
     setHeaders: {
       ...(token ? { token } : {}),
     },

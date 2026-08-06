@@ -4,7 +4,7 @@ import {
   on,
   props,
 } from '@ngrx/store';
-import { Task, TaskStatus } from 'src/app/services/abstract.task.service';
+import { Task, TaskStatus } from '@service/abstract.task.service';
 import { taskInitState } from './taskInitState';
 import { LoadState } from './load-state';
 

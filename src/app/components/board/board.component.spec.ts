@@ -11,25 +11,16 @@ import {
   Pipe,
   PipeTransform,
 } from '@angular/core';
-import { of } from "rxjs";
-import { By } from '@angular/platform-browser';
+
 import { MessageService } from "primeng/api";
-import { TaskService } from "../../services/task.service"; // Assuming this path
-import { UserService } from "../../services/user.service"; // Assuming this path
-import { SecurityService } from "../../services/security.service";
-import { MockTaskService } from 'src/app/services/mock-task.service';
-import { MockSecurityService } from 'src/app/services/mock-security.service';
-import { MockUserService } from 'src/app/services/mock-user.service';
+
+import { MockTaskService } from '@service/mock-task.service';
+
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/store/task-store';
 import { Router } from '@angular/router';
-import { MockMessageHandlerService } from 'src/app/services/mock-message-handler.service';
-import { MessageHandlerService } from 'src/app/services/message.handler.service';
-import {
-  AbstractTaskService,
-  TASK_STATUSES,
-} from 'src/app/services/abstract.task.service';
-import { MockStore } from 'src/app/services/mock-store.service';
+import { AbstractTaskService } from '@service/abstract.task.service';
+import { MockStore } from '@service/mock-store.service';
 
 // Mock Pipes if they are custom pipes and affect rendering/logic
 @Pipe({ name: "sortTask" })

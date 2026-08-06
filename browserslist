@@ -1,0 +1,7 @@
+# Browserslist config for kanban-board-angular
+# See https://angular.dev/tools/cli/build#configuring-browser-compatibility
+>0.5%
+last 2 versions
+Firefox ESR
+not dead
+not IE 11

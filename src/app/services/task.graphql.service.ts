@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Apollo, gql, MutationResult } from 'apollo-angular';
+import { Apollo, gql } from 'apollo-angular';
 import { map, Observable } from 'rxjs';
 import { AbstractTaskService, DragTask, Task } from './abstract.task.service';
 
@@ -99,7 +99,7 @@ export class TaskGraphQlService extends AbstractTaskService {
           id,
         },
       })
-      .pipe(map((r: MutationResult<Task>) => r.data));
+      .pipe(map((r) => r.data));
   }
 
   override post(task: Partial<Task>): Observable<Task | null | undefined> {
@@ -126,7 +126,7 @@ export class TaskGraphQlService extends AbstractTaskService {
           task,
         },
       })
-      .pipe(map((r: MutationResult<Task>) => r.data));
+      .pipe(map((r) => r.data));
   }
 
   delete(id: number, version: number): Observable<Task | null | undefined> {
@@ -146,34 +146,47 @@ export class TaskGraphQlService extends AbstractTaskService {
         },
       })
       .pipe(
-        map((r: MutationResult<Task>) => {
-          if (r.errors?.length) {
-            return null;
-          }
+        map((r) => {
           return r.data ?? null;
         }),
       );
   }
 
-  override drag(dragTask: DragTask): Observable<DragTask | null | undefined> {
+  override drag({
+    taskId,
+    taskStatus,
+    taskOrder,
+    taskVersion,
+  }: DragTask): Observable<Task | null | undefined> {
     return this.apollo
-      .mutate<DragTask>({
+      .mutate<Task>({
         mutation: gql`
-          mutation dragTask($dragTask: DragTaskInput!) {
-            dragTask(dragTask: $dragTask) {
+          mutation dragTask(
+            $taskId: Int!
+            $taskStatus: String!
+            $taskOrder: Int!
+            $taskVersion: Int!
+          ) {
+            dragTask(
+              taskId: $taskId
+              taskStatus: $taskStatus
+              taskOrder: $taskOrder
+              taskVersion: $taskVersion
+            ) {
               id
+              version
             }
           }
         `,
         variables: {
-          dragTask,
+          taskId,
+          taskStatus,
+          taskOrder,
+          taskVersion,
         },
       })
       .pipe(
-        map((r: MutationResult<DragTask>) => {
-          if (r.errors?.length) {
-            return null;
-          }
+        map((r) => {
           return r.data ?? null;
         }),
       );
