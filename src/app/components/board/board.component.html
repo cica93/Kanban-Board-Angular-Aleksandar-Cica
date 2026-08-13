@@ -3,28 +3,26 @@
   <p-progressspinner />
 </div>
 }
-<div class="flex my-1 mx-5 justify-content-between">
-  <p-iconfield class="w-3" iconPosition="right">
-    <input
-      [placeholder]="loading() ? 'Searching...' : 'Search'"
-      (appDebounceInput)="search = $event"
-      pInputText
-      [pAutoFocus]="true"
-      class="w-full"
+<div class="my-1 mx-5">
+  <app-header>
+    <app-search-input class="w-3" 
+      (inputChange)="search.set($event)" 
+      [autoFocus]="true" 
+      [placeholder]="loading() ? 'Searching...':'Search'" 
     />
-    <p-inputicon class="pi pi-search"  />
-  </p-iconfield>
     <p-button
       icon="pi pi-plus"
       (click)="navigateToTaskDialog()"
       [size]="'large'"
       [label]="'Create Task'"
     />
+  </app-header>
 </div>
 
-<div #mainContainer class="flex" 
+<div #mainContainer class="flex relative" 
   (appFetchData)="tasks = $event" 
-  [filterParams]="search" 
+  [filterParams]="search()" 
+  [becomeVisibleHtml]="becomeVisible()"
   (loadingChange)="loading.set($event)">
   @for (item of tasks | groupAndSortTask ; track item.key) {
   <div class="flex w-4 my-1 mx-3 flex-column">
@@ -38,7 +36,7 @@
       cdkDropList
       [id]="item.key"
       [cdkDropListData]="item"
-      [cdkDropListConnectedTo]="TASK_STATUSES"
+      [cdkDropListConnectedTo]="TASK_STATUSES_VALUE"
       (cdkDropListDropped)="onDrop($event)">
       @for (task of item.value; track $index) {
         <app-task-card
@@ -53,4 +51,7 @@
     </div>
   </div>
   }
+  <div becomeVisible style="visibility: hidden; width: 10px; height: 10px; background: blue; z-index: 100; position:absolute; bottom: 0px; right: 50px"></div>
 </div>
+
+

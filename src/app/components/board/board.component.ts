@@ -1,11 +1,16 @@
-import { ChangeDetectorRef, Component, inject, signal } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { CardModule } from 'primeng/card';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Button } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { GroupAndSortTaskPipe } from '../../pipes/group-and-sort-task.pipe';
 import { ReplacePipe } from '../../pipes/replace.pipe';
-import { DebounceInputDirective } from '../../directives/debounce-input.directive';
 import {
   AbstractTaskService,
   Task,
@@ -14,8 +19,6 @@ import {
 } from '@service/abstract.task.service';
 import { Router } from '@angular/router';
 import { TaskCardComponent } from '@components/board/task-card/task-card.component';
-import { IconField } from 'primeng/iconfield';
-import { InputIcon } from 'primeng/inputicon';
 import { AutoFocusModule } from 'primeng/autofocus';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import {
@@ -29,6 +32,9 @@ import {
   FETCH_DATA,
   FetchDataDirective,
 } from 'src/app/directives/fetch-data.directive';
+import { BecomeVisibleDirective } from 'src/app/directives/become-visible-directive';
+import { SearchInputComponent } from '@components/search-input/search-input.component';
+import { HeaderComponent } from '@components/header/header.component';
 
 @Component({
   selector: 'app-board',
@@ -36,16 +42,16 @@ import {
     CardModule,
     InputTextModule,
     GroupAndSortTaskPipe,
-    ReplacePipe,
-    DebounceInputDirective,
     TaskCardComponent,
-    InputIcon,
-    IconField,
     Button,
     AutoFocusModule,
     ProgressSpinnerModule,
     DragDropModule,
+    ReplacePipe,
     FetchDataDirective,
+    BecomeVisibleDirective,
+    SearchInputComponent,
+    HeaderComponent,
   ],
   templateUrl: './board.component.html',
   providers: [
@@ -66,11 +72,12 @@ export class BoardComponent {
   tasks$!: Observable<Task[]>;
   showModal = signal<boolean>(false);
   loading = signal(false);
-  TASK_STATUSES = [...TASK_STATUSES];
-  searchChange = new Subject<string>();
-  scrollToBottom = new Subject<unknown>();
+  TASK_STATUSES_VALUE = [...TASK_STATUSES].map((e) => e.value);
   tasks: Task[] = [];
-  search = '';
+  search = signal('');
+  becomeVisible = viewChild.required<BecomeVisibleDirective>(
+    BecomeVisibleDirective,
+  );
 
   private readonly taskService = inject(AbstractTaskService);
   private readonly router = inject(Router);

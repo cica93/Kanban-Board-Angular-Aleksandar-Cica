@@ -1,6 +1,10 @@
 import { Component, computed, input, output } from '@angular/core';
 import { CardModule } from 'primeng/card';
-import { BADGE_COLOR_MAP, Task } from '@service/abstract.task.service';
+import {
+  BADGE_COLOR_MAP,
+  TASK_STATUSES,
+  Task,
+} from '@service/abstract.task.service';
 import { BadgeModule } from 'primeng/badge';
 import { AvatarModule } from 'primeng/avatar';
 import { AvatarGroupModule } from 'primeng/avatargroup';
@@ -23,6 +27,7 @@ import { MenuModule } from 'primeng/menu';
 })
 export class TaskCardComponent {
   protected readonly maxVisibleImages = 5;
+  TASK_STATUSES = TASK_STATUSES;
   protected readonly items = [
     {
       items: [
@@ -46,5 +51,18 @@ export class TaskCardComponent {
   readonly task = input.required<Task>();
   readonly onDelete = output<Task>();
   readonly onEdit = output<Task>();
-  taskSeverityClass = computed(() => BADGE_COLOR_MAP[this.task().taskPriority]);
+  taskSeverityClass = computed(() => {
+    return BADGE_COLOR_MAP[this.task().taskPriority];
+    // const p = this.task().taskPriority;
+    // switch (p) {
+    //   case TASK_PRIORITIES[0]:
+    //     return TASK_STATUSES[0];
+    //   case TASK_PRIORITIES[1]:
+    //     return TASK_STATUSES[1];
+    //   case TASK_PRIORITIES[2]:
+    //     return TASK_STATUSES[2];
+    //   default:
+    //     throw new Error(`invalid priority ${p satisfies never}`);
+    // }
+  });
 }

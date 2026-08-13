@@ -1,10 +1,19 @@
-import { AsyncPipe } from '@angular/common';
-import { Component, inject, InjectionToken, Injector, Type } from '@angular/core';
+import {
+  Component,
+  inject,
+  InjectionToken,
+  Injector,
+  signal,
+  Type,
+} from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
-import { User, UserService } from '@service/user.service';
+import { User } from '@service/user.service';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { take } from 'rxjs';
+import { httpResource } from '@angular/common/http';
+import { SearchInputComponent } from '@components/search-input/search-input.component';
+import { HeaderComponent } from '@components/header/header.component';
 
 export const DIALOG_COMPONENT = new InjectionToken<Type<any>>(
   'DIALOG_COMPONENT',
@@ -12,12 +21,14 @@ export const DIALOG_COMPONENT = new InjectionToken<Type<any>>(
 
 @Component({
   selector: 'app-users',
-  imports: [AsyncPipe, TableModule, ButtonModule],
+  imports: [TableModule, ButtonModule, SearchInputComponent, HeaderComponent],
   templateUrl: './users.component.html',
 })
 export class UsersComponent {
-  protected readonly userService = inject(UserService);
-  protected readonly users$ = this.userService.getUsers();
+  keyword = signal('');
+  data = httpResource<User[]>(() => `users?keyword=${this.keyword()}`, {
+    defaultValue: [],
+  });
   protected readonly dialogService: DialogService = inject(DialogService);
   private readonly dialogComponent = inject(DIALOG_COMPONENT) as Type<any>;
   ref!: DynamicDialogRef<any>;
@@ -40,6 +51,13 @@ export class UsersComponent {
   }
 
   deleteUser({ id }: User): void {
-    console.log(id);
+    this.data.update((users) => users.filter((user) => user.id !== id));
+  }
+
+  addUser(): void {
+    this.data.update((users) => [
+      { fullName: 'Saban', email: 's@gmail.com', id: 76 } as unknown as User,
+      ...users,
+    ]);
   }
 }

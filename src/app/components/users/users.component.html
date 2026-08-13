@@ -1,5 +1,20 @@
+
  <div class="card m-3 base-200">
-    <p-table [value]="(users$ | async) ?? []" [tableStyle]="{ 'min-width': '50rem' }">
+    <app-header>
+         <app-search-input class="w-3" 
+      (inputChange)="keyword.set($event)" 
+      [autoFocus]="true" 
+      [placeholder]="'Search Users'" 
+    />
+          <p-button
+            icon="pi pi-pencil"
+            [size]="'large'"
+            (click)="addUser()"
+            />
+
+    </app-header>
+   
+    <p-table [value]="data.value()" [tableStyle]="{ 'min-width': '50rem' }">
         <ng-template #header>
             <tr>
                 <th>Full Name</th>

@@ -1,23 +1,34 @@
 .app-header {
+  --header-link-padding: 4px 8px;
+  --header-link-radius: 8px;
+
+  --header-link-color: #ffffff;
+  --header-link-hover-color: var(--p-badge-info-background);
+  --header-link-hover-bg: #ffffff;
+
+  --header-link-active-color: var(--p-primary-color);
+  --header-link-active-bg: #ffffff;
+
   z-index: 1000;
 
-  a, app-link-group a  {
-    padding: 4px 8px;
-    border-radius: 8px;
+  a,
+  app-link-group a {
+    padding: var(--header-link-padding);
+    border-radius: var(--header-link-radius);
 
     &:not(.router-link-active) {
+      color: var(--header-link-color);
       text-decoration: none;
-      color: #ffffff;
 
       &:hover {
-        color: var(--p-badge-info-background);
-        background-color: #ffffff;
+        color: var(--header-link-hover-color);
+        background-color: var(--header-link-hover-bg);
       }
     }
 
     &.router-link-active {
-      color: var(--p-primary-color);
-      background-color: #ffffff;
+      color: var(--header-link-active-color);
+      background-color: var(--header-link-active-bg);
       cursor: default;
     }
   }

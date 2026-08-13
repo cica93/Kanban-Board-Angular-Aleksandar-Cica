@@ -1,12 +1,11 @@
-import { Component, inject, resource, signal } from '@angular/core';
+import { Component, inject, OnInit, resource, signal } from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { AutoFocusModule } from 'primeng/autofocus';
 import {
   form,
   required,
   email,
-  minLength,
   validate,
   FormField,
   FormRoot,
@@ -22,10 +21,79 @@ import { SecurityService } from '@service/security.service';
 import { UserService } from '@service/user.service';
 import { JwtUtils } from '@service/jwt.service';
 
+declare const __brand: unique symbol;
+type Branded<T, BRAND> = T & { [__brand]: BRAND };
+export type Email = Branded<string, 'Email'>;
+export type Password = Branded<string, 'password'>;
+
 export interface LoginForm {
   email: string;
   password: string;
 }
+
+export interface BaseMessage {
+  id: number;
+  email: string;
+}
+
+export type Data<T> = {
+  data: T[];
+  error?: never;
+};
+
+export type Error = {
+  error: string;
+  data?: never;
+};
+
+export type DataStatus<T = any> = { http: string } & (Data<T> | Error);
+
+const d: DataStatus<string> = {
+  http: '',
+  data: [],
+};
+
+console.log(d);
+
+export function isError<T = any>(
+  d: DataStatus<T>,
+): d is { http: string } & Error {
+  return 'error' in d;
+}
+
+export function some<T = any>(d: DataStatus<T>): void {
+  if (isError(d)) {
+    d.error;
+  } else {
+    d.data;
+  }
+}
+
+export function assertValidEmail(email: string): asserts email is Email {
+  if (!email.includes('@')) {
+    throw new Error('not valid email');
+  }
+}
+
+export function checkEmail(email: string): Email {
+  assertValidEmail(email);
+  return email as Email;
+}
+
+export type Measure = 'px' | 'rem' | 'vh' | 'vw' | '%';
+export type PositiveCssSize<S extends string = 'string'> =
+  S extends `-${string}` ? never : S extends `${number}${Measure}` ? S : never;
+
+export function setElementWidth<T extends HTMLElement, S extends string>(
+  element: T,
+  cssSize: PositiveCssSize<S>,
+): void {
+  element.style.width = cssSize;
+}
+
+export type ObservableType<T> = T extends (...args: any) => Observable<infer R>
+  ? R
+  : never;
 
 @Component({
   selector: 'app-login',
@@ -42,44 +110,39 @@ export interface LoginForm {
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
-export class LoginComponent {
-  protected model = signal<LoginForm>({ email: '', password: '' });
+export class LoginComponent implements OnInit {
   private readonly loginService = inject(LoginService);
   private readonly router = inject(Router);
   private readonly securityService = inject(SecurityService);
   private readonly userService = inject(UserService);
+  ngOnInit(): void {
+    const a: ObservableType<typeof this.loginService.login> = {
+      id: 1,
+      fullName: '',
+      email: '',
+      password: '',
+      token: '',
+      tasks: [],
+    };
+    console.log(a);
+    //setElementWidth(document.getElementById('s')!, '10rem');
+  }
+  protected model = signal<LoginForm>({
+    email: '',
+    password: '',
+  });
+
+  email = signal('');
+
   protected loginForm = form<LoginForm>(
     this.model,
     (path) => {
       required(path.email, { message: 'Email is required' });
       email(path.email, { message: 'Please enter a valid email address' });
-      required(path.password, { message: 'Password is required' });
-      minLength(path.password, 8, {
-        message: 'Password must be at least 8 characters long',
-      });
-
       validate(path.password, ({ value }) => {
-        const password = value() as string;
-        if (!/[0-9]/.test(password)) {
-          return this.createErrorObject(
-            'Password must contain at least one number',
-          );
-        }
-        if (!/[a-z]/.test(password)) {
-          return this.createErrorObject(
-            'Password must contain at least one lowercase letter',
-          );
-        }
-
-        if (!/[A-Z]/.test(password)) {
-          return this.createErrorObject(
-            'Password must contain at least one uppercase letter',
-          );
-        }
-        if (!/[^a-zA-Z0-9]/.test(password)) {
-          return this.createErrorObject(
-            'Password must contain at least one special character',
-          );
+        const message = passwordErrorMessage(value());
+        if (message) {
+          return this.createErrorObject(message);
         }
         return undefined;
       });
@@ -142,4 +205,36 @@ export class LoginComponent {
   } {
     return { kind, message };
   }
+}
+
+export const MIN_PASSWORD_LENGTH = 8;
+
+export function passwordErrorMessage(password?: string | null): string | null {
+  if (!password) {
+    return 'Password is not provided';
+  }
+  if (!/[0-9]/.test(password)) {
+    return 'Password must contain at least one number';
+  }
+  if (!/[a-z]/.test(password)) {
+    return 'Password must contain at least one lowercase letter';
+  }
+  if (!/[A-Z]/.test(password)) {
+    ('Password must contain at least one uppercase letter');
+  }
+  if (!/[^a-zA-Z0-9]/.test(password)) {
+    return 'Password must contain at least one special character';
+  }
+  if (password.length < MIN_PASSWORD_LENGTH) {
+    return `password have to have the least ${MIN_PASSWORD_LENGTH} characters`;
+  }
+  return null;
+}
+
+export function isPassword(password?: string | null): password is Password {
+  return !passwordErrorMessage(password);
+}
+
+export function brand<T, B>(value: T): Branded<T, B> {
+  return value as Branded<T, B>;
 }

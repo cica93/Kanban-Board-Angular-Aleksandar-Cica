@@ -83,7 +83,12 @@ export const appConfig: ApplicationConfig = {
         securityService.logout();
         return EMPTY;
       }
-      return securityService.getCurrentUser().pipe(catchError(() => of(null)));
+      return securityService.getCurrentUser().pipe(
+        catchError(() => {
+          securityService.logout();
+          return of(null);
+        }),
+      );
     }),
     provideAnimationsAsync(),
   ],

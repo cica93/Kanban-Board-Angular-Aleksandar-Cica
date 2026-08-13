@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable, shareReplay } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { z } from 'zod';
+import { Task } from './abstract.task.service';
 
 export const userSchema = z.object({
   id: z.number().int().positive(),
@@ -29,8 +30,10 @@ export class UserService {
     return this.http.get<User>('users/current').pipe(shareReplay(1));
   }
 
-  getUsers(): Observable<User[]> {
-    return this.http.get<User[]>('users');
+  getUsers(keyword = '', limit = 10, offset = 0): Observable<User[]> {
+    return this.http.get<User[]>('users', {
+      params: { keyword, limit, offset },
+    });
   }
 
   hasMail(email: string): Observable<boolean> {

@@ -23,11 +23,9 @@ import { AutoFocusModule } from 'primeng/autofocus';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { FormValueWrapperComponent } from 'src/app/form-value-wrapper/form-value-wrapper.component';
-import { ReplacePipe } from 'src/app/pipes/replace.pipe';
 import { UserService } from '@service/user.service';
 import { ButtonModule } from 'primeng/button';
 import { MultiSelect } from 'primeng/multiselect';
-import { TextareaModule } from 'primeng/textarea';
 
 export type NoTUpdatableTaskFields =
   | 'id'
@@ -46,12 +44,10 @@ export type TaskForm = Omit<Task, NoTUpdatableTaskFields>;
     DialogModule,
     InputTextModule,
     SelectModule,
-    ReplacePipe,
     AutoFocusModule,
     FormField,
     FormValueWrapperComponent,
     MultiSelect,
-    TextareaModule,
     AsyncPipe,
   ],
   templateUrl: './task-dialog.component.html',
@@ -66,8 +62,8 @@ export class TaskDialogComponent extends BaseDialogComponent<Task> {
   TASK_PRIORITIES = TASK_PRIORITIES;
   protected model = signal<TaskForm>({
     description: '',
-    taskPriority: this.TASK_PRIORITIES[0],
-    taskStatus: this.TASK_STATUSES[0],
+    taskPriority: this.TASK_PRIORITIES[0].value,
+    taskStatus: this.TASK_STATUSES[0].value,
     title: '',
     users: [],
   });
