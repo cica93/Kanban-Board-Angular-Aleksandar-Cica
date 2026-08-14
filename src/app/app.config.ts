@@ -36,7 +36,6 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { DialogService } from 'primeng/dynamicdialog';
 import { EMPTY } from 'rxjs/internal/observable/empty';
 import { provideSignalFormsConfig } from '@angular/forms/signals';
-import { catchError, of } from 'rxjs';
 
 const apiInterceptor = ApiInterceptor;
 
@@ -83,12 +82,7 @@ export const appConfig: ApplicationConfig = {
         securityService.logout();
         return EMPTY;
       }
-      return securityService.getCurrentUser().pipe(
-        catchError(() => {
-          securityService.logout();
-          return of(null);
-        }),
-      );
+      return securityService.getCurrentUser();
     }),
     provideAnimationsAsync(),
   ],

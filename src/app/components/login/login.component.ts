@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, resource, signal } from '@angular/core';
+import { Component, inject, resource, signal } from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
 import { firstValueFrom, Observable } from 'rxjs';
 import { AutoFocusModule } from 'primeng/autofocus';
@@ -47,13 +47,6 @@ export type Error = {
 };
 
 export type DataStatus<T = any> = { http: string } & (Data<T> | Error);
-
-const d: DataStatus<string> = {
-  http: '',
-  data: [],
-};
-
-console.log(d);
 
 export function isError<T = any>(
   d: DataStatus<T>,
@@ -110,23 +103,11 @@ export type ObservableType<T> = T extends (...args: any) => Observable<infer R>
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
   private readonly loginService = inject(LoginService);
   private readonly router = inject(Router);
   private readonly securityService = inject(SecurityService);
   private readonly userService = inject(UserService);
-  ngOnInit(): void {
-    const a: ObservableType<typeof this.loginService.login> = {
-      id: 1,
-      fullName: '',
-      email: '',
-      password: '',
-      token: '',
-      tasks: [],
-    };
-    console.log(a);
-    //setElementWidth(document.getElementById('s')!, '10rem');
-  }
   protected model = signal<LoginForm>({
     email: '',
     password: '',

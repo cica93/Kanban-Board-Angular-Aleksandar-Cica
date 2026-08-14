@@ -13,6 +13,7 @@ const loginGuard = () => {
   const security = inject(SecurityService);
   return inject(SecurityService).user$.pipe(
     map((user) => {
+      console.log(user);
       if (!user) {
         security.logout();
       }

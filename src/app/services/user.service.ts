@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Observable, shareReplay } from 'rxjs';
+import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { z } from 'zod';
 import { Task } from './abstract.task.service';
@@ -27,7 +27,7 @@ export class UserService {
   private readonly http = inject(HttpClient);
 
   currentUser(): Observable<User> {
-    return this.http.get<User>('users/current').pipe(shareReplay(1));
+    return this.http.get<User>('users/current');
   }
 
   getUsers(keyword = '', limit = 10, offset = 0): Observable<User[]> {

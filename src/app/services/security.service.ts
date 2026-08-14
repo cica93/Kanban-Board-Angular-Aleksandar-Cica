@@ -1,7 +1,15 @@
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, Observable, Subject, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  EMPTY,
+  Observable,
+  Subject,
+  tap,
+} from 'rxjs';
 import { Router } from '@angular/router';
 import { User, UserService } from './user.service';
+import { JwtUtils } from './jwt.service';
 
 @Injectable({ providedIn: 'root' })
 export class SecurityService {
@@ -19,15 +27,15 @@ export class SecurityService {
       tap((user) => {
         this.user$.next(user);
       }),
-      catchError(async () => {
-        this.user$.next(null);
-        return null;
+      catchError(() => {
+        this.logout();
+        return EMPTY;
       }),
     );
   }
 
   logout(): void {
-    localStorage.clear();
+    JwtUtils.destroyToken();
     this.user$.next(null);
     this.router.navigate(['login']);
   }

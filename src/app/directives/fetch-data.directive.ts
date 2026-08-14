@@ -45,13 +45,8 @@ export class FetchDataDirective<T> implements OnInit {
   ngOnInit(): void {
     merge(
       outputToObservable(this.becomeVisibleHtml().becomeVisible).pipe(
-        tap(() => {
-          console.log('has more: ' + this.hasMore);
-          console.log('loading: ' + this.loading);
-        }),
         filter(() => !this.loading && this.hasMore),
         tap(() => {
-          console.log('sssss');
           this.slot++;
           window.scrollBy({
             top: -200,
@@ -72,7 +67,6 @@ export class FetchDataDirective<T> implements OnInit {
             tap((result) => {
               this.hasMore = result.length !== 0;
               this.setLoading();
-              console.log(this.loading);
             }),
             catchError(() => {
               this.setLoading();
