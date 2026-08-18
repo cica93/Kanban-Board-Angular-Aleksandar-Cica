@@ -35,6 +35,7 @@ import {
 import { BecomeVisibleDirective } from 'src/app/directives/become-visible-directive';
 import { SearchInputComponent } from '@components/search-input/search-input.component';
 import { HeaderComponent } from '@components/header/header.component';
+import { ScrollTopComponent } from '@components/scroll-top/scroll-top.component';
 
 @Component({
   selector: 'app-board',
@@ -52,6 +53,7 @@ import { HeaderComponent } from '@components/header/header.component';
     BecomeVisibleDirective,
     SearchInputComponent,
     HeaderComponent,
+    ScrollTopComponent,
   ],
   templateUrl: './board.component.html',
   providers: [

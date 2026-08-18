@@ -1,13 +1,10 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, viewChild } from '@angular/core';
 import {
   Router,
   RouterLink,
   RouterLinkActive,
   RouterOutlet,
 } from '@angular/router';
-import { MessageService } from 'primeng/api';
-import { MessageHandlerService } from '@service/message.handler.service';
-import { SecurityService } from '@service/security.service';
 import { Observable, tap } from 'rxjs';
 import { AsyncPipe, SlicePipe, TitleCasePipe } from '@angular/common';
 import { User } from '@service/user.service';
@@ -15,9 +12,13 @@ import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 import { DialogModule } from 'primeng/dialog';
 import { BaseDialogComponent } from './components/base-dialog/base-dialog.component';
-import { SocketService } from '@service/socket.service';
 import { AvatarModule } from 'primeng/avatar';
 import { LinkGroupComponent } from '@components/link-group/link-group.component';
+import { MessageHandlerService } from '@service/message.handler.service';
+import { SecurityService } from '@service/security.service';
+import { SocketService } from '@service/socket.service';
+import { MessageService } from 'primeng/api';
+import { outputToObservable } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-root',
@@ -34,6 +35,7 @@ import { LinkGroupComponent } from '@components/link-group/link-group.component'
     AvatarModule,
     SlicePipe,
     LinkGroupComponent,
+    BaseDialogComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
@@ -46,7 +48,9 @@ export class AppComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly messageHandlerService = inject(MessageHandlerService);
   public showDialog = signal(false);
-  protected modalHeader?: Observable<string>;
+  protected modalHeader = signal('');
+
+  baseDialog = viewChild(BaseDialogComponent);
 
   ngOnInit(): void {
     this.user$ = this.securityService.user$.asObservable().pipe(
@@ -97,8 +101,13 @@ export class AppComponent implements OnInit {
     }
   }
 
-  onSidebarActivate(event: BaseDialogComponent): void {
-    this.showDialog.set(true);
-    this.modalHeader = event.modalHeader.asObservable();
+  activationChange(component: any): void {
+    this.showDialog.set(!!component);
+    this.baseDialog()?.setActiveComponent(component);
+    if (component) {
+      outputToObservable(component.onClose).subscribe((c: unknown) => {
+        this.dialogVisibleChange(!!c);
+      });
+    }
   }
 }

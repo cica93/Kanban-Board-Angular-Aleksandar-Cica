@@ -65,7 +65,7 @@ export class UserFormComponent extends BaseDialogComponent<User> {
       submission: {
         action: async () => {
           this.formSubmitted.emit(this.userForm().value);
-          this.closeModal();
+          //  this.closeModal();
         },
         onInvalid: () => {
           this.userForm().markAsDirty();

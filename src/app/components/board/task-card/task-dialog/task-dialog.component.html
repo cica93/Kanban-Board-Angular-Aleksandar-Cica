@@ -1,5 +1,5 @@
 
-<form [formRoot]="taskForm" class="flex flex-column gap-2 w-full">
+<form [formRoot]="taskForm" class="flex flex-column w-full">
  <app-form-value-wrapper [label]="'Title'" [name]="'title'">
     <input
       [attr.id]="'title'"
@@ -57,26 +57,6 @@
   />
 </app-form-value-wrapper>
 
-  <div class="flex flex-row justify-content-end gap-2 mt-auto">
-    <button
-      pButton
-      [tabindex]="-1"
-      pRipple
-      [severity]="'danger'"
-      (click)="closeDialog($event)"
-    >Cancel</button>
-    @let submitting = taskForm().submitting();
-    <button 
-      pButton
-      pRipple 
-      id="save-button"
-      [severity]="'primary'" 
-      [type]="'submit'"
-      [disabled]="submitting"
-    >{{submitting ? 'Saving...' : 'Save'}} 
-      @if (submitting) { 
-      <i class="pi pi-spin pi-spinner"></i> 
-    } </button>
-  </div>
+  
 </form>
 

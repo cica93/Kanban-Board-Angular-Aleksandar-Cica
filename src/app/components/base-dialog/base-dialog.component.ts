@@ -1,61 +1,59 @@
-import { Location } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { Router } from '@angular/router';
-import { MessageHandlerService } from '@service/message.handler.service';
+import {
+  Component,
+  inject,
+  InjectionToken,
+  output,
+  signal,
+} from '@angular/core';
+import { ButtonModule } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { RippleModule } from 'primeng/ripple';
+import { Subject } from 'rxjs';
+
+export interface SubmitForm {
+  submit(event: PointerEvent): Promise<boolean>;
+  submiting: Subject<boolean>;
+  modalHeader: Subject<string>;
+}
+
+export const SUBMIT_TOKEN = new InjectionToken<SubmitForm>('app.config');
 
 @Component({
   selector: 'app-base-dialog',
-  imports: [],
-  template: '',
+  imports: [ButtonModule, RippleModule],
+  templateUrl: './base-dialog.component.html',
 })
-export class BaseDialogComponent<T = any> implements OnInit {
-  private readonly location = inject(Location);
-  private readonly router = inject(Router);
-  protected initValue = signal<T>({} as T);
-  public modalHeader = new BehaviorSubject<string>('');
-  private readonly messageHandlerService = inject(MessageHandlerService);
+export class BaseDialogComponent<T = any> {
+  headerChange = output<string>();
+  onClose = output<boolean>();
+
+  protected initValue?: T | null;
+
   protected onSuccess = new Subject<T>();
   public onCancel = new Subject<void>();
   protected onError = new Subject<string>();
   public ref = inject(DynamicDialogRef, { optional: true });
   public config = inject(DynamicDialogConfig, { optional: true });
+  protected submittingForm = signal(false);
+  private activeComponent: any;
 
-  ngOnInit(): void {
-    const initValue =
-      (this.location.getState() as any)?.['initValue'] ??
-      this.config?.data?.['initValue'] ??
-      ({} as T);
-    this.initValue.set(initValue);
-  }
-
-  public closeDialog(event: PointerEvent) {
-    event.preventDefault();
-    this.close();
-  }
-
-  public close(initNewSearch = false): void {
-    this.router.navigate([{ outlets: { sidebar: null } }], {
-      state: { initNewSearch },
-      replaceUrl: true,
-    });
-  }
-
-  protected visibleChange(event: boolean): void {
-    if (!event) {
-      this.close(event);
+  setActiveComponent(component: any) {
+    this.activeComponent = component;
+    if (this.activeComponent) {
+      this.activeComponent.modalHeader.asObservable().subscribe((e: string) => {
+        this.headerChange.emit(e);
+      });
+      this.activeComponent.onClose.asObservable().subscribe((e: boolean) => {
+        this.onClose.emit(e);
+      });
+      this.activeComponent.submiting
+        .asObservable()
+        .subscribe(this.submittingForm.set);
     }
   }
 
-  protected showMessage(summary: string, detail?: string): void {
-    this.messageHandlerService.successEvent.next({
-      summary,
-      detail,
-    });
-  }
-
-  protected closeModal(): void {
-    this.ref?.close();
+  async submit(event: PointerEvent): Promise<void> {
+    event.preventDefault();
+    await this.activeComponent?.submit();
   }
 }

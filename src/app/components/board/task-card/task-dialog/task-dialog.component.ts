@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import {
   AbstractTaskService,
@@ -6,8 +6,8 @@ import {
   TASK_PRIORITIES,
   TASK_STATUSES,
 } from '@service/abstract.task.service';
-import { firstValueFrom } from 'rxjs';
-import { BaseDialogComponent } from '@components/base-dialog/base-dialog.component';
+import { firstValueFrom, Subject } from 'rxjs';
+import { SubmitForm } from '@components/base-dialog/base-dialog.component';
 import {
   form,
   FormField,
@@ -15,17 +15,18 @@ import {
   maxLength,
   minLength,
   required,
+  submit,
   validate,
 } from '@angular/forms/signals';
-import { RippleModule } from 'primeng/ripple';
 import { AsyncPipe } from '@angular/common';
 import { AutoFocusModule } from 'primeng/autofocus';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { FormValueWrapperComponent } from 'src/app/form-value-wrapper/form-value-wrapper.component';
 import { UserService } from '@service/user.service';
-import { ButtonModule } from 'primeng/button';
 import { MultiSelect } from 'primeng/multiselect';
+import { MessageHandlerService } from '@service/message.handler.service';
+import { Location } from '@angular/common';
 
 export type NoTUpdatableTaskFields =
   | 'id'
@@ -37,10 +38,8 @@ export type TaskForm = Omit<Task, NoTUpdatableTaskFields>;
 @Component({
   selector: 'app-task-dialog',
   imports: [
-    ButtonModule,
     DialogModule,
     FormRoot,
-    RippleModule,
     DialogModule,
     InputTextModule,
     SelectModule,
@@ -55,8 +54,14 @@ export type TaskForm = Omit<Task, NoTUpdatableTaskFields>;
     class: 'flex h-full',
   },
 })
-export class TaskDialogComponent extends BaseDialogComponent<Task> {
+export class TaskDialogComponent implements SubmitForm, OnInit {
+  initValue?: Task;
+  submiting = new Subject<boolean>();
+  modalHeader = new Subject<string>();
+  onClose = new Subject<boolean>();
   private readonly taskService = inject(AbstractTaskService);
+  private readonly location = inject(Location);
+  private readonly messageHandlerService = inject(MessageHandlerService);
   users$ = inject(UserService).getUsers();
   TASK_STATUSES = TASK_STATUSES;
   TASK_PRIORITIES = TASK_PRIORITIES;
@@ -98,7 +103,7 @@ export class TaskDialogComponent extends BaseDialogComponent<Task> {
       submission: {
         action: async () => {
           try {
-            const id = this.initValue()?.id ?? undefined;
+            const id = this.initValue?.id ?? undefined;
             const formValue = this.taskForm().value();
             const savedTask = await firstValueFrom(
               id
@@ -118,7 +123,7 @@ export class TaskDialogComponent extends BaseDialogComponent<Task> {
               });
               this.showMessage('Task Saved', 'Task saved successfully');
             }
-            this.close(true);
+            this.onClose.next(false);
             return undefined;
           } catch (error) {
             return {
@@ -136,16 +141,31 @@ export class TaskDialogComponent extends BaseDialogComponent<Task> {
     },
   );
 
-  override ngOnInit(): void {
-    super.ngOnInit();
-    this.model.set({
-      ...this.model(),
-      ...this.initValue(),
-      users: (this.initValue()?.users ?? []).map((u) => ({
-        ...u,
-        id: Number(u.id),
-      })),
+  ngOnInit(): void {
+    this.initValue = (this.location.getState() as any)?.['initValue'] as
+      | Task
+      | undefined;
+    if (this.initValue) {
+      this.model.set({
+        ...this.model(),
+        ...(this.initValue ?? {}),
+        users: (this.initValue?.users ?? []).map((u) => ({
+          ...u,
+          id: Number(u.id),
+        })),
+      });
+    }
+    this.modalHeader.next(this.initValue?.id ? 'Edit Task' : 'Create Task');
+  }
+
+  submit(): Promise<boolean> {
+    return submit(this.taskForm);
+  }
+
+  protected showMessage(summary: string, detail?: string): void {
+    this.messageHandlerService.successEvent.next({
+      summary,
+      detail,
     });
-    this.modalHeader.next(this.initValue()?.id ? 'Edit Task' : 'Create Task');
   }
 }

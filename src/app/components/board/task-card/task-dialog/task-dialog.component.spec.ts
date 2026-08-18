@@ -83,8 +83,8 @@ describe('TaskDialogComponent', () => {
     expect(component.taskForm().value()).toEqual({
       title: 'Test Task',
       description: 'Test Desc',
-      taskStatus: TASK_STATUSES[1],
-      taskPriority: TASK_PRIORITIES[2],
+      taskStatus: TASK_STATUSES[1].value,
+      taskPriority: TASK_PRIORITIES[2].value,
       users: [],
     });
   });

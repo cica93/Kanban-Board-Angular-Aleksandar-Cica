@@ -1,4 +1,4 @@
-import { Component, inject, resource, signal } from '@angular/core';
+import { Component, injectAsync, resource, signal } from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
 import { firstValueFrom, Observable } from 'rxjs';
 import { AutoFocusModule } from 'primeng/autofocus';
@@ -15,10 +15,6 @@ import { ButtonModule } from 'primeng/button';
 import { FormValueWrapperComponent } from 'src/app/form-value-wrapper/form-value-wrapper.component';
 import { PasswordModule } from 'primeng/password';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { LoginService } from '@service/login.service';
-import { SecurityService } from '@service/security.service';
-import { UserService } from '@service/user.service';
 import { JwtUtils } from '@service/jwt.service';
 
 declare const __brand: unique symbol;
@@ -104,10 +100,18 @@ export type ObservableType<T> = T extends (...args: any) => Observable<infer R>
   styleUrl: './login.component.scss',
 })
 export class LoginComponent {
-  private readonly loginService = inject(LoginService);
-  private readonly router = inject(Router);
-  private readonly securityService = inject(SecurityService);
-  private readonly userService = inject(UserService);
+  private readonly loginService = injectAsync(() =>
+    import('@service/login.service').then((m) => m.LoginService),
+  );
+  private readonly router = injectAsync(() =>
+    import('@angular/router').then((r) => r.Router),
+  );
+  private readonly securityService = injectAsync(() =>
+    import('@service/security.service').then((s) => s.SecurityService),
+  );
+  private readonly userService = injectAsync(() =>
+    import('@service/user.service').then((u) => u.UserService),
+  );
   protected model = signal<LoginForm>({
     email: '',
     password: '',
@@ -134,10 +138,8 @@ export class LoginComponent {
           resource({
             params: emailValue,
             loader: async ({ params }) => {
-              if (!params) {
-                return false;
-              }
-              return firstValueFrom(this.userService.hasMail(params));
+              const userService = await this.userService();
+              return firstValueFrom(userService.hasMail(params));
             },
           }),
         onSuccess: (hasMail, ctx) =>
@@ -154,12 +156,17 @@ export class LoginComponent {
       submission: {
         action: async () => {
           try {
+            const [router, securityService, loginService] = await Promise.all([
+              this.router(),
+              this.securityService(),
+              this.loginService(),
+            ]);
             const response = await firstValueFrom(
-              this.loginService.login(this.loginForm().value()),
+              loginService.login(this.loginForm().value()),
             );
             JwtUtils.saveToken(response.token);
-            this.securityService.user$.next(response);
-            this.router.navigate(['/rest']);
+            securityService.user$.next(response);
+            router.navigate(['/rest']);
             return undefined;
           } catch (error) {
             return this.createErrorObject(
