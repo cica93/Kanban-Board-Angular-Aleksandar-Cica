@@ -11,7 +11,7 @@
     </app-message-wrapper>
   } @else if (pending()) {
     <app-message-wrapper type="warning">
-      Checking {{name()}}... <p-progress-spinner  ariaLabel="loading"  animationDuration=".5s" [style]="{ width: '12px', height: '12px' }"/>
+      Checking {{name()}}... <mat-spinner [style]="{ width: '12px', height: '12px' }"></mat-spinner>
     </app-message-wrapper>
   }
 }

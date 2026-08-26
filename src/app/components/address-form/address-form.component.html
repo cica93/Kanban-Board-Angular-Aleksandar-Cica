@@ -1,17 +1,20 @@
 <div class="flex gap-2 flex-column">
   <div class="flex flex-row gap-2 w-full">
-    <app-form-value-wrapper class="col-6" [label]="'Street'" [name]="'street'">
+      <mat-form-field>
+       <mat-label>Street</mat-label>
       <input
-        [pAutoFocus]="true"
+        [appFirstFocus]="true"
         [attr.id]="'street'"
         placeholder="Enter street"
         [formField]="addressFields().street"
         styleClass="w-full"
-        pInputText
+        matInput
         class="flex-auto"
       />
-    </app-form-value-wrapper>
-    <app-form-value-wrapper class="col-6" [label]="'Zip Code'" [name]="'zipCode'">
+       </mat-form-field>
+       <mat-error></mat-error>
+    <mat-form-field>
+       <mat-label>Zip Code</mat-label>
       <input
         [attr.id]="'zip-code'"
         placeholder="Enter zip code"
@@ -20,10 +23,11 @@
         pInputText
         class="flex-auto"
       />
-    </app-form-value-wrapper>
+    </mat-form-field>
   </div>
   <div class="flex flex-row w-full">
-    <app-form-value-wrapper class="col-12" [label]="'City'" [name]="'city'">
+    <mat-form-field>
+       <mat-label>City</mat-label>
       <input
         [attr.id]="'city'"
         placeholder="Enter city"
@@ -32,6 +36,6 @@
         pInputText
         class="flex-auto"
       />
-    </app-form-value-wrapper>
+    </mat-form-field>
   </div>
 </div>

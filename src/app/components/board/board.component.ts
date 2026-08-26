@@ -2,13 +2,11 @@ import {
   ChangeDetectorRef,
   Component,
   inject,
+  Injector,
   signal,
   viewChild,
 } from '@angular/core';
-import { CardModule } from 'primeng/card';
 import { Observable } from 'rxjs';
-import { Button } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
 import { GroupAndSortTaskPipe } from '../../pipes/group-and-sort-task.pipe';
 import { ReplacePipe } from '../../pipes/replace.pipe';
 import {
@@ -17,10 +15,8 @@ import {
   TASK_STATUSES,
   TaskStatus,
 } from '@service/abstract.task.service';
-import { Router } from '@angular/router';
 import { TaskCardComponent } from '@components/board/task-card/task-card.component';
-import { AutoFocusModule } from 'primeng/autofocus';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import {
   CdkDragDrop,
   DragDropModule,
@@ -33,20 +29,26 @@ import {
   FetchDataDirective,
 } from 'src/app/directives/fetch-data.directive';
 import { BecomeVisibleDirective } from 'src/app/directives/become-visible-directive';
-import { SearchInputComponent } from '@components/search-input/search-input.component';
-import { HeaderComponent } from '@components/header/header.component';
-import { ScrollTopComponent } from '@components/scroll-top/scroll-top.component';
+import { SearchInputComponent } from '@components/shared/search-input/search-input.component';
+import { HeaderComponent } from '@components/shared/header/header.component';
+import { ScrollTopComponent } from '@components/shared/scroll-top/scroll-top.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatDialog } from '@angular/material/dialog';
+import {
+  BaseDialogComponent,
+  FORM_TOKEN,
+} from '@components/shared/base-dialog/base-dialog.component';
+import { TaskFormComponent } from './task-card/task-form/task-form.component';
 
 @Component({
   selector: 'app-board',
   imports: [
-    CardModule,
-    InputTextModule,
     GroupAndSortTaskPipe,
     TaskCardComponent,
-    Button,
-    AutoFocusModule,
-    ProgressSpinnerModule,
+    MatButtonModule,
+    MatIcon,
+    MatProgressSpinnerModule,
     DragDropModule,
     ReplacePipe,
     FetchDataDirective,
@@ -73,43 +75,61 @@ export class BoardComponent {
   hasMoreTasks = true;
   tasks$!: Observable<Task[]>;
   showModal = signal<boolean>(false);
+  initSaerchValue = signal<string | null>('');
   loading = signal(false);
   TASK_STATUSES_VALUE = [...TASK_STATUSES].map((e) => e.value);
   tasks: Task[] = [];
-  search = signal('');
   becomeVisible = viewChild.required<BecomeVisibleDirective>(
     BecomeVisibleDirective,
   );
 
   private readonly taskService = inject(AbstractTaskService);
-  private readonly router = inject(Router);
   private readonly messageService = inject(MessageHandlerService);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly dialog = inject(MatDialog);
 
   deleteTask(task: Task): void {
-    this.taskService.delete(task.id, task.version).subscribe({
-      next: () => {
-        this.showMessage('Task deleted');
+    const dialog = this.dialog.open(BaseDialogComponent, {
+      data: {
+        textContent: 'Are you sure that you want to delete task?',
+        dialogHeader: 'Delete task',
+        submitLabel: 'Delete',
       },
+    });
+    dialog.afterClosed().subscribe((result) => {
+      if (result) {
+        this.taskService.delete(task.id, task.version).subscribe({
+          next: () => {
+            this.showMessage('Task deleted');
+            this.initNewSaerch();
+          },
+        });
+      }
     });
   }
 
-  navigateToTaskDialog(task?: Partial<Task>): void {
-    this.router.navigate(
-      [
-        {
-          outlets: {
-            sidebar: ['task-dialog'],
-          },
-        },
-      ],
-      {
-        state: {
-          initValue: task ?? {},
-        },
-        replaceUrl: true,
+  openTaskDialog(task?: Partial<Task>): void {
+    const dialog = this.dialog.open(BaseDialogComponent, {
+      data: {
+        initValue: task,
+        dialogHeader: task ? 'Edit task' : 'Create task',
       },
-    );
+      injector: Injector.create({
+        providers: [
+          { provide: AbstractTaskService, useValue: this.taskService },
+          { provide: FORM_TOKEN, useValue: TaskFormComponent },
+        ],
+      }),
+    });
+    dialog.afterClosed().subscribe((result) => {
+      if (result) {
+        this.initNewSaerch();
+      }
+    });
+  }
+
+  private initNewSaerch() {
+    this.initSaerchValue.update((t) => (t === null ? '' : null));
   }
 
   onDrop(

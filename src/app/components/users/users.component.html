@@ -1,48 +1,47 @@
 
  <div class="card m-3 base-200">
     <app-header>
-         <app-search-input class="w-3" 
-      (inputChange)="keyword.set($event)" 
-      [autoFocus]="true" 
-      [placeholder]="'Search Users'" 
-    />
-          <p-button
+        <app-search-input class="w-3" 
+            (inputChange)="keyword.set($event)" 
+            [autoFocus]="true" 
+            [placeholder]="'Search Users'" 
+        />
+        <button
+            matButton 
+            matRipple
             icon="pi pi-pencil"
-            [size]="'large'"
             (click)="addUser()"
-            />
+        >Add</button>
 
     </app-header>
    
-    <p-table [value]="data.value()" [tableStyle]="{ 'min-width': '50rem' }">
-        <ng-template #header>
+    <table [style]="{ 'min-width': '50rem' }">
             <tr>
                 <th>Full Name</th>
                 <th>Email</th>
                 <th>Actions</th>
             </tr>
-        </ng-template>
-        <ng-template #body let-user>
+           @for (user of data.value(); track user.id) {
             <tr>
                 <td>{{ user.fullName }}</td>
                 <td>{{ user.email }}</td>
                 <td>
                     <div class="flex gap-1">
-                        <p-button
+                        <button
+                            matButton="text"                            
+                            matRipple
                             icon="pi pi-pencil"
-                            [size]="'small'"
                             (click)="editUser(user)"
-                        />
+                        >Edit</button>
                     
-                        <p-button
-                            icon="pi pi-trash"
-                            [size]="'small'"
-                            [severity]="'danger'"
+                        <button
+                            matButton="text"                          
+                            matRipple
                             (click)="deleteUser(user)"
-                        />
+                        >Delete</button>
                     </div>
                 </td>
             </tr>
-        </ng-template>
-    </p-table>
+           }
+    </table>
 </div>

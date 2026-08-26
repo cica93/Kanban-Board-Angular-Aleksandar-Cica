@@ -1,4 +1,4 @@
-import { Component, output, signal } from '@angular/core';
+import { Component, forwardRef, output, signal } from '@angular/core';
 import {
   Address,
   AddressFormComponent,
@@ -12,31 +12,42 @@ import {
   minLength,
   required,
 } from '@angular/forms/signals';
-import { FormValueWrapperComponent } from 'src/app/form-value-wrapper/form-value-wrapper.component';
-import { InputTextModule } from 'primeng/inputtext';
-import { AutoFocus } from 'primeng/autofocus';
-import { Button } from 'primeng/button';
-import { RippleModule } from 'primeng/ripple';
-import { User } from '@service/user.service';
-import { BaseDialogComponent } from '../base-dialog/base-dialog.component';
+import {
+  FORM_TOKEN,
+  SubmitForm,
+} from '../shared/base-dialog/base-dialog.component';
+import { Subject } from 'rxjs';
+import { MatError, MatFormField, MatLabel } from '@angular/material/input';
+import { MatRipple } from '@angular/material/core';
+import { FirstFocusDirective } from 'src/app/directives/first-focus.directive';
 
 export type AddressFormInput = Omit<Address, 'id'>;
+
+export interface AddressForm {
+  name: string;
+  address: AddressFormInput;
+  billingAddress: AddressFormInput;
+}
 
 @Component({
   selector: 'app-user-form',
   imports: [
     AddressFormComponent,
-    FormValueWrapperComponent,
     FormField,
     FormRoot,
-    InputTextModule,
-    AutoFocus,
-    Button,
-    RippleModule,
+    FirstFocusDirective,
+    MatFormField,
+    MatLabel,
+    MatError,
+    MatRipple,
+  ],
+  providers: [
+    { provide: FORM_TOKEN, useClass: forwardRef(() => UserFormComponent) },
   ],
   templateUrl: './user-form.component.html',
 })
-export class UserFormComponent extends BaseDialogComponent<User> {
+export class UserFormComponent implements SubmitForm<AddressForm, AddressForm> {
+  onClose: Subject<boolean> = new Subject();
   formSubmitted = output<any>();
   userModel = signal<{
     name: string;
@@ -47,7 +58,7 @@ export class UserFormComponent extends BaseDialogComponent<User> {
     address: { street: '', city: '', zipCode: '' } as AddressFormInput,
     billingAddress: { street: '', city: '', zipCode: '' } as AddressFormInput,
   });
-  userForm = form<{
+  form = form<{
     name: string;
     address: AddressFormInput;
     billingAddress: AddressFormInput;
@@ -64,12 +75,12 @@ export class UserFormComponent extends BaseDialogComponent<User> {
     {
       submission: {
         action: async () => {
-          this.formSubmitted.emit(this.userForm().value);
-          //  this.closeModal();
+          this.formSubmitted.emit(this.form().value);
+          //this.closeModal();
         },
         onInvalid: () => {
-          this.userForm().markAsDirty();
-          this.userForm().focusBoundControl();
+          this.form().markAsDirty();
+          this.form().focusBoundControl();
         },
         ignoreValidators: 'pending',
       },

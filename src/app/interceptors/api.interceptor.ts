@@ -1,9 +1,9 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
-import { SecurityService } from '../services/security.service';
-import { MessageHandlerService } from '../services/message.handler.service';
-import { JwtUtils } from '../services/jwt.service';
+import { SecurityService } from '@service/security.service';
+import { MessageHandlerService } from '@service/message.handler.service';
+import { JwtUtils } from '@service/jwt.service';
 
 const apiBaseUrl = 'http://localhost:3033';
 

@@ -8,7 +8,7 @@ import { User } from './user.service';
 export class LoginService {
   private readonly http = inject(HttpClient);
 
-  login(user: Partial<User>): Observable<User> {
+  login(user: Pick<User, 'email' | 'password'>): Observable<User> {
     return this.http.post<User>('login', user, {
       headers: {
         'skip-interceptor': 'true',

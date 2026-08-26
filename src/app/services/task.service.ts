@@ -12,7 +12,7 @@ export class TaskService extends AbstractTaskService {
   override get(description = '', limit = 20, offset = 0): Observable<Task[]> {
     return this.http.get<Task[]>('tasks', {
       params: {
-        description,
+        description: description == null ? '' : description,
         limit,
         offset,
       },

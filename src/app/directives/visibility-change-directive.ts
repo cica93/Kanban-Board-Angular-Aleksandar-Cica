@@ -15,7 +15,6 @@ export type CssSize =`${number}${Measure}`
 
 @Directive({
   selector: '[appVisiblilityChange]',
-  standalone: true,
 })
 export class VisiblilityChangeDirective implements OnDestroy {
   private readonly hostElement = inject<ElementRef<HTMLElement>>(

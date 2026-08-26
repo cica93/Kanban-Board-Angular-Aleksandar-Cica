@@ -19,7 +19,6 @@ import {
 } from '@angular/common/http';
 import { routes } from './app.routes';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { MessageService } from 'primeng/api';
 import { ApiInterceptor } from './interceptors/api.interceptor';
 import { JwtUtils } from '@service/jwt.service';
 import { SecurityService } from '@service/security.service';
@@ -27,20 +26,19 @@ import { SecurityService } from '@service/security.service';
 import { InMemoryCache } from '@apollo/client/core';
 import { HttpLink } from 'apollo-angular/http';
 import { Apollo, APOLLO_OPTIONS } from 'apollo-angular';
-import { providePrimeNG } from 'primeng/config';
-import Aura from '@primeng/themes/aura';
 import { Title } from '@angular/platform-browser';
 import { KanbanTitle } from '@service/kanban.title.service';
-import { GlobalErrorHandler } from '@service/error.handler.service';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { DialogService } from 'primeng/dynamicdialog';
 import { EMPTY } from 'rxjs/internal/observable/empty';
 import { provideSignalFormsConfig } from '@angular/forms/signals';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { GlobalErrorHandler } from '@service/error.handler.service';
 
 const apiInterceptor = ApiInterceptor;
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideZonelessChangeDetection(),
     provideRouter(
       routes,
       withComponentInputBinding(),
@@ -57,15 +55,10 @@ export const appConfig: ApplicationConfig = {
     }),
     provideZoneChangeDetection(),
     Title,
-    DialogService,
     { provide: TitleStrategy, useClass: KanbanTitle },
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
-    MessageService,
     Apollo,
     provideAnimations(),
-    providePrimeNG({
-      theme: { preset: Aura, options: { darkModeSelector: '.p-dark' } },
-    }),
 
     provideHttpClient(withXhr(), withInterceptors([apiInterceptor])),
     {

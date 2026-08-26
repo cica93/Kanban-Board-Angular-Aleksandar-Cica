@@ -10,7 +10,7 @@ import { APP_INITIALIZER, NO_ERRORS_SCHEMA } from '@angular/core';
 import { BehaviorSubject, of } from 'rxjs';
 import { provideMockActivatedRoute } from '@service/mock-activated-route.service';
 import { SecurityService } from '@service/security.service';
-import { BaseDialogComponent } from './components/base-dialog/base-dialog.component';
+import { BaseDialogComponent } from './components/shared/base-dialog/base-dialog.component';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideMockMessageHandler } from '@service/mock-message-handler.service';

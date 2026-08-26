@@ -1,6 +1,12 @@
 import { Service } from '@angular/core';
-import { ToastMessageOptions } from 'primeng/api';
 import { Observable, Subject } from 'rxjs';
+
+export interface ToastMessageOptions {
+  message?: string;
+  life?: number;
+  detail?: string;
+  summary?: string;
+}
 
 @Service()
 export class MessageHandlerService {

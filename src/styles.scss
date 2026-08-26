@@ -1,64 +1,111 @@
+
+// Include theming for Angular Material with `mat.theme()`.
+// This Sass mixin will define CSS variables that are used for styling Angular Material
+// components according to the Material 3 design spec.
+// Learn more about theming and how to use it for your application's
+// custom components at https://material.angular.dev/guide/theming
+@use '@angular/material' as mat;
+@import '@ng-select/ng-select/themes/material.theme.css';
+
+html {
+  height: 100%;
+  @include mat.theme((
+    color: (
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+  --p-inputtext-border-color: var(--p-textarea-border-color)
+}
+
+body {
+  // Default the application to a light color theme. This can be changed to
+  // `dark` to enable the dark color theme, or to `light dark` to defer to the
+  // user's system settings.
+  color-scheme: light;
+
+  // Set a default background, font and text colors for the application using
+  // Angular Material's system-level CSS variables. Learn more about these
+  // variables at https://material.angular.dev/guide/system-variables
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+
+  // Reset the user agent margin.
+  margin: 0;
+  height: 100%;
+}
 /* You can add global styles to this file, and also import other style files */
 //@import 'primeng/resources/themes/lara-light-blue/theme'; // or other theme
 
-@import "primeicons/primeicons.css";
 @import 'primeflex/primeflex.css';
 
 body {
    margin: 0;
 }
 
-.p-dialog {
-    max-height: 100vh !important
+.error-snack {
+  .mdc-snackbar__surface {
+    background-color: red !important;
+  }
 }
 
-.p-password-input, .p-password, .p-select {
-   width: 100%;
+.success-snack {
+   .mdc-snackbar__surface {
+    background-color: rgb(72, 228, 72) !important;
+  }
 }
 
-p-avatar-group > p-avatar:hover {
-   z-index: 1000 !important;
-   cursor: pointer;
+.active-link {
+   color: green; 
 }
 
-.p-menu-list.p-reset > li:first-child:has(span:empty) {
-   display: none;
+.form-input {
+  width: 100%;
+  padding: 0.75rem 0.25rem;
+  border: 1px solid var(--p-inputtext-border-color);
+  border-radius: var(--p-inputtext-border-radius);
+  background: var(--p-inputtext-background);
+  color: var(--p-inputtext-color);
+  font-family: inherit;
+  font-size: 1rem;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+.form-input:enabled:hover {
+  border-color: var(--p-inputtext-hover-border-color);
+}
 
-app-form-value-wrapper {
-   input {
-      width: 100%;
-      max-height: 37px;
+.form-input:enabled:focus {
+  outline: none;
+  border-color: var(--p-inputtext-focus-border-color);
+  box-shadow: var(--p-inputtext-focus-ring-shadow);
+}
+
+.form-input::placeholder {
+  color: var(--p-inputtext-placeholder-color);
+}
+
+.task-card-badge {
+   border-radius: .375rem;
+   background-color: orange;
+   font-weight: 600;
+   padding: .375rem;
+
+   &.info {
+      background-color: aqua;
+   }
+
+   &.danger {
+     background-color: red;
    }
 }
 
-.invalid-input {
-   --p-inputtext-border-color: var(--p-button-danger-background);
-   --p-inputtext-focus-border-color: var(--p-button-danger-background);
-   --p-textarea-border-color: var(--p-button-danger-background);
-   --p-textarea-focus-border-color: var(--p-button-danger-background);
-   --p-multiselect-border-color: var(--p-button-danger-background);
-   --p-multiselect-focus-border-color: var(--p-button-danger-background);
-}
-
-.pending-input {
-   --p-inputtext-border-color: var(--p-button-warning-background);
-   --p-inputtext-focus-border-color: var(--p-button-warning-background);
-}
-
-.valid-input {
-   --p-inputtext-border-color: var(--p-button-primary-background);
-   --p-inputtext-focus-border-color: var(--p-button-primary-background);
-   --p-textarea-border-color: var(--p-button-primary-background);
-   --p-textarea-focus-border-color: var(--p-button-primary-background);
-   --p-multiselect-border-color: var(--p-button-primary-background);
-   --p-multiselect-focus-border-color: var(--p-button-primary-background);
-}
-
-.p-menu-submenu-label {
-   display: none;
+.danger-button {
+   --mat-button-text-label-text-color: red;
 }
 

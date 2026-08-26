@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TaskDialogComponent } from './task-dialog.component';
+import { TaskDialogComponent } from './task-form.component';
 import { of } from 'rxjs';
 import {
   AbstractTaskService,

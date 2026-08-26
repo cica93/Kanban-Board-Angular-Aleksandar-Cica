@@ -1,0 +1,16 @@
+:host {
+    display: flex;
+    flex-direction: row;
+    
+    ::ng-deep app-avatar {
+        margin-left: -10px;
+
+        &:last-child {
+            z-index: 1;
+        }
+
+        &:hover {
+            z-index: 100;
+        }
+    }
+}

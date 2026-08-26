@@ -1,27 +1,25 @@
 @if(loading()){
-<div class="fixed top-50 left-50  align-items-center justify-content-center">
-  <p-progressspinner />
+<div class="fixed top-50 left-50  align-items-center justify-content-center"  style="z-index: 100;">
+  <mat-spinner></mat-spinner>
 </div>
 }
 <div class="my-1 mx-5">
   <app-header>
     <app-search-input class="w-3" 
-      (inputChange)="search.set($event)" 
       [autoFocus]="true" 
+      [(value)]="initSaerchValue"
       [placeholder]="loading() ? 'Searching...':'Search'" 
     />
-    <p-button
-      icon="pi pi-plus"
-      (click)="navigateToTaskDialog()"
-      [size]="'large'"
-      [label]="'Create Task'"
-    />
+     <button matFab extended  aria-label="Clear search"
+       (click)="openTaskDialog()">
+        <mat-icon>add</mat-icon>
+        Create Task
+    </button>
   </app-header>
 </div>
-
 <div #mainContainer class="flex relative" 
   (appFetchData)="tasks = $event" 
-  [filterParams]="search()" 
+  [filterParams]="initSaerchValue()" 
   [becomeVisibleHtml]="becomeVisible()"
   (loadingChange)="loading.set($event)">
   @for (item of tasks | groupAndSortTask ; track item.key) {
@@ -45,7 +43,7 @@
           [cdkDragData]="task"
           [task]="task"
           (onDelete)="deleteTask(task)"
-          (onEdit)="navigateToTaskDialog(task)"
+          (onEdit)="openTaskDialog(task)"
         />
       }
     </div>

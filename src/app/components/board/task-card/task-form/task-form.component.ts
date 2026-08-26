@@ -1,13 +1,15 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { DialogModule } from 'primeng/dialog';
+import { Component, forwardRef, inject, input, OnInit, signal, viewChild } from '@angular/core';
 import {
   AbstractTaskService,
   Task,
   TASK_PRIORITIES,
   TASK_STATUSES,
 } from '@service/abstract.task.service';
-import { firstValueFrom, Subject } from 'rxjs';
-import { SubmitForm } from '@components/base-dialog/base-dialog.component';
+import { firstValueFrom, Subject, zip } from 'rxjs';
+import {
+  SubmitForm,
+  FORM_TOKEN,
+} from '@components/shared/base-dialog/base-dialog.component';
 import {
   form,
   FormField,
@@ -15,18 +17,15 @@ import {
   maxLength,
   minLength,
   required,
-  submit,
   validate,
 } from '@angular/forms/signals';
 import { AsyncPipe } from '@angular/common';
-import { AutoFocusModule } from 'primeng/autofocus';
-import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { FormValueWrapperComponent } from 'src/app/form-value-wrapper/form-value-wrapper.component';
-import { UserService } from '@service/user.service';
-import { MultiSelect } from 'primeng/multiselect';
+import { User, UserService } from '@service/user.service';
+import { NgSelectComponent, NgSelectModule } from '@ng-select/ng-select';
 import { MessageHandlerService } from '@service/message.handler.service';
-import { Location } from '@angular/common';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { MatError, MatFormField, MatInput, MatLabel } from '@angular/material/input';
 
 export type NoTUpdatableTaskFields =
   | 'id'
@@ -34,37 +33,41 @@ export type NoTUpdatableTaskFields =
   | 'version'
   | 'createdBy'
   | 'updatedBy';
-export type TaskForm = Omit<Task, NoTUpdatableTaskFields>;
+export type TaskForm = Omit<Task, NoTUpdatableTaskFields>
 @Component({
-  selector: 'app-task-dialog',
+  selector: 'app-task-form',
   imports: [
-    DialogModule,
     FormRoot,
-    DialogModule,
-    InputTextModule,
-    SelectModule,
-    AutoFocusModule,
     FormField,
     FormValueWrapperComponent,
-    MultiSelect,
+    NgSelectModule,
     AsyncPipe,
+    MatInput,
+    MatLabel,
+    MatFormField,
+    MatError
   ],
-  templateUrl: './task-dialog.component.html',
+  templateUrl: './task-form.component.html',
   host: {
     class: 'flex h-full',
   },
+  providers: [
+    { provide: FORM_TOKEN, useClass: forwardRef(() => TaskFormComponent) },
+  ],
 })
-export class TaskDialogComponent implements SubmitForm, OnInit {
-  initValue?: Task;
-  submiting = new Subject<boolean>();
-  modalHeader = new Subject<string>();
-  onClose = new Subject<boolean>();
+export class TaskFormComponent implements OnInit, SubmitForm<Task, TaskForm> {
+  onClose: Subject<boolean> = new Subject<boolean>();
+  task = input<Task | undefined | null>();
+  initValue: Task | undefined | null;
   private readonly taskService = inject(AbstractTaskService);
-  private readonly location = inject(Location);
   private readonly messageHandlerService = inject(MessageHandlerService);
   users$ = inject(UserService).getUsers();
   TASK_STATUSES = TASK_STATUSES;
   TASK_PRIORITIES = TASK_PRIORITIES;
+
+  usersSelect = viewChild('usersSelect', {
+    read: NgSelectComponent,
+  });
   protected model = signal<TaskForm>({
     description: '',
     taskPriority: this.TASK_PRIORITIES[0].value,
@@ -72,7 +75,32 @@ export class TaskDialogComponent implements SubmitForm, OnInit {
     title: '',
     users: [],
   });
-  taskForm = form<TaskForm>(
+
+  constructor() {
+     zip(this.users$, toObservable(this.usersSelect), toObservable(this.task)).subscribe(
+       ([users, select, task]) => {
+         if (task) {
+           select?.writeValue(users.filter(user => task!.users.some(selectedUser => selectedUser.id === user.id)));
+         } else if(this.initValue) {
+           select?.writeValue(
+             users.filter((user) =>
+               this.initValue!.users.some((selectedUser) => selectedUser.id === user.id),
+             ),
+           );
+         } else {
+           select?.writeValue([])
+         }
+       },
+     );
+  }
+
+  ngOnInit(): void {
+    if (this.initValue) {
+      this.model.set(this.initValue as TaskForm);
+    }
+  }
+
+  form = form<TaskForm>(
     this.model,
     (path) => {
       required(path.title, { message: 'Title is required' });
@@ -103,11 +131,12 @@ export class TaskDialogComponent implements SubmitForm, OnInit {
       submission: {
         action: async () => {
           try {
-            const id = this.initValue?.id ?? undefined;
-            const formValue = this.taskForm().value();
+            const task = this.task() ?? { id: null };
+            const { id } = task;
+            const formValue = this.form().value();
             const savedTask = await firstValueFrom(
               id
-                ? this.taskService.put(id, formValue)
+                ? this.taskService.put(id, { ...task, ...formValue })
                 : this.taskService.post(formValue),
             );
             if (id) {
@@ -123,7 +152,7 @@ export class TaskDialogComponent implements SubmitForm, OnInit {
               });
               this.showMessage('Task Saved', 'Task saved successfully');
             }
-            this.onClose.next(false);
+            this.onClose.next(true);
             return undefined;
           } catch (error) {
             return {
@@ -133,34 +162,13 @@ export class TaskDialogComponent implements SubmitForm, OnInit {
           }
         },
         onInvalid: () => {
-          this.taskForm().markAsTouched();
-          this.taskForm().focusBoundControl();
+          this.form().markAsTouched();
+          this.form().focusBoundControl();
         },
         ignoreValidators: 'none',
       },
     },
   );
-
-  ngOnInit(): void {
-    this.initValue = (this.location.getState() as any)?.['initValue'] as
-      | Task
-      | undefined;
-    if (this.initValue) {
-      this.model.set({
-        ...this.model(),
-        ...(this.initValue ?? {}),
-        users: (this.initValue?.users ?? []).map((u) => ({
-          ...u,
-          id: Number(u.id),
-        })),
-      });
-    }
-    this.modalHeader.next(this.initValue?.id ? 'Edit Task' : 'Create Task');
-  }
-
-  submit(): Promise<boolean> {
-    return submit(this.taskForm);
-  }
 
   protected showMessage(summary: string, detail?: string): void {
     this.messageHandlerService.successEvent.next({
@@ -168,4 +176,13 @@ export class TaskDialogComponent implements SubmitForm, OnInit {
       detail,
     });
   }
+
+  compareWithId = (user: User | null, users: User[] | null): boolean => {
+    console.log(user);
+    if (!user || !users) {
+      return false;
+    }
+
+    return users.some((u) => u.id === user.id);
+  };
 }

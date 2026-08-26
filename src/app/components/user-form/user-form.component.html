@@ -1,36 +1,34 @@
-<form [formRoot]="userForm" class="flex flex-column gap-2 w-full">
-    <app-form-value-wrapper [label]="'Name'" [name]="'name'">
+<form [formRoot]="form" class="flex flex-column gap-2 w-full">
+ <mat-form-field appearance="outline">
+  <mat-label>Name</mat-label>
      <input
-        [pAutoFocus]="true"
+        [appFirstFocus]="true"
         [attr.id]="'name'"
         placeholder="Enter name"
-        [formField]="userForm.name"
+        [formField]="form.name"
         styleClass="w-full"
-        pInputText
+        matInput
         class="flex-auto"
       />
-    </app-form-value-wrapper>
+    </mat-form-field>
       <h4>Shipping Address</h4>
       <!-- Pass the 'address' branch of the FieldTree to the child -->
-      <app-address-form [addressFields]="userForm.address" />
+      <app-address-form [addressFields]="form.address" />
       <h4>Billing Address</h4>
       <!-- Pass the 'address' branch of the FieldTree to the child -->
-      <app-address-form [addressFields]="userForm.billingAddress" />
+      <app-address-form [addressFields]="form.billingAddress" />
        <div class="flex flex-row justify-content-end gap-2 mt-auto">
-        <p-button
+        <button
         [tabindex]="-1"
-        pRipple
-        [label]="'Cancel'"
-        [severity]="'secondary'"
-        />
-        @let submitting = userForm().submitting();
-        <p-button 
-        pRipple 
-        [label]="submitting ? 'Saving...' : 'Save'"
-        [severity]="'primary'" 
+        matButton 
+        matRipple
+        >Cancel</button>
+        @let submitting = form().submitting();
+        <button 
+        matButton 
+        matRipple
         [type]="'submit'"
-        [loading]="submitting"
         [disabled]="submitting"
-    />
+    >{{submitting ? 'Saving...' : 'Save'}}</button>
   </div>
 </form>

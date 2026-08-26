@@ -1,39 +1,63 @@
 <div class="flex justify-content-center flex-column align-items-center h-screen">
   <div class="form flex flex-column w-3 md:w-4 sm:w-6">    
     <form class="form flex flex-column gap-3" [formRoot]="loginForm">
-      <h1 class="text-center">Login</h1>    
-      <app-form-value-wrapper [label]="'Email'" [name]="'email'">
-      <input 
-        placeholder="Enter email"
-        [formField]="loginForm.email"
-        [pAutoFocus]="true"
-        pInputText
-        id="email"
-        styleClass="full-width"/>
-     </app-form-value-wrapper>
-     <app-form-value-wrapper [label]="'Password'" [name]="'password'">
+      <h1 class="text-center">Login</h1>   
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Email</mat-label> 
+        <input 
+          placeholder="Enter email"
+          [formField]="loginForm.email"
+          [appFirstFocus]="true"
+          matInput
+          id="email"
+          styleClass="full-width"/>
+           @if(loginForm.email().errors()){
+          <mat-error>
+            {{loginForm.email().errors()[0]?.message}}
+          </mat-error>
+          }
+     </mat-form-field>
   
-      <p-password 
-        placeholder="Enter password"
-        [formField]="$any(loginForm.password)"
-        [attr.id]="'password'"
-        [toggleMask]="true"
-        [feedback]="false"
-        [style]="'full-width'"
+     <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          [type]="hidePassword() ? 'password' : 'text'"
+          placeholder="Enter password"
+          [formField]="loginForm.password"
+        />
+        <span
+          mat-icon-button
+          matSuffix
+          type="button"
+          [attr.aria-label]="hidePassword() ? 'Show password' : 'Hide password'"
+          [attr.aria-pressed]="!hidePassword()"
+          (click)="hidePassword.update(p => !p)"
         >
-      </p-password>
-     </app-form-value-wrapper>
+          <mat-icon>
+            {{ hidePassword() ? 'visibility' : 'visibility_off' }}
+          </mat-icon>
+         
+        </span>
+         @if(loginForm.password().errors()){
+          <mat-error>
+            {{loginForm.password().errors()[0]?.message}}
+          </mat-error>
+          }
+      </mat-form-field>
       <div class="mt-3">
         @let submitting = loginForm().submitting();
-        <button pButton
+        <button 
+          matButton="filled"
           [disabled]="submitting"
           [type]="'submit'"
-          [rounded]="true"
           class="flex-auto"
           style="width: 100%;">
-         {{submitting ? 'Logging in...' : 'Login'}}  @if (submitting) { 
-      <i class="pi pi-spin pi-spinner"></i> 
-       }   </button>
+           {{submitting ? 'Logging in...' : 'Login'}} 
+          @if (submitting) { 
+            <i class="pi pi-spin pi-spinner"></i> 
+          }   
+          </button>
       </div>
     </form>
   </div>

@@ -60,15 +60,17 @@ export class TaskGraphQlService extends AbstractTaskService {
 
   override get(description = '', limit = 20, offset = 0): Observable<Task[]> {
     return this.apollo
-      .watchQuery({
+      .watchQuery<{ getTasks: Task[] }>({
         query: this.GET_TASKS_QUERY,
         variables: {
-          description,
+          description: description === null ? '' : description,
           limit,
           offset,
         },
       })
-      .valueChanges.pipe(map((result: any) => result.data.getTasks));
+      .valueChanges.pipe(
+        map((result) => (result.data?.getTasks ?? []) as Task[]),
+      );
   }
 
   override put(

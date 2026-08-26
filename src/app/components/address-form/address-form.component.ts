@@ -1,8 +1,12 @@
 import { Component, input } from '@angular/core';
 import { FieldTree, FormField, required, schema } from '@angular/forms/signals';
-import { AutoFocusModule } from 'primeng/autofocus';
-import { InputTextModule } from 'primeng/inputtext';
-import { FormValueWrapperComponent } from 'src/app/form-value-wrapper/form-value-wrapper.component';
+import {
+  MatError,
+  MatFormField,
+  MatInput,
+  MatLabel,
+} from '@angular/material/input';
+import { FirstFocusDirective } from 'src/app/directives/first-focus.directive';
 
 export interface Address {
   id: number
@@ -14,10 +18,12 @@ export interface Address {
 @Component({
   selector: 'app-address-form',
   imports: [
-    FormValueWrapperComponent,
+    FirstFocusDirective,
     FormField,
-    InputTextModule,
-    AutoFocusModule
+    MatInput,
+    MatFormField,
+    MatError,
+    MatLabel,
   ],
   templateUrl: './address-form.component.html',
 })

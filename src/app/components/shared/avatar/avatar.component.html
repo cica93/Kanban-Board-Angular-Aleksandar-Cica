@@ -1,0 +1,14 @@
+<div
+  class="avatar"
+  [style.width.px]="size()"
+  [style.height.px]="size()"
+  [attr.aria-label]="label()"
+>
+  @if (imageUrl()) {
+    <img
+      [src]="imageUrl()!"
+    />
+  } @else if (label()) {
+    <span>{{ label() }}</span>
+  } 
+</div>

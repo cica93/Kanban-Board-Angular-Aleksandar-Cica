@@ -6,14 +6,12 @@ import {
   signal,
   Type,
 } from '@angular/core';
-import { ButtonModule } from 'primeng/button';
-import { TableModule } from 'primeng/table';
 import { User } from '@service/user.service';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { take } from 'rxjs';
 import { httpResource } from '@angular/common/http';
-import { SearchInputComponent } from '@components/search-input/search-input.component';
-import { HeaderComponent } from '@components/header/header.component';
+import { SearchInputComponent } from '@components/shared/search-input/search-input.component';
+import { HeaderComponent } from '@components/shared/header/header.component';
+import { MatButton } from '@angular/material/button';
+import { MatRipple } from '@angular/material/core';
 
 export const DIALOG_COMPONENT = new InjectionToken<Type<any>>(
   'DIALOG_COMPONENT',
@@ -21,7 +19,7 @@ export const DIALOG_COMPONENT = new InjectionToken<Type<any>>(
 
 @Component({
   selector: 'app-users',
-  imports: [TableModule, ButtonModule, SearchInputComponent, HeaderComponent],
+  imports: [MatButton, MatRipple, SearchInputComponent, HeaderComponent],
   templateUrl: './users.component.html',
 })
 export class UsersComponent {
@@ -29,25 +27,10 @@ export class UsersComponent {
   data = httpResource<User[]>(() => `users?keyword=${this.keyword()}`, {
     defaultValue: [],
   });
-  protected readonly dialogService: DialogService = inject(DialogService);
-  private readonly dialogComponent = inject(DIALOG_COMPONENT) as Type<any>;
-  ref!: DynamicDialogRef<any>;
   injector = inject(Injector);
 
   editUser(user: User): void {
-    this.ref = this.dialogService.open<Type<any>>(this.dialogComponent, {
-      header: 'My Dynamic Modal',
-      width: '50vw',
-      data: { initValue: user }, // Data passed to the modal
-      contentStyle: { overflow: 'auto' },
-      baseZIndex: 10000,
-      focusOnShow: false,
-      focusTrap: false,
-      closable: true,
-    })!;
-    this.ref.onClose.pipe(take(1)).subscribe(() => {
-      this.ref.close();
-    });
+    console.log(user);
   }
 
   deleteUser({ id }: User): void {

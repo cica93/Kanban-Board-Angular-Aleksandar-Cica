@@ -1,6 +1,5 @@
 import { Component, computed, input } from '@angular/core';
 
-
 @Component({
   selector: 'app-message-wrapper',
   imports: [],

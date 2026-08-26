@@ -45,16 +45,6 @@ export const routes: Routes = [
     providers: [{ provide: AbstractTaskService, useExisting: TaskService }],
   },
   {
-    path: 'task-dialog',
-    outlet: 'sidebar',
-    loadComponent: () =>
-      import('./components/board/task-card/task-dialog/task-dialog.component').then(
-        (c) => c.TaskDialogComponent,
-      ),
-    providers: [{ provide: AbstractTaskService, useExisting: TaskService }],
-    canActivate: [loginGuard],
-  },
-  {
     path: 'user-dialog',
     outlet: 'sidebar',
     loadComponent: () =>

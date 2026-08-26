@@ -1,12 +1,12 @@
 import { TitleCasePipe } from '@angular/common';
 import { Component, computed, contentChild, input } from '@angular/core';
 import { MessageWrapperComponent } from '@components/message-wrapper.component';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { FormField } from '@angular/forms/signals';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-form-value-wrapper',
-  imports: [TitleCasePipe, MessageWrapperComponent, ProgressSpinnerModule],
+  imports: [TitleCasePipe, MessageWrapperComponent, MatProgressSpinnerModule],
   templateUrl: './form-value-wrapper.component.html',
   host: {
     class: 'flex flex-column gap-1',

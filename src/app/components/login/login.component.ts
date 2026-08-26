@@ -1,7 +1,6 @@
 import { Component, injectAsync, resource, signal } from '@angular/core';
-import { InputTextModule } from 'primeng/inputtext';
 import { firstValueFrom, Observable } from 'rxjs';
-import { AutoFocusModule } from 'primeng/autofocus';
+import { MatButton } from '@angular/material/button';
 import {
   form,
   required,
@@ -11,11 +10,13 @@ import {
   FormRoot,
   validateAsync,
 } from '@angular/forms/signals';
-import { ButtonModule } from 'primeng/button';
-import { FormValueWrapperComponent } from 'src/app/form-value-wrapper/form-value-wrapper.component';
-import { PasswordModule } from 'primeng/password';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { JwtUtils } from '@service/jwt.service';
+import { FirstFocusDirective } from 'src/app/directives/first-focus.directive';
+import { User } from '@service/user.service';
 
 declare const __brand: unique symbol;
 type Branded<T, BRAND> = T & { [__brand]: BRAND };
@@ -87,14 +88,14 @@ export type ObservableType<T> = T extends (...args: any) => Observable<infer R>
 @Component({
   selector: 'app-login',
   imports: [
-    ButtonModule,
-    InputTextModule,
-    AutoFocusModule,
     FormField,
     FormRoot,
-    FormValueWrapperComponent,
-    PasswordModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule,
     FormsModule,
+    MatButton,
+    FirstFocusDirective,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
@@ -112,14 +113,15 @@ export class LoginComponent {
   private readonly userService = injectAsync(() =>
     import('@service/user.service').then((u) => u.UserService),
   );
-  protected model = signal<LoginForm>({
+  protected model = signal<Pick<User, 'email' | 'password'>>({
     email: '',
     password: '',
   });
 
   email = signal('');
+  hidePassword = signal(true);
 
-  protected loginForm = form<LoginForm>(
+  protected loginForm = form<Pick<User, 'email' | 'password'>>(
     this.model,
     (path) => {
       required(path.email, { message: 'Email is required' });
