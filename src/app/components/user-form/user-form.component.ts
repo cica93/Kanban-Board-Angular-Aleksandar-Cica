@@ -1,4 +1,4 @@
-import { Component, forwardRef, output, signal } from '@angular/core';
+import { Component, forwardRef, input, output, signal } from '@angular/core';
 import {
   Address,
   AddressFormComponent,
@@ -17,7 +17,7 @@ import {
   SubmitForm,
 } from '../shared/base-dialog/base-dialog.component';
 import { Subject } from 'rxjs';
-import { MatError, MatFormField, MatLabel } from '@angular/material/input';
+import { MatFormField, MatLabel } from '@angular/material/input';
 import { MatRipple } from '@angular/material/core';
 import { FirstFocusDirective } from 'src/app/directives/first-focus.directive';
 
@@ -38,7 +38,6 @@ export interface AddressForm {
     FirstFocusDirective,
     MatFormField,
     MatLabel,
-    MatError,
     MatRipple,
   ],
   providers: [
@@ -47,6 +46,7 @@ export interface AddressForm {
   templateUrl: './user-form.component.html',
 })
 export class UserFormComponent implements SubmitForm<AddressForm, AddressForm> {
+  initValue = input<AddressForm | null | undefined>(null);
   onClose: Subject<boolean> = new Subject();
   formSubmitted = output<any>();
   userModel = signal<{

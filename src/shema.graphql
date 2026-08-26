@@ -13,16 +13,8 @@ input TaskInput {
   description: String!
   taskStatus: String!
   taskPriority: String!
-  version: Int!
-  taskOrder: Int!
-  users: [UserInput!]!
-}
-
-input CreateTaskInput {
-  title: String!
-  description: String!
-  taskStatus: String!
-  taskPriority: String!
+  version: Int
+  taskOrder: Int
   users: [UserInput!]!
 }
 
@@ -60,7 +52,7 @@ type Query {
 }
 
 type Mutation {
-  createTask(task: CreateTaskInput!): OptionalTask
+  createTask(task: TaskInput!): OptionalTask
   updateTask(id: Int!, task: TaskInput!): OptionalTask
   deleteTask(id: Int!, version: Int!): OptionalTask
   dragTask(taskId: Int!, taskStatus: String!, taskOrder: Int!, taskVersion: Int): OptionalTask

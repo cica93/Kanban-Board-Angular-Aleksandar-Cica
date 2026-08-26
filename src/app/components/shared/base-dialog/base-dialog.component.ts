@@ -5,6 +5,8 @@ import {
   inject,
   InjectionToken,
   input,
+  inputBinding,
+  InputSignal,
   output,
   Type,
   viewChild,
@@ -26,10 +28,9 @@ import { Subject } from 'rxjs';
 
 
 export interface SubmitForm<INIT_VALUE = any, FORM_VALUE = any> {
-  initValue?: INIT_VALUE | null;
+  initValue: InputSignal<INIT_VALUE | null | undefined>;
   form: FieldTree<FORM_VALUE>;
   onClose: Subject<boolean>;
-
 }
 
 export const FORM_TOKEN = new InjectionToken<Type<SubmitForm>>('app.config');
@@ -77,12 +78,19 @@ export class BaseDialogComponent {
       if (this.componentContainer() && this.submitComponent) {
         this.componentRef = this.componentContainer()?.createComponent(
           this.submitComponent!,
+          {
+            bindings: [
+              inputBinding('initValue', () =>
+                this.data.initValue
+                  ? structuredClone(this.data.initValue, {})
+                  : this.data.initValue,
+              ),
+            ],
+          },
         );
-        this.componentRef.instance.initValue = this.data.initValue;
         this.componentRef.instance.onClose.asObservable().subscribe(result => {
           if (result) {
-            console.log('Close dialog')
-            this.closeDialog(result)
+            this.closeDialog(result);
           }
         })
       }

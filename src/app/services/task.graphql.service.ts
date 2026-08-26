@@ -106,18 +106,9 @@ export class TaskGraphQlService extends AbstractTaskService {
     return this.apollo
       .mutate<Task>({
         mutation: gql`
-          mutation createTask($task: CreateTaskInput!) {
+          mutation createTask($task: TaskInput!) {
             createTask(task: $task) {
               id
-              title
-              description
-              taskStatus
-              taskPriority
-              version
-              users {
-                id
-                fullName
-              }
             }
           }
         `,

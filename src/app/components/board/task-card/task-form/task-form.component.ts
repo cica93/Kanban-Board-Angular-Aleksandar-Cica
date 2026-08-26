@@ -1,4 +1,11 @@
-import { Component, forwardRef, inject, input, OnInit, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  forwardRef,
+  inject,
+  input,
+  signal,
+  viewChild,
+} from '@angular/core';
 import {
   AbstractTaskService,
   Task,
@@ -25,7 +32,12 @@ import { User, UserService } from '@service/user.service';
 import { NgSelectComponent, NgSelectModule } from '@ng-select/ng-select';
 import { MessageHandlerService } from '@service/message.handler.service';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { MatError, MatFormField, MatInput, MatLabel } from '@angular/material/input';
+import {
+  MatError,
+  MatFormField,
+  MatInput,
+  MatLabel,
+} from '@angular/material/input';
 
 export type NoTUpdatableTaskFields =
   | 'id'
@@ -33,7 +45,7 @@ export type NoTUpdatableTaskFields =
   | 'version'
   | 'createdBy'
   | 'updatedBy';
-export type TaskForm = Omit<Task, NoTUpdatableTaskFields>
+export type TaskForm = Omit<Task, NoTUpdatableTaskFields>;
 @Component({
   selector: 'app-task-form',
   imports: [
@@ -45,7 +57,7 @@ export type TaskForm = Omit<Task, NoTUpdatableTaskFields>
     MatInput,
     MatLabel,
     MatFormField,
-    MatError
+    MatError,
   ],
   templateUrl: './task-form.component.html',
   host: {
@@ -55,10 +67,9 @@ export type TaskForm = Omit<Task, NoTUpdatableTaskFields>
     { provide: FORM_TOKEN, useClass: forwardRef(() => TaskFormComponent) },
   ],
 })
-export class TaskFormComponent implements OnInit, SubmitForm<Task, TaskForm> {
+export class TaskFormComponent implements SubmitForm<Task, TaskForm> {
   onClose: Subject<boolean> = new Subject<boolean>();
-  task = input<Task | undefined | null>();
-  initValue: Task | undefined | null;
+  initValue = input<Task | undefined | null>(null);
   private readonly taskService = inject(AbstractTaskService);
   private readonly messageHandlerService = inject(MessageHandlerService);
   users$ = inject(UserService).getUsers();
@@ -77,27 +88,34 @@ export class TaskFormComponent implements OnInit, SubmitForm<Task, TaskForm> {
   });
 
   constructor() {
-     zip(this.users$, toObservable(this.usersSelect), toObservable(this.task)).subscribe(
-       ([users, select, task]) => {
-         if (task) {
-           select?.writeValue(users.filter(user => task!.users.some(selectedUser => selectedUser.id === user.id)));
-         } else if(this.initValue) {
-           select?.writeValue(
-             users.filter((user) =>
-               this.initValue!.users.some((selectedUser) => selectedUser.id === user.id),
-             ),
-           );
-         } else {
-           select?.writeValue([])
-         }
-       },
-     );
-  }
+    zip(
+      this.users$,
+      toObservable(this.usersSelect),
+      toObservable(this.initValue),
+      toObservable(this.initValue),
+    ).subscribe(([users, select, initValue]) => {
+      if (initValue) {
+        console.log('isExtensible: ', Object.isExtensible(initValue));
+        console.log('frozen:', Object.isFrozen(initValue));
+        this.model.set({
+          description: initValue.description,
+          taskPriority: initValue.taskPriority,
+          taskStatus: initValue.taskStatus,
+          title: initValue.title,
+          users: initValue.users,
+        });
 
-  ngOnInit(): void {
-    if (this.initValue) {
-      this.model.set(this.initValue as TaskForm);
-    }
+        select?.writeValue(
+          users.filter((user) =>
+            initValue!.users.some(
+              (selectedUser) => selectedUser.id === user.id,
+            ),
+          ),
+        );
+      } else {
+        select?.writeValue([]);
+      }
+    });
   }
 
   form = form<TaskForm>(
@@ -131,7 +149,7 @@ export class TaskFormComponent implements OnInit, SubmitForm<Task, TaskForm> {
       submission: {
         action: async () => {
           try {
-            const task = this.task() ?? { id: null };
+            const task = this.initValue() ?? { id: null };
             const { id } = task;
             const formValue = this.form().value();
             await firstValueFrom(
@@ -139,11 +157,11 @@ export class TaskFormComponent implements OnInit, SubmitForm<Task, TaskForm> {
                 ? this.taskService.put(id, { ...task, ...formValue })
                 : this.taskService.post(formValue),
             );
-            if (id) {
-              this.showMessage('Task updated', 'Task updated successfully');
-            } else {
-              this.showMessage('Task Saved', 'Task saved successfully');
-            }
+            this.showMessage(
+              `Task ${id ? 'updated' : 'created'}`,
+              'Task changed successfully',
+            );
+
             this.onClose.next(true);
             return undefined;
           } catch (error) {
