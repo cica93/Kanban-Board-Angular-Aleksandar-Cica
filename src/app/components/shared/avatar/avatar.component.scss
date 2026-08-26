@@ -6,8 +6,8 @@
   overflow: hidden;
   border-radius: 50%;
 
-  background: #e0e0e0;
-  color: #555;
+  background: var(--mat-sys-surface-container-low);
+  color: var(--mat-sys-on-primary-fixed);
 
   font-weight: 500;
   user-select: none;

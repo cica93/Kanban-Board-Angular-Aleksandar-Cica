@@ -20,10 +20,10 @@ export class TaskGraphQlService extends AbstractTaskService {
         taskStatus
         taskPriority
         version
+        taskOrder
         users {
           id
           fullName
-          email
         }
       }
     }
@@ -41,7 +41,6 @@ export class TaskGraphQlService extends AbstractTaskService {
         users {
           id
           fullName
-          email
         }
       }
     }
@@ -91,7 +90,6 @@ export class TaskGraphQlService extends AbstractTaskService {
               users {
                 id
                 fullName
-                email
               }
             }
           }
@@ -108,7 +106,7 @@ export class TaskGraphQlService extends AbstractTaskService {
     return this.apollo
       .mutate<Task>({
         mutation: gql`
-          mutation createTask($task: TaskInput!) {
+          mutation createTask($task: CreateTaskInput!) {
             createTask(task: $task) {
               id
               title
@@ -119,7 +117,6 @@ export class TaskGraphQlService extends AbstractTaskService {
               users {
                 id
                 fullName
-                email
               }
             }
           }

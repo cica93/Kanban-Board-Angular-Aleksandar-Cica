@@ -90,6 +90,10 @@ export class BaseDialogComponent {
   }
 
   submitForm(): void {
-    submit(this.componentRef.instance.form);
+    if (this.componentRef) {
+      submit(this.componentRef.instance.form);
+    } else {
+      this.closeDialog(true);
+    }
   }
 }

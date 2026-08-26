@@ -6,13 +6,9 @@
 <ng-content />
 @if(touched()){
   @if(invalid()){
-   <app-message-wrapper>
-     {{errorMessage()}}
-    </app-message-wrapper>
+    <mat-error>{{errorMessage()}}</mat-error>
   } @else if (pending()) {
-    <app-message-wrapper type="warning">
-      Checking {{name()}}... <mat-spinner [style]="{ width: '12px', height: '12px' }"></mat-spinner>
-    </app-message-wrapper>
+     <mat-hint>Checking {{name()}}...<mat-spinner [style]="{ width: '12px', height: '12px' }"></mat-spinner></mat-hint>
   }
 }
 

@@ -1,6 +1,6 @@
 import {
   ApplicationConfig,
-  ErrorHandler,
+  // ErrorHandler,
   inject,
   provideAppInitializer,
   provideZoneChangeDetection,
@@ -32,7 +32,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { EMPTY } from 'rxjs/internal/observable/empty';
 import { provideSignalFormsConfig } from '@angular/forms/signals';
 import { provideZonelessChangeDetection } from '@angular/core';
-import { GlobalErrorHandler } from '@service/error.handler.service';
+//import { GlobalErrorHandler } from '@service/error.handler.service';
 
 const apiInterceptor = ApiInterceptor;
 
@@ -56,7 +56,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection(),
     Title,
     { provide: TitleStrategy, useClass: KanbanTitle },
-    { provide: ErrorHandler, useClass: GlobalErrorHandler },
+    // { provide: ErrorHandler, useClass: GlobalErrorHandler },
     Apollo,
     provideAnimations(),
 

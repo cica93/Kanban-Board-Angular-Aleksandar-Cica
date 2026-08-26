@@ -134,22 +134,14 @@ export class TaskFormComponent implements OnInit, SubmitForm<Task, TaskForm> {
             const task = this.task() ?? { id: null };
             const { id } = task;
             const formValue = this.form().value();
-            const savedTask = await firstValueFrom(
+            await firstValueFrom(
               id
                 ? this.taskService.put(id, { ...task, ...formValue })
                 : this.taskService.post(formValue),
             );
             if (id) {
-              this.taskService.taskChange.next({
-                entity: { ...savedTask!, ...formValue },
-                event: 'update',
-              });
               this.showMessage('Task updated', 'Task updated successfully');
             } else {
-              this.taskService.taskChange.next({
-                entity: { ...savedTask!, ...formValue },
-                event: 'create',
-              });
               this.showMessage('Task Saved', 'Task saved successfully');
             }
             this.onClose.next(true);

@@ -114,6 +114,7 @@ export class BoardComponent {
         initValue: task,
         dialogHeader: task ? 'Edit task' : 'Create task',
       },
+      height: '100vh',
       injector: Injector.create({
         providers: [
           { provide: AbstractTaskService, useValue: this.taskService },

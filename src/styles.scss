@@ -7,7 +7,24 @@
 @use '@angular/material' as mat;
 @import '@ng-select/ng-select/themes/material.theme.css';
 
+:root {
+  --mat-sys-primary: var(--mat-sys-on-primary-container);
+  --ng-select-highlight: var(--mat-sys-primary);
+  --mat-form-field-container-vertical-padding: .5rem;
+  --mat-form-field-container-height:40px;
+  --p-red-500:var(--mat-sys-error);
+}
+
+.mdc-text-field--outlined {
+  height: 40px;
+}
+
+.mat-mdc-form-field-infix, .mat-mdc-form-field-icon-suffix  {
+  padding: .5rem .25rem !important;
+}
+
 html {
+
   height: 100%;
   @include mat.theme((
     color: (
@@ -36,14 +53,24 @@ body {
   // Reset the user agent margin.
   margin: 0;
   height: 100%;
+   margin: 0;
 }
 /* You can add global styles to this file, and also import other style files */
 //@import 'primeng/resources/themes/lara-light-blue/theme'; // or other theme
 
 @import 'primeflex/primeflex.css';
 
-body {
-   margin: 0;
+.mat-mdc-fab-base[matfab] {
+  height: 2.25rem;
+}
+
+.small-text {
+  font-size:  var(--mat-sys-body-small-font);
+}
+
+.custom-field {
+  --mat-form-field-container-height: 40px;
+  --mat-form-field-container-vertical-padding: 8px;
 }
 
 .error-snack {
@@ -54,12 +81,13 @@ body {
 
 .success-snack {
    .mdc-snackbar__surface {
-    background-color: rgb(72, 228, 72) !important;
+    background-color: var(--mat-sys-primary-container) !important;
+    color: var(--mat-sys-on-surface) !important;
   }
 }
 
 .active-link {
-   color: green; 
+   color: var(--mat-sys-primary-container); 
 }
 
 .form-input {
@@ -97,15 +125,17 @@ body {
    padding: .375rem;
 
    &.info {
-      background-color: aqua;
+      background-color: var(--mat-sys-primary-container);
+      color: var(--mat-sys-on-primary-container)
    }
 
    &.danger {
-     background-color: red;
+     background-color: var(--mat-sys-error-container);
    }
 }
 
 .danger-button {
-   --mat-button-text-label-text-color: red;
+  color: var(--mat-sys-error) !important;
+  border-color: var(--mat-sys-error) !important;
 }
 
