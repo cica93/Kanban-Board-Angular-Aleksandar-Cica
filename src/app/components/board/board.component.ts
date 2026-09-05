@@ -7,8 +7,6 @@ import {
   viewChild,
 } from '@angular/core';
 import { Observable } from 'rxjs';
-import { GroupAndSortTaskPipe } from '../../pipes/group-and-sort-task.pipe';
-import { ReplacePipe } from '../../pipes/replace.pipe';
 import {
   AbstractTaskService,
   Task,
@@ -40,17 +38,22 @@ import {
   FORM_TOKEN,
 } from '@components/shared/base-dialog/base-dialog.component';
 import { TaskFormComponent } from './task-card/task-form/task-form.component';
+import { KeyValuePipe } from '@angular/common';
+
+type TaskColumn = {
+  key: TaskStatus;
+  value: Task[];
+};
 
 @Component({
   selector: 'app-board',
   imports: [
-    GroupAndSortTaskPipe,
+    KeyValuePipe,
     TaskCardComponent,
     MatButtonModule,
     MatIcon,
     MatProgressSpinnerModule,
     DragDropModule,
-    ReplacePipe,
     FetchDataDirective,
     BecomeVisibleDirective,
     SearchInputComponent,
@@ -73,11 +76,11 @@ export class BoardComponent {
   filter = '';
   limit = 5;
   hasMoreTasks = true;
-  tasks$!: Observable<Task[]>;
+  tasks$!: Observable<Record<TaskStatus, Task[]>>;
   showModal = signal<boolean>(false);
   initSaerchValue = signal<string | null>('');
   loading = signal(false);
-  TASK_STATUSES_VALUE = [...TASK_STATUSES].map((e) => e.value);
+  TASK_STATUSES = [...TASK_STATUSES];
   tasks: Task[] = [];
   becomeVisible = viewChild.required<BecomeVisibleDirective>(
     BecomeVisibleDirective,
@@ -133,12 +136,7 @@ export class BoardComponent {
     this.initSaerchValue.update((t) => (t === null ? '' : null));
   }
 
-  onDrop(
-    event: CdkDragDrop<{
-      key: TaskStatus;
-      value: Task[];
-    }>,
-  ): void {
+  onDrop(event: CdkDragDrop<TaskColumn>): void {
     const task = event.item.data;
     const taskStatus = event.container.data.key;
     const taskOrder = event.currentIndex;

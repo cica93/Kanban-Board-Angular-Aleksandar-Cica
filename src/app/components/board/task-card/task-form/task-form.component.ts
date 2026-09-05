@@ -81,8 +81,8 @@ export class TaskFormComponent implements SubmitForm<Task, TaskForm> {
   });
   protected model = signal<TaskForm>({
     description: '',
-    taskPriority: this.TASK_PRIORITIES[0].value,
-    taskStatus: this.TASK_STATUSES[0].value,
+    taskPriority: this.TASK_PRIORITIES[0],
+    taskStatus: this.TASK_STATUSES[0],
     title: '',
     users: [],
   });

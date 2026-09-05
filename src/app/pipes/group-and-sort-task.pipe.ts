@@ -13,7 +13,7 @@ export class GroupAndSortTaskPipe implements PipeTransform {
   transform(tasks?: Task[] | null): { key: TaskStatus; value: Task[] }[] {
     const tasksByStatus = TASK_STATUSES.reduce(
       (acc, status) => {
-        acc[status.value] = [];
+        acc[status] = [];
         return acc;
       },
       {} as Record<TaskStatus, Task[]>,
@@ -22,8 +22,8 @@ export class GroupAndSortTaskPipe implements PipeTransform {
       tasksByStatus[task.taskStatus].push(task);
     });
     return TASK_STATUSES.map((key) => ({
-      key: key.value,
-      value: tasksByStatus[key.value].sort((a, b) => a.taskOrder - b.taskOrder),
+      key: key,
+      value: tasksByStatus[key].sort((a, b) => a.taskOrder - b.taskOrder),
     }));
   }
 }

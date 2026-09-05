@@ -1,7 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
 import { map, Observable } from 'rxjs';
-import { AbstractTaskService, DragTask, Task } from './abstract.task.service';
+import {
+  AbstractTaskService,
+  DragTask,
+  Task,
+  TaskStatus,
+} from './abstract.task.service';
 
 @Injectable({
   providedIn: 'root',
@@ -57,9 +62,13 @@ export class TaskGraphQlService extends AbstractTaskService {
       .valueChanges.pipe(map((result: any) => result.data.getTaskById));
   }
 
-  override get(description = '', limit = 20, offset = 0): Observable<Task[]> {
+  override get(
+    description = '',
+    limit = 20,
+    offset = 0,
+  ): Observable<Record<TaskStatus, Task[]>> {
     return this.apollo
-      .watchQuery<{ getTasks: Task[] }>({
+      .watchQuery<{ getTasks: Record<TaskStatus, Task[]> }>({
         query: this.GET_TASKS_QUERY,
         variables: {
           description: description === null ? '' : description,
@@ -68,7 +77,10 @@ export class TaskGraphQlService extends AbstractTaskService {
         },
       })
       .valueChanges.pipe(
-        map((result) => (result.data?.getTasks ?? []) as Task[]),
+        map(
+          (result) =>
+            (result.data?.getTasks ?? {}) as Record<TaskStatus, Task[]>,
+        ),
       );
   }
 

@@ -21,7 +21,7 @@ export const ApiInterceptor: HttpInterceptorFn = (req, next) => {
         ? req.url
         : `${apiBaseUrl}/api/${req.url}`,
     setHeaders: {
-      ...(token ? { token } : {}),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
   });
 

@@ -22,21 +22,21 @@
   [filterParams]="initSaerchValue()" 
   [becomeVisibleHtml]="becomeVisible()"
   (loadingChange)="loading.set($event)">
-  @for (item of tasks | groupAndSortTask ; track item.key) {
+  @for (item of tasks | keyvalue ; track item.key) {
   <div class="flex w-4 my-1 mx-3 flex-column">
     <div class="flex flex-row align-items-center justify-content-center gap-2">
       <h2 class="text-center">
-        {{ item.key | replace : "_" : " " }}
+        {{ item.key }}
       </h2>
     </div>
     <div 
       class="flex flex-column row-gap-4"
       cdkDropList
       [id]="item.key"
-      [cdkDropListData]="item"
-      [cdkDropListConnectedTo]="TASK_STATUSES_VALUE"
-      (cdkDropListDropped)="onDrop($event)">
-      @for (task of item.value; track $index) {
+      [cdkDropListData]="item.value"
+      [cdkDropListConnectedTo]="TASK_STATUSES"
+      (cdkDropListDropped)="onDrop($any($event))">
+      @for (task of $any(item.value); track $index) {
         <app-task-card
           cdkDrag
           [cdkDragBoundary]="mainContainer"

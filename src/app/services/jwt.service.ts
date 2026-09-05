@@ -17,7 +17,7 @@ export class JwtUtils {
 
   static isTokenValid(): boolean {
     const token: string | null = this.getToken();
-    if (!token) {
+    if (!token || token === 'undefined') {
       return false;
     }
     const { exp } = this.decodeJwt(token);
@@ -25,6 +25,7 @@ export class JwtUtils {
   }
 
   static decodeJwt(token: string): Token {
+    console.log(token);
     const payload = token.split('.')[1];
     return JSON.parse(atob(payload ?? '')) as Token;
   }

@@ -1,7 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { AbstractTaskService, DragTask, Task } from './abstract.task.service';
+import {
+  AbstractTaskService,
+  DragTask,
+  Task,
+  TaskStatus,
+} from './abstract.task.service';
 
 @Injectable({
   providedIn: 'root',
@@ -9,8 +14,12 @@ import { AbstractTaskService, DragTask, Task } from './abstract.task.service';
 export class TaskService extends AbstractTaskService {
   private readonly http = inject(HttpClient);
 
-  override get(description = '', limit = 20, offset = 0): Observable<Task[]> {
-    return this.http.get<Task[]>('tasks', {
+  override get(
+    description = '',
+    limit = 20,
+    offset = 0,
+  ): Observable<Record<TaskStatus, Task[]>> {
+    return this.http.get<Record<TaskStatus, Task[]>>('tasks', {
       params: {
         description: description == null ? '' : description,
         limit,
@@ -28,6 +37,10 @@ export class TaskService extends AbstractTaskService {
   }
 
   override post(task: Partial<Task>): Observable<Task> {
+    task.updatedBy = 'curr@gmail.com';
+    task.taskOrder = 0;
+    task.version = 1;
+    task.createdBy = 'ssss@gmail.com';
     return this.http.post<Task>('tasks', task);
   }
 

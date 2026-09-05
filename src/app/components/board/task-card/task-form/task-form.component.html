@@ -1,5 +1,5 @@
 
-<form [formRoot]="form" class="flex flex-column w-full gap-1">
+<form [formRoot]="form" class="flex flex-column w-full gap-2">
     <mat-form-field appearance="outline">
       <mat-label>Title</mat-label>
       <input
@@ -35,9 +35,7 @@
       <ng-select
         [attr.id]="'task-status'"
         [items]="[...TASK_STATUSES]"
-        [bindLabel]="'label'"
         [openOnEnter]="true"
-        [bindValue]="'value'"
         [formField]="form.taskStatus"
         [placeholder]="'Select task status'"
         [clearable]="false"
@@ -49,8 +47,6 @@
       <ng-select
         [attr.id]="'task-priority'"
         [items]="[...TASK_PRIORITIES]"
-        [bindLabel]="'label'"
-        [bindValue]="'value'"
         [openOnEnter]="true"
         [formField]="form.taskPriority"
         [placeholder]="'Select task priority'"
