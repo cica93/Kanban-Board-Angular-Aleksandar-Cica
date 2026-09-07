@@ -5,7 +5,7 @@ import {
   AbstractTaskService,
   DragTask,
   Task,
-  TaskStatus,
+  TasksByStatus,
 } from './abstract.task.service';
 
 @Injectable({
@@ -18,8 +18,8 @@ export class TaskService extends AbstractTaskService {
     description = '',
     limit = 20,
     offset = 0,
-  ): Observable<Record<TaskStatus, Task[]>> {
-    return this.http.get<Record<TaskStatus, Task[]>>('tasks', {
+  ): Observable<TasksByStatus[]> {
+    return this.http.get<TasksByStatus[]>('tasks', {
       params: {
         description: description == null ? '' : description,
         limit,

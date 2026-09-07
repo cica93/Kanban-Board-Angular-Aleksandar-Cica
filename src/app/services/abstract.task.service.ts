@@ -4,6 +4,7 @@ import { User } from './user.service';
 export const TASK_PRIORITIES = ['LOW', 'MED', 'HIGH'] as const;
 export type TaskPriority = (typeof TASK_PRIORITIES)[number];
 
+
 export const TASK_STATUSES = ['TO DO', 'IN PROGRESS', 'DONE'] as const;
 export type TaskStatus = (typeof TASK_STATUSES)[number];
 
@@ -13,6 +14,7 @@ export type BadgeColor = (typeof BADGE_COLORS)[number];
 export const BADGE_COLOR_MAP = Object.fromEntries(
   TASK_PRIORITIES.map((priority, index) => [priority, BADGE_COLORS[index]]),
 ) as Record<TaskPriority, BadgeColor>;
+
 
 export interface Task {
   id: number;
@@ -26,6 +28,24 @@ export interface Task {
   updatedBy: string;
   users: User[];
 }
+
+export interface TasksByStatus {
+  status: TaskStatus;
+  tasks: Task[];
+}
+
+type UserWithTypeName = User & { __typename: string };
+
+export type TaskAndTypeName = Omit<Task, 'users'> & {
+  __typename: string;
+  users: UserWithTypeName[];
+};
+
+export interface TasksByStatusAndTypeName {
+  status: TaskStatus;
+  tasks: TaskAndTypeName[];
+}
+
 
 export interface DragTask {
   taskId: number;
@@ -45,7 +65,7 @@ export abstract class AbstractTaskService {
     description?: string,
     limit?: number,
     offset?: number,
-  ): Observable<Record<TaskStatus, Task[]>>;
+  ): Observable<TasksByStatus[]>;
 
   abstract getById(id: number): Observable<Task>;
 

@@ -11,6 +11,7 @@ import {
   AbstractTaskService,
   Task,
   TASK_STATUSES,
+  TasksByStatus,
   TaskStatus,
 } from '@service/abstract.task.service';
 import { TaskCardComponent } from '@components/board/task-card/task-card.component';
@@ -38,17 +39,11 @@ import {
   FORM_TOKEN,
 } from '@components/shared/base-dialog/base-dialog.component';
 import { TaskFormComponent } from './task-card/task-form/task-form.component';
-import { KeyValuePipe } from '@angular/common';
-
-type TaskColumn = {
-  key: TaskStatus;
-  value: Task[];
-};
+;
 
 @Component({
   selector: 'app-board',
   imports: [
-    KeyValuePipe,
     TaskCardComponent,
     MatButtonModule,
     MatIcon,
@@ -76,12 +71,12 @@ export class BoardComponent {
   filter = '';
   limit = 5;
   hasMoreTasks = true;
-  tasks$!: Observable<Record<TaskStatus, Task[]>>;
+  tasks$!: Observable<TasksByStatus>;
   showModal = signal<boolean>(false);
   initSaerchValue = signal<string | null>('');
   loading = signal(false);
   TASK_STATUSES = [...TASK_STATUSES];
-  tasks: Task[] = [];
+  tasks: TasksByStatus[] = [];
   becomeVisible = viewChild.required<BecomeVisibleDirective>(
     BecomeVisibleDirective,
   );
@@ -136,9 +131,9 @@ export class BoardComponent {
     this.initSaerchValue.update((t) => (t === null ? '' : null));
   }
 
-  onDrop(event: CdkDragDrop<TaskColumn>): void {
+  onDrop(event: CdkDragDrop<Task[]>, status: TaskStatus): void {
     const task = event.item.data;
-    const taskStatus = event.container.data.key;
+    const taskStatus = status;
     const taskOrder = event.currentIndex;
 
     this.taskService
@@ -155,8 +150,8 @@ export class BoardComponent {
             moveItemInArray(task, event.previousIndex, event.currentIndex);
           } else {
             transferArrayItem(
-              event.previousContainer.data.value,
-              event.container.data.value,
+              event.previousContainer.data,
+              event.container.data,
               event.previousIndex,
               event.currentIndex,
             );

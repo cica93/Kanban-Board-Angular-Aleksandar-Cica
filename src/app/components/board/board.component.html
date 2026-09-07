@@ -22,21 +22,21 @@
   [filterParams]="initSaerchValue()" 
   [becomeVisibleHtml]="becomeVisible()"
   (loadingChange)="loading.set($event)">
-  @for (item of tasks | keyvalue ; track item.key) {
+  @for (status of TASK_STATUSES ; track status; let i = $index) {
   <div class="flex w-4 my-1 mx-3 flex-column">
     <div class="flex flex-row align-items-center justify-content-center gap-2">
       <h2 class="text-center">
-        {{ item.key }}
+        {{ status }}
       </h2>
     </div>
     <div 
       class="flex flex-column row-gap-4"
       cdkDropList
-      [id]="item.key"
-      [cdkDropListData]="item.value"
+      [id]="status"
+      [cdkDropListData]="tasks[i]?.tasks ?? []"
       [cdkDropListConnectedTo]="TASK_STATUSES"
-      (cdkDropListDropped)="onDrop($any($event))">
-      @for (task of $any(item.value); track $index) {
+      (cdkDropListDropped)="onDrop($event, status)">
+      @for (task of tasks[i]?.tasks; track $index) {
         <app-task-card
           cdkDrag
           [cdkDragBoundary]="mainContainer"

@@ -5,8 +5,12 @@ import {
   AbstractTaskService,
   DragTask,
   Task,
-  TaskStatus,
+  TasksByStatus,
+  TasksByStatusAndTypeName,
 } from './abstract.task.service';
+import { User } from './user.service';
+
+type UserWithTypeName = User & { __typename: string };
 
 @Injectable({
   providedIn: 'root',
@@ -19,16 +23,23 @@ export class TaskGraphQlService extends AbstractTaskService {
   GET_TASKS_QUERY = gql`
     query getTasks($description: String, $limit: Int!, $offset: Int!) {
       getTasks(description: $description, limit: $limit, offset: $offset) {
-        id
-        title
-        description
-        taskStatus
-        taskPriority
-        version
-        taskOrder
-        users {
+        status
+        tasks {
           id
-          fullName
+          title
+          description
+          taskStatus
+          taskPriority
+          version
+          createdBy
+          updatedBy
+          taskOrder
+          users {
+            id
+            fullName
+            email
+            image
+          }
         }
       }
     }
@@ -46,6 +57,8 @@ export class TaskGraphQlService extends AbstractTaskService {
         users {
           id
           fullName
+          email
+          image
         }
       }
     }
@@ -66,9 +79,9 @@ export class TaskGraphQlService extends AbstractTaskService {
     description = '',
     limit = 20,
     offset = 0,
-  ): Observable<Record<TaskStatus, Task[]>> {
+  ): Observable<TasksByStatus[]> {
     return this.apollo
-      .watchQuery<{ getTasks: Record<TaskStatus, Task[]> }>({
+      .watchQuery<{ getTasks: TasksByStatusAndTypeName[] }>({
         query: this.GET_TASKS_QUERY,
         variables: {
           description: description === null ? '' : description,
@@ -79,9 +92,25 @@ export class TaskGraphQlService extends AbstractTaskService {
       .valueChanges.pipe(
         map(
           (result) =>
-            (result.data?.getTasks ?? {}) as Record<TaskStatus, Task[]>,
+            (result.data?.getTasks ?? []).map((e) => ({
+              status: e.status,
+              tasks: e.tasks?.map((task) => {
+                const { __typename, ...input } = task;
+                const users = this.extractUserName(
+                  input.users as unknown as UserWithTypeName[],
+                );
+                return { ...input, users };
+              }),
+            })) as TasksByStatus[],
         ),
       );
+  }
+
+  private extractUserName(users: UserWithTypeName[]): User[] {
+    return users.map((user) => {
+      const { __typename, ...userInput } = user;
+      return { ...userInput, password: 'defaultPassword' };
+    });
   }
 
   override put(
@@ -115,6 +144,10 @@ export class TaskGraphQlService extends AbstractTaskService {
   }
 
   override post(task: Partial<Task>): Observable<Task | null | undefined> {
+    task.version = 0;
+    task.createdBy = 'default@gmail.com';
+    task.updatedBy = 'defaulT@gmail.com';
+    task.taskOrder = 0;
     return this.apollo
       .mutate<Task>({
         mutation: gql`

@@ -1,10 +1,10 @@
 input UserInput {
-  id: Int
+  id!: Int
   fullName: String
   email: String
   token: String
-  password: String
   image: String
+  password: String
 }
 
 input TaskInput {
@@ -13,8 +13,8 @@ input TaskInput {
   description: String!
   taskStatus: String!
   taskPriority: String!
-  version: Int
-  taskOrder: Int
+  version: Int!
+  taskOrder: Int!
   users: [UserInput!]!
 }
 
@@ -23,6 +23,7 @@ type User {
   id: Long!
   fullName: String!
   email: String!
+  password: String
 }
 
 type Task {
@@ -46,9 +47,14 @@ type OptionalTask {
   users: [User!]!
 }
 
+type TasksByStatus {
+  status: String;
+  tasks: [Task!]!
+}
+
 type Query {
   getTaskById(id: Int!): Task!
-  getTasks(limit: Int!, offset: Int!, description: String): [Task!]!
+  getTasks(limit: Int!, offset: Int!, description: String): [TasksByStatus!]!
 }
 
 type Mutation {
