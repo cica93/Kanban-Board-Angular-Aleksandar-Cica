@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { z } from 'zod';
 import { Task } from './abstract.task.service';
@@ -17,6 +17,8 @@ export const userSchema = z.object({
 export type User = z.infer<typeof userSchema> & {
   token: string;
   tasks: Task[];
+  image: string;
+  __typename?: 'Task';
 };
 
 
@@ -31,9 +33,18 @@ export class UserService {
   }
 
   getUsers(keyword = '', limit = 10, offset = 0): Observable<User[]> {
-    return this.http.get<User[]>('users', {
-      params: { keyword, limit, offset },
-    });
+    return this.http
+      .get<User[]>('users', {
+        params: { keyword, limit, offset },
+      })
+      .pipe(
+        map((users) =>
+          users.map((user) => {
+            const { tasks, token, image, ...rest } = user;
+            return rest as User;
+          }),
+        ),
+      );
   }
 
   hasMail(email: string): Observable<boolean> {

@@ -34,8 +34,10 @@
     <app-form-value-wrapper [label]="'Task Status'" [name]="'taskStatus'">
       <ng-select
         [attr.id]="'task-status'"
-        [items]="[...TASK_STATUSES]"
+        [items]="TASK_STATUSES_OPTIONS"
         [openOnEnter]="true"
+        [bindLabel]="'label'"
+        [bindValue]="'value'"
         [formField]="form.taskStatus"
         [placeholder]="'Select task status'"
         [clearable]="false"

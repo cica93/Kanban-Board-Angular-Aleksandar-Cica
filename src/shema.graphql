@@ -1,65 +1,84 @@
-input UserInput {
-  id!: Int
-  fullName: String
-  email: String
-  token: String
-  image: String
-  password: String
+"Mutation root"
+type Mutation {
+  createTask(task: TaskModifyInput!): Task
+  deleteTask(id: Int!, version: Int!): Task
+  dragTask(dragTask: DragTaskInput!): Task
+  updateTask(id: Int!, task: TaskModifyInput!, version: Int!): Task
 }
 
-input TaskInput {
-  id: Long!
-  title: String!
-  description: String!
-  taskStatus: String!
-  taskPriority: String!
-  version: Int!
-  taskOrder: Int!
-  users: [UserInput!]!
-}
-
-
-type User {
-  id: Long!
-  fullName: String!
-  email: String!
-  password: String
+"Query root"
+type Query {
+  getTaskById(id: Int!): Task
+  getTasks(
+    description: String
+    limit: Int = 20
+    offset: Int = 0
+  ): [TasksByStatusDTO]
 }
 
 type Task {
-  id: Int!
-  title: String!
+  createdBy: String
   description: String!
-  taskStatus: String!
-  taskPriority: String!
-  version: Int!
-  taskOrder: Int!
-  users: [User!]!
-}
-
-type OptionalTask {
-  id: Int
-  title: String
-  description: String
-  taskStatus: String
-  taskPriority: String
+  id: BigInteger
+  taskOrder: Int
+  taskPriority: TaskPriority!
+  taskStatus: TaskStatus!
+  title: String!
+  updatedBy: String
+  users: [User]
   version: Int
-  users: [User!]!
 }
 
-type TasksByStatus {
-  status: String;
-  tasks: [Task!]!
+type TasksByStatusDTO {
+  status: TaskStatus
+  tasks: [Task]
 }
 
-type Query {
-  getTaskById(id: Int!): Task!
-  getTasks(limit: Int!, offset: Int!, description: String): [TasksByStatus!]!
+type User {
+  email: String!
+  fullName: String!
+  id: BigInteger
+  image: [Int!]
+  password: String
+  tasks: [Task]
+  token: String
 }
 
-type Mutation {
-  createTask(task: TaskInput!): OptionalTask
-  updateTask(id: Int!, task: TaskInput!): OptionalTask
-  deleteTask(id: Int!, version: Int!): OptionalTask
-  dragTask(taskId: Int!, taskStatus: String!, taskOrder: Int!, taskVersion: Int): OptionalTask
+enum TaskPriority {
+  HIGH
+  LOW
+  MED
+}
+
+enum TaskStatus {
+  DONE
+  IN_PROGRESS
+  TO_DO
+}
+
+input DragTaskInput {
+  taskId: BigInteger!
+  taskOrder: Int!
+  taskStatus: TaskStatus!
+  taskVersion: Int!
+}
+
+input TaskModifyInput {
+  createdBy: String
+  description: String!
+  id: BigInteger
+  taskOrder: Int
+  taskPriority: TaskPriority!
+  taskStatus: TaskStatus!
+  title: String!
+  updatedBy: String
+  users: [UserInputInput]
+}
+
+input UserInputInput {
+  email: String
+  fullName: String
+  id: BigInteger
+  image: [Int!]
+  token: String
 }

@@ -5,12 +5,10 @@ import {
   AbstractTaskService,
   DragTask,
   Task,
+  TaskForm,
   TasksByStatus,
-  TasksByStatusAndTypeName,
 } from './abstract.task.service';
-import { User } from './user.service';
 
-type UserWithTypeName = User & { __typename: string };
 
 @Injectable({
   providedIn: 'root',
@@ -81,7 +79,9 @@ export class TaskGraphQlService extends AbstractTaskService {
     offset = 0,
   ): Observable<TasksByStatus[]> {
     return this.apollo
-      .watchQuery<{ getTasks: TasksByStatusAndTypeName[] }>({
+      .watchQuery<{
+        getTasks: TasksByStatus[];
+      }>({
         query: this.GET_TASKS_QUERY,
         variables: {
           description: description === null ? '' : description,
@@ -90,88 +90,95 @@ export class TaskGraphQlService extends AbstractTaskService {
         },
       })
       .valueChanges.pipe(
-        map(
-          (result) =>
-            (result.data?.getTasks ?? []).map((e) => ({
-              status: e.status,
-              tasks: e.tasks?.map((task) => {
-                const { __typename, ...input } = task;
-                const users = this.extractUserName(
-                  input.users as unknown as UserWithTypeName[],
-                );
-                return { ...input, users };
-              }),
-            })) as TasksByStatus[],
-        ),
+        map((result) => (result.data?.getTasks ?? []) as TasksByStatus[]),
       );
-  }
-
-  private extractUserName(users: UserWithTypeName[]): User[] {
-    return users.map((user) => {
-      const { __typename, ...userInput } = user;
-      return { ...userInput, password: 'defaultPassword' };
-    });
   }
 
   override put(
     id: number,
-    task: Partial<Task>,
+    version: number,
+    task: TaskForm,
   ): Observable<Task | null | undefined> {
     return this.apollo
-      .mutate<Task>({
+      .mutate<{ updateTask: Task }>({
         mutation: gql`
-          mutation updateTask($id: Int!, $task: TaskInput!) {
-            updateTask(id: $id, task: $task) {
+          mutation updateTask(
+            $id: Int!
+            $version: Int!
+            $task: TaskModifyInput!
+          ) {
+            updateTask(id: $id, version: $version, task: $task) {
               id
               title
               description
               taskStatus
               taskPriority
               version
+              taskOrder
               users {
                 id
                 fullName
+                image
+              }
+            }
+          }
+        `,
+        variables: {
+          id,
+          version,
+          task,
+        },
+      })
+      .pipe(map((r) => r.data?.updateTask));
+  }
+
+  override post(task: TaskForm): Observable<Task | null | undefined> {
+    console.log(task);
+    return this.apollo
+      .mutate<{ createTask: Task }>({
+        mutation: gql`
+          mutation createTask($task: TaskModifyInput!) {
+            createTask(task: $task) {
+              id
+              title
+              description
+              taskStatus
+              taskPriority
+              version
+              taskOrder
+              users {
+                id
+                fullName
+                image
               }
             }
           }
         `,
         variables: {
           task,
-          id,
         },
       })
-      .pipe(map((r) => r.data));
-  }
-
-  override post(task: Partial<Task>): Observable<Task | null | undefined> {
-    task.version = 0;
-    task.createdBy = 'default@gmail.com';
-    task.updatedBy = 'defaulT@gmail.com';
-    task.taskOrder = 0;
-    return this.apollo
-      .mutate<Task>({
-        mutation: gql`
-          mutation createTask($task: TaskInput!) {
-            createTask(task: $task) {
-              id
-            }
-          }
-        `,
-        variables: {
-          task,
-        },
-      })
-      .pipe(map((r) => r.data));
+      .pipe(map((r) => r.data?.createTask));
   }
 
   delete(id: number, version: number): Observable<Task | null | undefined> {
     return this.apollo
-      .mutate<Task>({
+      .mutate<{ deleteTask: Task }>({
         mutation: gql`
           mutation deleteTask($id: Int!, $version: Int!) {
             deleteTask(id: $id, version: $version) {
               id
+              title
+              description
+              taskStatus
+              taskPriority
+              taskOrder
               version
+              users {
+                id
+                fullName
+                image
+              }
             }
           }
         `,
@@ -180,50 +187,34 @@ export class TaskGraphQlService extends AbstractTaskService {
           version,
         },
       })
-      .pipe(
-        map((r) => {
-          return r.data ?? null;
-        }),
-      );
+      .pipe(map((r) => r.data?.deleteTask));
   }
 
-  override drag({
-    taskId,
-    taskStatus,
-    taskOrder,
-    taskVersion,
-  }: DragTask): Observable<Task | null | undefined> {
+  override drag(dragTask: DragTask): Observable<Task | null | undefined> {
     return this.apollo
-      .mutate<Task>({
+      .mutate<{ dragTask: Task }>({
         mutation: gql`
-          mutation dragTask(
-            $taskId: Int!
-            $taskStatus: String!
-            $taskOrder: Int!
-            $taskVersion: Int!
-          ) {
-            dragTask(
-              taskId: $taskId
-              taskStatus: $taskStatus
-              taskOrder: $taskOrder
-              taskVersion: $taskVersion
-            ) {
+          mutation dragTask($dragTask: DragTaskInput!) {
+            dragTask(dragTask: $dragTask) {
               id
+              title
+              description
+              taskStatus
+              taskPriority
+              taskOrder
               version
+              users {
+                id
+                fullName
+                image
+              }
             }
           }
         `,
         variables: {
-          taskId,
-          taskStatus,
-          taskOrder,
-          taskVersion,
+          dragTask,
         },
       })
-      .pipe(
-        map((r) => {
-          return r.data ?? null;
-        }),
-      );
+      .pipe(map((r) => r.data?.dragTask));
   }
 }

@@ -6,7 +6,15 @@ export type TaskPriority = (typeof TASK_PRIORITIES)[number];
 
 
 export const TASK_STATUSES = ['TO DO', 'IN PROGRESS', 'DONE'] as const;
-export type TaskStatus = (typeof TASK_STATUSES)[number];
+export type TaskStatus =
+  | (typeof TASK_STATUSES)[number]
+  | 'TO_DO'
+  | 'IN_PROGRESS';
+
+export const TASK_STATUSES_OPTIONS = TASK_STATUSES.map((ts) => ({
+  value: ts.replace(' ', '_'),
+  label: ts,
+}));
 
 const BADGE_COLORS = ['info', 'warn', 'danger'] as const;
 export type BadgeColor = (typeof BADGE_COLORS)[number];
@@ -34,19 +42,6 @@ export interface TasksByStatus {
   tasks: Task[];
 }
 
-type UserWithTypeName = User & { __typename: string };
-
-export type TaskAndTypeName = Omit<Task, 'users'> & {
-  __typename: string;
-  users: UserWithTypeName[];
-};
-
-export interface TasksByStatusAndTypeName {
-  status: TaskStatus;
-  tasks: TaskAndTypeName[];
-}
-
-
 export interface DragTask {
   taskId: number;
   taskStatus: TaskStatus;
@@ -58,6 +53,16 @@ export interface EntityChange<T> {
   entity: T;
   event: 'delete' | 'update' | 'create';
 }
+
+export type NoTUpdatableTaskFields =
+  | 'id'
+  | 'taskOrder'
+  | 'version'
+  | 'createdBy'
+  | 'updatedBy';
+export type TaskForm = Omit<Task, NoTUpdatableTaskFields>;
+
+
 
 export abstract class AbstractTaskService {
   taskChange = new Subject<EntityChange<Task>>();
@@ -71,10 +76,11 @@ export abstract class AbstractTaskService {
 
   abstract put(
     id: number,
-    task: Partial<Task>,
+    version: number,
+    task: TaskForm,
   ): Observable<Task | null | undefined>;
 
-  abstract post(task: Partial<Task>): Observable<Task | null | undefined>;
+  abstract post(task: TaskForm): Observable<Task | null | undefined>;
 
   abstract delete(
     id: number,

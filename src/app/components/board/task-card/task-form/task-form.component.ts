@@ -11,6 +11,8 @@ import {
   Task,
   TASK_PRIORITIES,
   TASK_STATUSES,
+  TASK_STATUSES_OPTIONS,
+  TaskStatus,
 } from '@service/abstract.task.service';
 import { firstValueFrom, Subject, zip } from 'rxjs';
 import {
@@ -75,6 +77,7 @@ export class TaskFormComponent implements SubmitForm<Task, TaskForm> {
   users$ = inject(UserService).getUsers();
   TASK_STATUSES = TASK_STATUSES;
   TASK_PRIORITIES = TASK_PRIORITIES;
+  TASK_STATUSES_OPTIONS = [...TASK_STATUSES_OPTIONS];
 
   usersSelect = viewChild('usersSelect', {
     read: NgSelectComponent,
@@ -82,7 +85,7 @@ export class TaskFormComponent implements SubmitForm<Task, TaskForm> {
   protected model = signal<TaskForm>({
     description: '',
     taskPriority: this.TASK_PRIORITIES[0],
-    taskStatus: this.TASK_STATUSES[0],
+    taskStatus: this.TASK_STATUSES[0].replace(' ', '_') as TaskStatus,
     title: '',
     users: [],
   });
@@ -95,14 +98,15 @@ export class TaskFormComponent implements SubmitForm<Task, TaskForm> {
       toObservable(this.initValue),
     ).subscribe(([users, select, initValue]) => {
       if (initValue) {
-        console.log('isExtensible: ', Object.isExtensible(initValue));
-        console.log('frozen:', Object.isFrozen(initValue));
         this.model.set({
           description: initValue.description,
           taskPriority: initValue.taskPriority,
-          taskStatus: initValue.taskStatus,
+          taskStatus: initValue.taskStatus.replace(' ', '_') as TaskStatus,
           title: initValue.title,
-          users: initValue.users,
+          users: (initValue.users ?? []).map((user) => {
+            const { __typename, ...userData } = user;
+            return userData;
+          }),
         });
 
         select?.writeValue(
@@ -149,12 +153,15 @@ export class TaskFormComponent implements SubmitForm<Task, TaskForm> {
       submission: {
         action: async () => {
           try {
-            const task = this.initValue() ?? { id: null };
-            const { id } = task;
+            const task = this.initValue() ?? {
+              id: null,
+              version: 0,
+            };
+            const { id, version } = task;
             const formValue = this.form().value();
             await firstValueFrom(
               id
-                ? this.taskService.put(id, { ...task, ...formValue })
+                ? this.taskService.put(id, version, formValue)
                 : this.taskService.post(formValue),
             );
             this.showMessage(

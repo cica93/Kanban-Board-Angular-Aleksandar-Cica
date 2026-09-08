@@ -5,6 +5,7 @@ import {
   AbstractTaskService,
   DragTask,
   Task,
+  TaskForm,
   TasksByStatus,
 } from './abstract.task.service';
 
@@ -29,23 +30,19 @@ export class TaskService extends AbstractTaskService {
   }
 
   override getById(id: number): Observable<Task> {
-    return this.http.get<Task>('tasks/' + id);
+    return this.http.get<Task>(`tasks/${id}`);
   }
 
-  override put(id: number, task: Partial<Task>): Observable<Task> {
-    return this.http.put<Task>('tasks/' + id, task);
+  override put(id: number, version: number, task: TaskForm): Observable<Task> {
+    return this.http.put<Task>(`tasks/${id}/${version}`, task);
   }
 
-  override post(task: Partial<Task>): Observable<Task> {
-    task.updatedBy = 'curr@gmail.com';
-    task.taskOrder = 0;
-    task.version = 1;
-    task.createdBy = 'ssss@gmail.com';
+  override post(task: TaskForm): Observable<Task> {
     return this.http.post<Task>('tasks', task);
   }
 
   override delete(id: number, version: number): Observable<Task> {
-    return this.http.delete<Task>('tasks/' + id + '/' + version);
+    return this.http.delete<Task>(`tasks/${id}/${version}`);
   }
 
   override drag(dragTask: DragTask): Observable<Task> {
