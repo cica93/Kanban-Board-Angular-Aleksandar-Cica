@@ -1,14 +1,17 @@
-<mat-form-field appearance="outline" style="width: 100%;">
-  <mat-label>Search</mat-label>
-  <mat-icon matPrefix>search</mat-icon>
-  <input
-    matInput
-    #searchInput
-    [placeholder]="placeholder()"
-    [debounceTime]="debounceTime()"
-    (appDebounceInput)="setInputValue($event)"
-  />
-  @if(input().nativeElement.value){
-    <mat-icon  matSuffix (click)="setInputValue('')">close</mat-icon>
-  }
-</mat-form-field>
+<ion-list>
+  <ion-item>
+    <ion-input
+      #searchInput
+      fill="solid"
+      [clearInput]="true"
+      [placeholder]="placeholder()"
+      [debounceTime]="debounceTime()"
+      (appDebounceInput)="setInputValue($event)"
+    >
+      <ion-icon
+        slot="start"
+        [icon]="searchIcon"
+      />
+    </ion-input>
+  </ion-item>
+</ion-list>

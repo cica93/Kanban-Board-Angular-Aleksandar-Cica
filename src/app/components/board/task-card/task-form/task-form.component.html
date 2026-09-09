@@ -1,65 +1,77 @@
-
-<form [formRoot]="form" class="flex flex-column w-full gap-2">
-    <mat-form-field appearance="outline">
-      <mat-label>Title</mat-label>
-      <input
-        [attr.id]="'title'"
-        placeholder="Enter title"
-        [formField]="form.title"
-        styleClass="w-full"
-        matInput
-        class="flex-auto"
-      />
-      @let titleErrors = form.title().errors();
-      @if(titleErrors && form.title().touched()){
-       <mat-error>{{titleErrors[0]?.message}}</mat-error>
-      }
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>Description</mat-label>
-      <textarea
-        [attr.id]="'description'"
-        [formField]="form.description"
-        matInput
-        rows="5"
-        cols="40"
-        styleClass="w-full"
-        placeholder="Enter description"
-      ></textarea>
-      @let descriptionErrors = form.description().errors();
-      @if(descriptionErrors && form.description().touched()){
-       <mat-error>{{descriptionErrors[0]?.message}}</mat-error>
-      }
-    </mat-form-field>
-    <app-form-value-wrapper [label]="'Task Status'" [name]="'taskStatus'">
-      <ng-select
-        [attr.id]="'task-status'"
-        [items]="TASK_STATUSES_OPTIONS"
-        [openOnEnter]="true"
-        [bindLabel]="'label'"
-        [bindValue]="'value'"
-        [formField]="form.taskStatus"
-        [placeholder]="'Select task status'"
-        [clearable]="false"
-        [searchable]="false"
-        class="w-full"
-      />
-    </app-form-value-wrapper>
-    <app-form-value-wrapper [label]="'Task Priority'" [name]="'taskPriority'">
-      <ng-select
-        [attr.id]="'task-priority'"
-        [items]="[...TASK_PRIORITIES]"
-        [openOnEnter]="true"
-        [formField]="form.taskPriority"
-        [placeholder]="'Select task priority'"
-        [clearable]="false"
-        [searchable]="false"
-        class="w-full"
-      />
+<form
+  [formRoot]="form"
+  class="flex flex-column w-full gap-2"
+>
+  <mat-form-field appearance="outline">
+    <mat-label>Title</mat-label>
+    <input
+      [attr.id]="'title'"
+      placeholder="Enter title"
+      [formField]="form.title"
+      styleClass="w-full"
+      matInput
+      class="flex-auto"
+    />
+    @let titleErrors = form.title().errors();
+    @if (titleErrors && form.title().touched()) {
+      <mat-error>{{ titleErrors[0]?.message }}</mat-error>
+    }
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Description</mat-label>
+    <textarea
+      [attr.id]="'description'"
+      [formField]="form.description"
+      matInput
+      rows="5"
+      cols="40"
+      styleClass="w-full"
+      placeholder="Enter description"
+    ></textarea>
+    @let descriptionErrors = form.description().errors();
+    @if (descriptionErrors && form.description().touched()) {
+      <mat-error>{{ descriptionErrors[0]?.message }}</mat-error>
+    }
+  </mat-form-field>
+  <app-form-value-wrapper
+    [label]="'Task Status'"
+    [name]="'taskStatus'"
+  >
+    <ng-select
+      [attr.id]="'task-status'"
+      [items]="TASK_STATUSES_OPTIONS"
+      [openOnEnter]="true"
+      [bindLabel]="'label'"
+      [bindValue]="'value'"
+      [formField]="form.taskStatus"
+      [placeholder]="'Select task status'"
+      [clearable]="false"
+      [searchable]="false"
+      class="w-full"
+    />
   </app-form-value-wrapper>
-  <app-form-value-wrapper [label]="'Users'" [name]="'users'">
-    @let users = (users$ |async) ?? [];
-    <ng-select #usersSelect
+  <app-form-value-wrapper
+    [label]="'Task Priority'"
+    [name]="'taskPriority'"
+  >
+    <ng-select
+      [attr.id]="'task-priority'"
+      [items]="[...TASK_PRIORITIES]"
+      [openOnEnter]="true"
+      [formField]="form.taskPriority"
+      [placeholder]="'Select task priority'"
+      [clearable]="false"
+      [searchable]="false"
+      class="w-full"
+    />
+  </app-form-value-wrapper>
+  <app-form-value-wrapper
+    [label]="'Users'"
+    [name]="'users'"
+  >
+    @let users = (users$ | async) ?? [];
+    <ng-select
+      #usersSelect
       [multiple]="true"
       [items]="users"
       [bindLabel]="'fullName'"
@@ -72,5 +84,5 @@
       [clearOnBackspace]="false"
       styleClass="w-full"
     />
-  </app-form-value-wrapper>  
+  </app-form-value-wrapper>
 </form>

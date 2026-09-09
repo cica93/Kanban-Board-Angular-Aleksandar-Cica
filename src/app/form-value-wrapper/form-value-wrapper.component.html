@@ -1,14 +1,18 @@
-<label [attr.for]="name()">{{ label() || (name() | titlecase) }} 
-  @if(required()){ 
+<label [attr.for]="name()"
+  >{{ label() || (name() | titlecase) }}
+  @if (required()) {
     <span class="text-red-500">*</span>
   }
 </label>
 <ng-content />
-@if(touched()){
-  @if(invalid()){
-    <mat-error>{{errorMessage()}}</mat-error>
+@if (touched()) {
+  @if (invalid()) {
+    <mat-error>{{ errorMessage() }}</mat-error>
   } @else if (pending()) {
-     <mat-hint>Checking {{name()}}...<mat-spinner [style]="{ width: '12px', height: '12px' }"></mat-spinner></mat-hint>
+    <mat-hint
+      >Checking {{ name() }}...<mat-spinner
+        [style]="{ width: '12px', height: '12px' }"
+      ></mat-spinner
+    ></mat-hint>
   }
 }
-

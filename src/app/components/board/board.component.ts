@@ -31,22 +31,24 @@ import { BecomeVisibleDirective } from 'src/app/directives/become-visible-direct
 import { SearchInputComponent } from '@components/shared/search-input/search-input.component';
 import { HeaderComponent } from '@components/shared/header/header.component';
 import { ScrollTopComponent } from '@components/shared/scroll-top/scroll-top.component';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import {
   BaseDialogComponent,
   FORM_TOKEN,
 } from '@components/shared/base-dialog/base-dialog.component';
 import { TaskFormComponent } from './task-card/task-form/task-form.component';
-;
+import { addIcons } from 'ionicons';
+import { IonButton, IonIcon } from '@ionic/angular';
+import { add } from 'ionicons/icons';
+
+const limit = 5;
 
 @Component({
   selector: 'app-board',
   imports: [
     TaskCardComponent,
-    MatButtonModule,
-    MatIcon,
+    IonButton,
+    IonIcon,
     MatProgressSpinnerModule,
     DragDropModule,
     FetchDataDirective,
@@ -62,7 +64,7 @@ import { TaskFormComponent } from './task-card/task-form/task-form.component';
       deps: [AbstractTaskService],
       useFactory:
         (taskService: AbstractTaskService) => (filter: any, slot: number) =>
-          taskService.get(filter, 5, slot * 5),
+          taskService.get(filter, limit, slot * limit),
     },
   ],
 })
@@ -85,6 +87,10 @@ export class BoardComponent {
   private readonly messageService = inject(MessageHandlerService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly dialog = inject(MatDialog);
+
+  constructor() {
+    addIcons({ add });
+  }
 
   deleteTask(task: Task): void {
     const dialog = this.dialog.open(BaseDialogComponent, {
@@ -159,6 +165,20 @@ export class BoardComponent {
           this.cdr.detectChanges();
         },
       });
+  }
+
+  accumulatorCallBack(
+    acc: TasksByStatus[],
+    curr: TasksByStatus[],
+  ): TasksByStatus[] {
+    return acc.map((e, index) => ({
+      status: e.status,
+      tasks: [...e.tasks, ...curr[index]!.tasks],
+    }));
+  }
+
+  hasMoreCallBack(curr: TasksByStatus[]): boolean {
+    return curr.some((e) => e.tasks.length === limit);
   }
 
   private showMessage(summary: string): void {

@@ -1,8 +1,10 @@
-<h2 mat-dialog-title style="display: flex;   align-items: center;
-  justify-content:space-between;">
-  <span>{{data.dialogHeader ?? header()}}</span>
+<h2
+  mat-dialog-title
+  style="display: flex; align-items: center; justify-content: space-between"
+>
+  <span>{{ data.dialogHeader ?? header() }}</span>
   <button
-    style="margin-left: auto;"
+    style="margin-left: auto"
     mat-icon-button
     mat-dialog-close
     [tabIndex]="-1"
@@ -14,18 +16,27 @@
 </h2>
 <mat-dialog-content class="pt-2">
   @let textContent = data.textContent;
-  @if(textContent){
-    <p>{{textContent}}</p>
+  @if (textContent) {
+    <p>{{ textContent }}</p>
   }
   <ng-content></ng-content>
-  <ng-container #container>
-    
-  </ng-container>
+  <ng-container #container> </ng-container>
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button class="danger-button" matButton matRipple mat-dialog-close  [tabindex]="-1">{{data.cancelLabel ?? 'Cancel'}}</button>
-  <button matButton matRipple (click)="submitForm()">{{data.submitLabel ?? 'Submit'}}</button>
+  <button
+    class="danger-button"
+    matButton
+    matRipple
+    mat-dialog-close
+    [tabindex]="-1"
+  >
+    {{ data.cancelLabel ?? 'Cancel' }}
+  </button>
+  <button
+    matButton
+    matRipple
+    (click)="submitForm()"
+  >
+    {{ data.submitLabel ?? 'Submit' }}
+  </button>
 </mat-dialog-actions>
-
-
-

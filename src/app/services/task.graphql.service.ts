@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Apollo, gql } from 'apollo-angular';
 import { map, Observable } from 'rxjs';
 import {
@@ -9,12 +9,12 @@ import {
   TasksByStatus,
 } from './abstract.task.service';
 
-
 @Injectable({
   providedIn: 'root',
 })
 export class TaskGraphQlService extends AbstractTaskService {
-  constructor(private apollo: Apollo) {
+  private readonly apollo = inject(Apollo);
+  constructor() {
     super();
   }
 
@@ -64,13 +64,13 @@ export class TaskGraphQlService extends AbstractTaskService {
 
   override getById(id: number): Observable<Task> {
     return this.apollo
-      .watchQuery({
+      .query({
         query: this.GET_TASK_BY_ID_QUERY,
         variables: {
           id,
         },
       })
-      .valueChanges.pipe(map((result: any) => result.data.getTaskById));
+      .pipe(map((result: any) => result.data.getTaskById));
   }
 
   override get(
@@ -79,7 +79,7 @@ export class TaskGraphQlService extends AbstractTaskService {
     offset = 0,
   ): Observable<TasksByStatus[]> {
     return this.apollo
-      .watchQuery<{
+      .query<{
         getTasks: TasksByStatus[];
       }>({
         query: this.GET_TASKS_QUERY,
@@ -89,9 +89,7 @@ export class TaskGraphQlService extends AbstractTaskService {
           offset,
         },
       })
-      .valueChanges.pipe(
-        map((result) => (result.data?.getTasks ?? []) as TasksByStatus[]),
-      );
+      .pipe(map((result) => result.data?.getTasks ?? []));
   }
 
   override put(

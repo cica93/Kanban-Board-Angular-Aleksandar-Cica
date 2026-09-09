@@ -1,7 +1,22 @@
 :host {
-  ::ng-deep app-form-value-wrapper {
-    .text-red-500  {
-      display: none !important;
-    }
+  height: 100vh;
+  display: flex;
+
+  .full-height {
+    height: 100%;
+  }
+
+  .center-content {
+    height: 100%;
+    display: flex;
+    align-items: center; // vertical
+    justify-content: center; // horizontal
+  }
+
+  form,
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
   }
 }

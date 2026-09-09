@@ -1,47 +1,52 @@
+<div class="card m-3 base-200">
+  <app-header>
+    <app-search-input
+      class="w-3"
+      (inputChange)="keyword.set($event)"
+      [autoFocus]="true"
+      [placeholder]="'Search Users'"
+    />
+    <button
+      matButton
+      matRipple
+      icon="pi pi-pencil"
+      (click)="addUser()"
+    >
+      Add
+    </button>
+  </app-header>
 
- <div class="card m-3 base-200">
-    <app-header>
-        <app-search-input class="w-3" 
-            (inputChange)="keyword.set($event)" 
-            [autoFocus]="true" 
-            [placeholder]="'Search Users'" 
-        />
-        <button
-            matButton 
-            matRipple
-            icon="pi pi-pencil"
-            (click)="addUser()"
-        >Add</button>
+  <table [style]="{ 'min-width': '50rem' }">
+    <tr>
+      <th>Full Name</th>
+      <th>Email</th>
+      <th>Actions</th>
+    </tr>
+    @for (user of data.value(); track user.id) {
+      <tr>
+        <td>{{ user.fullName }}</td>
+        <td>{{ user.email }}</td>
+        <td>
+          <div class="flex gap-1">
+            <button
+              matButton="text"
+              matRipple
+              icon="pi pi-pencil"
+              (click)="editUser(user)"
+            >
+              Edit
+            </button>
 
-    </app-header>
-   
-    <table [style]="{ 'min-width': '50rem' }">
-            <tr>
-                <th>Full Name</th>
-                <th>Email</th>
-                <th>Actions</th>
-            </tr>
-           @for (user of data.value(); track user.id) {
-            <tr>
-                <td>{{ user.fullName }}</td>
-                <td>{{ user.email }}</td>
-                <td>
-                    <div class="flex gap-1">
-                        <button
-                            matButton="text"                            
-                            matRipple
-                            icon="pi pi-pencil"
-                            (click)="editUser(user)"
-                        >Edit</button>
-                    
-                        <button
-                            matButton="text"                          
-                            matRipple
-                            (click)="deleteUser(user)"
-                        >Delete</button>
-                    </div>
-                </td>
-            </tr>
-           }
-    </table>
+            <button
+              matButton="text"
+              matRipple
+              (click)="deleteUser(user)"
+            >
+              Delete
+            </button>
+          </div>
+        </td>
+      </tr>
+    }
+  </table>
 </div>

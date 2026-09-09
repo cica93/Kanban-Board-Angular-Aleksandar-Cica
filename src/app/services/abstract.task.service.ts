@@ -16,7 +16,7 @@ export const TASK_STATUSES_OPTIONS = TASK_STATUSES.map((ts) => ({
   label: ts,
 }));
 
-const BADGE_COLORS = ['info', 'warn', 'danger'] as const;
+const BADGE_COLORS = ['success', 'warning', 'danger'] as const;
 export type BadgeColor = (typeof BADGE_COLORS)[number];
 
 export const BADGE_COLOR_MAP = Object.fromEntries(

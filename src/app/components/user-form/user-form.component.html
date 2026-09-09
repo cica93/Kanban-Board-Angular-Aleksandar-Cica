@@ -1,34 +1,41 @@
-<form [formRoot]="form" class="flex flex-column gap-2 w-full">
- <mat-form-field appearance="outline">
-  <mat-label>Name</mat-label>
-     <input
-        [appFirstFocus]="true"
-        [attr.id]="'name'"
-        placeholder="Enter name"
-        [formField]="form.name"
-        styleClass="w-full"
-        matInput
-        class="flex-auto"
-      />
-    </mat-form-field>
-      <h4>Shipping Address</h4>
-      <!-- Pass the 'address' branch of the FieldTree to the child -->
-      <app-address-form [addressFields]="form.address" />
-      <h4>Billing Address</h4>
-      <!-- Pass the 'address' branch of the FieldTree to the child -->
-      <app-address-form [addressFields]="form.billingAddress" />
-       <div class="flex flex-row justify-content-end gap-2 mt-auto">
-        <button
-        [tabindex]="-1"
-        matButton 
-        matRipple
-        >Cancel</button>
-        @let submitting = form().submitting();
-        <button 
-        matButton 
-        matRipple
-        [type]="'submit'"
-        [disabled]="submitting"
-    >{{submitting ? 'Saving...' : 'Save'}}</button>
+<form
+  [formRoot]="form"
+  class="flex flex-column gap-2 w-full"
+>
+  <mat-form-field appearance="outline">
+    <mat-label>Name</mat-label>
+    <input
+      [appFirstFocus]="true"
+      [attr.id]="'name'"
+      placeholder="Enter name"
+      [formField]="form.name"
+      styleClass="w-full"
+      matInput
+      class="flex-auto"
+    />
+  </mat-form-field>
+  <h4>Shipping Address</h4>
+  <!-- Pass the 'address' branch of the FieldTree to the child -->
+  <app-address-form [addressFields]="form.address" />
+  <h4>Billing Address</h4>
+  <!-- Pass the 'address' branch of the FieldTree to the child -->
+  <app-address-form [addressFields]="form.billingAddress" />
+  <div class="flex flex-row justify-content-end gap-2 mt-auto">
+    <button
+      [tabindex]="-1"
+      matButton
+      matRipple
+    >
+      Cancel
+    </button>
+    @let submitting = form().submitting();
+    <button
+      matButton
+      matRipple
+      [type]="'submit'"
+      [disabled]="submitting"
+    >
+      {{ submitting ? 'Saving...' : 'Save' }}
+    </button>
   </div>
 </form>

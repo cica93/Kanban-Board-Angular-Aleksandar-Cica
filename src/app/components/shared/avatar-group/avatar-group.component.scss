@@ -1,16 +1,16 @@
 :host {
-    display: flex;
-    flex-direction: row;
-    
-    ::ng-deep app-avatar {
-        margin-left: -10px;
+  display: flex;
+  flex-direction: row;
 
-        &:last-child {
-            z-index: 1;
-        }
+  ::ng-deep app-avatar {
+    margin-left: -10px;
 
-        &:hover {
-            z-index: 100;
-        }
+    &:last-child {
+      z-index: 1;
     }
+
+    &:hover {
+      z-index: 100;
+    }
+  }
 }

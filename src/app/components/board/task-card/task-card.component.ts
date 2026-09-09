@@ -1,4 +1,4 @@
-import { Component, computed, input, output } from '@angular/core';
+import { Component, computed, input, output, signal } from '@angular/core';
 import {
   BADGE_COLOR_MAP,
   TASK_STATUSES,
@@ -6,30 +6,52 @@ import {
 } from '@service/abstract.task.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SlicePipe } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
 import { AvatarComponent } from '@components/shared/avatar/avatar.component';
 import { AvatarGroupComponent } from '@components/shared/avatar-group/avatar-group.component';
-import { MatBadgeModule } from '@angular/material/badge';
-import { MatIcon } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatButtonModule } from '@angular/material/button';
+import {
+  IonBadge,
+  IonButton,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardTitle,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonPopover,
+} from '@ionic/angular';
+
+import { createOutline, ellipsisVertical, trashOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-task-card',
   imports: [
-    MatCardModule,
     AvatarComponent,
+    IonIcon,
     AvatarGroupComponent,
     MatTooltipModule,
     SlicePipe,
-    MatBadgeModule,
-    MatIcon,
-    MatMenuModule,
-    MatButtonModule,
+    IonCard,
+    IonCardContent,
+    IonCardTitle,
+    IonButton,
+    IonCardHeader,
+    IonPopover,
+    IonList,
+    IonItem,
+    IonLabel,
+    IonBadge,
   ],
   templateUrl: './task-card.component.html',
 })
 export class TaskCardComponent {
+  menuOpen = signal(false);
+  menuEvent = signal<Event | null>(null);
+  trashOutlineIcon = trashOutline;
+  createOutlineIcon = createOutline;
+  ellipsisVerticalCircleIcon = ellipsisVertical;
+
   protected readonly maxVisibleImages = 5;
   TASK_STATUSES = TASK_STATUSES;
   readonly task = input.required<Task>();
@@ -49,4 +71,9 @@ export class TaskCardComponent {
     //     throw new Error(`invalid priority ${p satisfies never}`);
     // }
   });
+
+  openMenu(event: Event) {
+    this.menuEvent.set(event);
+    this.menuOpen.set(true);
+  }
 }

@@ -1,66 +1,59 @@
-<div class="flex justify-content-center flex-column align-items-center h-screen">
-  <div class="form flex flex-column w-3 md:w-4 sm:w-6">    
-    <form class="form flex flex-column gap-3" [formRoot]="loginForm">
-      <h1 class="text-center">Login</h1>   
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Email</mat-label> 
-        <input 
-          placeholder="Enter email"
-          [formField]="loginForm.email"
-          [appFirstFocus]="true"
-          matInput
-          id="email"
-          styleClass="full-width"/>
-           @if(loginForm.email().errors()){
-          <mat-error>
-            {{loginForm.email().errors()[0]?.message}}
-          </mat-error>
-          }
-     </mat-form-field>
-  
-     <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Password</mat-label>
-        <input
-          matInput
-          [type]="hidePassword() ? 'password' : 'text'"
-          placeholder="Enter password"
-          [formField]="loginForm.password"
-        />
-        <span
-          mat-icon-button
-          matSuffix
-          type="button"
-          [attr.aria-label]="hidePassword() ? 'Show password' : 'Hide password'"
-          [attr.aria-pressed]="!hidePassword()"
-          (click)="hidePassword.update(p => !p)"
-        >
-          <mat-icon>
-            {{ hidePassword() ? 'visibility' : 'visibility_off' }}
-          </mat-icon>
-         
-        </span>
-         @if(loginForm.password().errors()){
-          <mat-error>
-            {{loginForm.password().errors()[0]?.message}}
-          </mat-error>
-          }
-      </mat-form-field>
-      <div class="mt-3">
+<ion-grid class="full-height">
+  <ion-row class="center-content">
+    <ion-col
+      size="10"
+      size-md="6"
+      size-lg="4"
+    >
+      <form [formRoot]="loginForm">
+        <h1 style="text-align: center">Login</h1>
+        <ion-list class="form-group">
+          <ion-item>
+            <ion-input
+              fill="solid"
+              errorText="ssss"
+              helperText="Enter a valid email"
+              labelPlacement="floating"
+              label="Email"
+              placeholder="Enter email"
+              [formField]="loginForm.email"
+              [appFirstFocus]="true"
+              class="w-full"
+              email
+              id="email"
+            />
+          </ion-item>
+
+          <ion-item>
+            <ion-input
+              fill="solid"
+              errorText="asdad"
+              helperText="Enter a valid password"
+              type="password"
+              label="Password"
+              [formField]="loginForm.password"
+              labelPlacement="floating"
+              class="w-full"
+              id="password"
+            >
+              <ion-input-password-toggle slot="end" />
+            </ion-input>
+          </ion-item>
+        </ion-list>
+
         @let submitting = loginForm().submitting();
-        <button 
-          matButton="filled"
+        <ion-button
+          expand="block"
           [disabled]="submitting"
-          [type]="'submit'"
-          class="mx-2"
-          style="width: 100%;">
-           {{submitting ? 'Logging in...' : 'Login'}} 
-          @if (submitting) { 
-            <i class="pi pi-spin pi-spinner"></i> 
-          }   
-          </button>
-      </div>
-    </form>
-  </div>
-</div>
+          type="submit"
+        >
+          {{ submitting ? 'Logging in...' : 'Login' }}
 
-
+          @if (submitting) {
+            <ion-spinner name="crescent" />
+          }
+        </ion-button>
+      </form>
+    </ion-col>
+  </ion-row>
+</ion-grid>

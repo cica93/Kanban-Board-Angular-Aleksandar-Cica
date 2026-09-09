@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, signal, viewChild } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { AsyncPipe, SlicePipe, TitleCasePipe } from '@angular/common';
 import { User } from '@service/user.service';
@@ -11,8 +11,15 @@ import { SocketService } from '@service/socket.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CustomSnackbarComponent } from '@components/shared/custom-snackbar/custom-snackbar.component';
 import { AvatarComponent } from '@components/shared/avatar/avatar.component';
-import { MatTooltip } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
+import {
+  IonButton,
+  IonGrid,
+  IonIcon,
+  IonRouterLink,
+  IonRow,
+} from '@ionic/angular';
+import { logOutOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-root',
@@ -21,18 +28,22 @@ import { MatIconModule } from '@angular/material/icon';
     RouterOutlet,
     AsyncPipe,
     RouterLink,
-    RouterLinkActive,
     TitleCasePipe,
     SlicePipe,
     LinkGroupComponent,
     AvatarComponent,
-    MatTooltip,
     MatIconModule,
+    IonGrid,
+    IonRow,
+    IonIcon,
+    IonRouterLink,
+    IonButton,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit {
+  logOutOutlineIcon = logOutOutline;
   protected user$!: Observable<User | null>;
   private readonly securityService = inject(SecurityService);
   private readonly snackBar = inject(MatSnackBar);

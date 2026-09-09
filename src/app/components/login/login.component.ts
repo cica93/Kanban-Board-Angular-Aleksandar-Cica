@@ -1,6 +1,16 @@
 import { Component, injectAsync, resource, signal } from '@angular/core';
 import { firstValueFrom, Observable } from 'rxjs';
-import { MatButton } from '@angular/material/button';
+import {
+  IonButton,
+  IonSpinner,
+  IonInput,
+  IonItem,
+  IonList,
+  IonInputPasswordToggle,
+  IonCol,
+  IonGrid,
+  IonRow,
+} from '@ionic/angular';
 import {
   form,
   required,
@@ -10,9 +20,6 @@ import {
   FormRoot,
   validateAsync,
 } from '@angular/forms/signals';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { JwtUtils } from '@service/jwt.service';
 import { FirstFocusDirective } from 'src/app/directives/first-focus.directive';
@@ -90,11 +97,16 @@ export type ObservableType<T> = T extends (...args: any) => Observable<infer R>
   imports: [
     FormField,
     FormRoot,
-    MatFormFieldModule,
-    MatInputModule,
-    MatIconModule,
     FormsModule,
-    MatButton,
+    IonButton,
+    IonItem,
+    IonList,
+    IonInputPasswordToggle,
+    IonSpinner,
+    IonInput,
+    IonCol,
+    IonGrid,
+    IonRow,
     FirstFocusDirective,
   ],
   templateUrl: './login.component.html',
@@ -104,9 +116,7 @@ export class LoginComponent {
   private readonly loginService = injectAsync(() =>
     import('@service/login.service').then((m) => m.LoginService),
   );
-  private readonly router = injectAsync(() =>
-    import('@angular/router').then((r) => r.Router),
-  );
+  private readonly router = injectAsync(() => import('@angular/router').then((r) => r.Router));
   private readonly securityService = injectAsync(() =>
     import('@service/security.service').then((s) => s.SecurityService),
   );
@@ -163,18 +173,13 @@ export class LoginComponent {
               this.securityService(),
               this.loginService(),
             ]);
-            const response = await firstValueFrom(
-              loginService.login(this.loginForm().value()),
-            );
+            const response = await firstValueFrom(loginService.login(this.loginForm().value()));
             JwtUtils.saveToken(response.token);
             securityService.user$.next(response);
             router.navigate(['/rest']);
             return undefined;
           } catch (error) {
-            return this.createErrorObject(
-              'Invalid email or password',
-              'invalid-credentials',
-            );
+            return this.createErrorObject('Invalid email or password', 'invalid-credentials');
           }
         },
         onInvalid: () => {

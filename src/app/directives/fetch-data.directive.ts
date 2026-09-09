@@ -8,12 +8,12 @@ import {
 } from '@angular/core';
 import {
   catchError,
+  concatMap,
   filter,
   merge,
   Observable,
   of,
   scan,
-  switchMap,
   tap,
 } from 'rxjs';
 import { toObservable } from '@angular/core/rxjs-interop';
@@ -33,6 +33,12 @@ export class FetchDataDirective<T> implements OnInit {
   private hasMore = true;
   private slot = 0;
   filterParams = input<any>({});
+  accumulatorCallBack = input<(acc: any[], curr: any[]) => any[]>(
+    (acc: any[], curr: any[]) => [...acc, ...curr],
+  );
+  hasMoreCallBack = input<(value: any[]) => boolean>(
+    (value: any[]) => !!value.length,
+  );
   appFetchData = output<T[]>();
   loadingChange = output<boolean>();
   becomeVisibleHtml = input.required<BecomeVisibleDirective>();
@@ -61,11 +67,11 @@ export class FetchDataDirective<T> implements OnInit {
       ),
     )
       .pipe(
-        switchMap(() => {
+        concatMap(() => {
           this.setLoading(true);
           return this.fetchData(this.filterParams(), this.slot).pipe(
             tap((result) => {
-              this.hasMore = result.length !== 0;
+              this.hasMore = this.hasMoreCallBack()(result);
               this.setLoading();
             }),
             catchError(() => {
@@ -80,7 +86,7 @@ export class FetchDataDirective<T> implements OnInit {
           if (this.slot === 0) {
             return curr;
           }
-          return [...acc, ...curr];
+          return this.accumulatorCallBack()(acc, curr);
         }, [] as T[]),
       )
       .subscribe((data) => {

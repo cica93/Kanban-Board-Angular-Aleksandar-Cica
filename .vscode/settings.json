@@ -1,23 +1,19 @@
 {
-  "CodeGPT.apiKey": "CodeGPT Plus Beta",
-  "cSpell.words": [
-    "avatargroup",
-    "focustrap",
-    "inputicon",
-    "ngrx",
-    "primeicons",
-    "primeng",
-    "stompjs",
-    "titlecase",
-    "xlarge"
-  ],
-  "prettier.singleQuote": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
-  "[html]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
   },
-  "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+
+  "[scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
   }
 }

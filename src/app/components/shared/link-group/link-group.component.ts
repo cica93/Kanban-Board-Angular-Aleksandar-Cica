@@ -47,7 +47,7 @@ export class LinkGroupComponent implements OnInit {
         if (cur.event === 'click') {
           return !acc;
         }
-        return cur.value ?? false;
+        return cur?.value ?? false;
       }, false),
     );
   }
