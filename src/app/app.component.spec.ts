@@ -58,17 +58,13 @@ describe('AppComponent', () => {
 
     logoutButton.triggerEventHandler('click', null);
     fixture.detectChanges();
-    securityService = TestBed.inject(
-      SecurityService,
-    ) as jasmine.SpyObj<SecurityService>;
+    securityService = TestBed.inject(SecurityService) as jasmine.SpyObj<SecurityService>;
     expect(securityService.logout).toHaveBeenCalled();
   });
 
   it('should open modal', () => {
     const e = { modalHeader: new BehaviorSubject<string>('modalName') };
-    fixture.componentInstance.onSidebarActivate(
-      e as unknown as BaseDialogComponent,
-    );
+    fixture.componentInstance.onSidebarActivate(e as unknown as BaseDialogComponent);
     fixture.detectChanges();
     expect(fixture.componentInstance.showDialog()).toBe(true);
   });

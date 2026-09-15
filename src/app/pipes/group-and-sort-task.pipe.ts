@@ -1,9 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {
-  Task,
-  TASK_STATUSES,
-  TaskStatus,
-} from '@service/abstract.task.service';
+import { Task, TASK_STATUSES, TaskStatus } from '@service/abstract.task.service';
 
 @Pipe({
   name: 'groupAndSortTask',

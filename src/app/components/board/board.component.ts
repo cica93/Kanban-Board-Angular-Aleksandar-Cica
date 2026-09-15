@@ -1,45 +1,42 @@
 import {
-  ChangeDetectorRef,
   Component,
+  computed,
   inject,
+  injectAsync,
   Injector,
   signal,
   viewChild,
 } from '@angular/core';
-import { Observable } from 'rxjs';
+import { firstValueFrom, tap } from 'rxjs';
 import {
   AbstractTaskService,
   Task,
   TASK_STATUSES,
-  TasksByStatus,
   TaskStatus,
 } from '@service/abstract.task.service';
 import { TaskCardComponent } from '@components/board/task-card/task-card.component';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import {
   CdkDragDrop,
   DragDropModule,
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
-import { MessageHandlerService } from '@service/message.handler.service';
-import {
-  FETCH_DATA,
-  FetchDataDirective,
-} from 'src/app/directives/fetch-data.directive';
+
 import { BecomeVisibleDirective } from 'src/app/directives/become-visible-directive';
 import { SearchInputComponent } from '@components/shared/search-input/search-input.component';
 import { HeaderComponent } from '@components/shared/header/header.component';
 import { ScrollTopComponent } from '@components/shared/scroll-top/scroll-top.component';
-import { MatDialog } from '@angular/material/dialog';
 import {
   BaseDialogComponent,
   FORM_TOKEN,
+  successModalEvent,
 } from '@components/shared/base-dialog/base-dialog.component';
-import { TaskFormComponent } from './task-card/task-form/task-form.component';
 import { addIcons } from 'ionicons';
-import { IonButton, IonIcon } from '@ionic/angular';
+import { IonButton, IonCol, IonGrid, IonIcon, IonRow, IonSpinner } from '@ionic/angular';
 import { add } from 'ionicons/icons';
+import { injectInfiniteQuery, injectMutation } from '@tanstack/angular-query-experimental';
+import { QueryClient } from '@tanstack/angular-query-experimental';
+import { TaskFormComponent } from './task-card/task-form/task-form.component';
 
 const limit = 5;
 
@@ -49,76 +46,124 @@ const limit = 5;
     TaskCardComponent,
     IonButton,
     IonIcon,
-    MatProgressSpinnerModule,
     DragDropModule,
-    FetchDataDirective,
     BecomeVisibleDirective,
     SearchInputComponent,
     HeaderComponent,
     ScrollTopComponent,
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonSpinner,
   ],
   templateUrl: './board.component.html',
-  providers: [
-    {
-      provide: FETCH_DATA,
-      deps: [AbstractTaskService],
-      useFactory:
-        (taskService: AbstractTaskService) => (filter: any, slot: number) =>
-          taskService.get(filter, limit, slot * limit),
-    },
-  ],
 })
 export class BoardComponent {
-  offset = 0;
-  filter = '';
-  limit = 5;
   hasMoreTasks = true;
-  tasks$!: Observable<TasksByStatus>;
+  restart = signal(false);
+  currPage = 0;
+  searchValue = signal<string | null>(null);
   showModal = signal<boolean>(false);
-  initSaerchValue = signal<string | null>('');
-  loading = signal(false);
   TASK_STATUSES = [...TASK_STATUSES];
-  tasks: TasksByStatus[] = [];
-  becomeVisible = viewChild.required<BecomeVisibleDirective>(
-    BecomeVisibleDirective,
+  becomeVisible = viewChild.required<BecomeVisibleDirective>(BecomeVisibleDirective);
+  private readonly queryClient = inject(QueryClient);
+  private readonly taskService = inject(AbstractTaskService);
+  private readonly messageService = injectAsync(() =>
+    import('@service/message.handler.service').then((a) => a.MessageHandlerService),
+  );
+  private readonly cdr = injectAsync(() =>
+    import('@angular/core').then((a) => a.ChangeDetectorRef),
   );
 
-  private readonly taskService = inject(AbstractTaskService);
-  private readonly messageService = inject(MessageHandlerService);
-  private readonly cdr = inject(ChangeDetectorRef);
-  private readonly dialog = inject(MatDialog);
+  private readonly modalController = injectAsync(() =>
+    import('@ionic/angular').then((a) => a.ModalController),
+  );
+
+  readonly tasksQuery = injectInfiniteQuery(() => ({
+    queryKey: [
+      'tasks',
+      {
+        search: this.searchValue(),
+      },
+    ],
+    initialPageParam: this.currPage,
+
+    queryFn: ({ pageParam }) => {
+      return firstValueFrom(
+        this.taskService.get(this.searchValue(), limit, pageParam * limit).pipe(
+          tap((taskByStatus) => {
+            if (taskByStatus.some((t) => t.tasks.length === limit)) {
+              this.currPage++;
+              this.hasMoreTasks = true;
+            } else {
+              this.hasMoreTasks = false;
+            }
+          }),
+        ),
+      );
+    },
+
+    getNextPageParam: () => {
+      return this.hasMoreTasks ? this.currPage : undefined;
+    },
+  }));
+
+  tasks = computed(() => {
+    if (!this.tasksQuery.data()) {
+      return [];
+    }
+    return this.tasksQuery.data()!.pages.reduce((acc, curr) => {
+      if (acc.length !== 0) {
+        return acc.map((taskByStatus, index) => ({
+          status: taskByStatus.status,
+          tasks: [...taskByStatus.tasks, ...curr[index]!.tasks],
+        }));
+      }
+      return curr;
+    }, []);
+  });
+
+  loadMore(): void {
+    if (this.tasksQuery.hasNextPage() && !this.tasksQuery.isFetchingNextPage()) {
+      this.tasksQuery.fetchNextPage();
+    }
+  }
+
+  readonly deleteTaskMutation = injectMutation(() => ({
+    mutationFn: ({ id, version }: Task) => firstValueFrom(this.taskService.delete(id, version)),
+    onSuccess: () => {
+      this.resetTaskFilters();
+    },
+  }));
 
   constructor() {
     addIcons({ add });
   }
 
-  deleteTask(task: Task): void {
-    const dialog = this.dialog.open(BaseDialogComponent, {
-      data: {
-        textContent: 'Are you sure that you want to delete task?',
-        dialogHeader: 'Delete task',
-        submitLabel: 'Delete',
+  async deleteTask(task: Task, taskCard?: TaskCardComponent): Promise<void> {
+    const dialog = await (
+      await this.modalController()
+    ).create({
+      component: BaseDialogComponent,
+      componentProps: {
+        textContent: signal('Are you sure that you want to delete task with id ' + task.id),
+        dialogHeader: signal('Delete task'),
+        submitLabel: signal('Delete'),
       },
     });
-    dialog.afterClosed().subscribe((result) => {
-      if (result) {
-        this.taskService.delete(task.id, task.version).subscribe({
-          next: () => {
-            this.showMessage('Task deleted');
-            this.initNewSaerch();
-          },
-        });
-      }
-    });
+    dialog.present();
+    this.dialogCallBackFunction(dialog, taskCard);
   }
 
-  openTaskDialog(task?: Partial<Task>): void {
-    const dialog = this.dialog.open(BaseDialogComponent, {
-      data: {
-        initValue: task,
-        dialogHeader: task ? 'Edit task' : 'Create task',
+  async openTaskDialog(task?: Partial<Task>, taskCard?: TaskCardComponent): Promise<void> {
+    const dialog = await (
+      await this.modalController()
+    ).create({
+      component: BaseDialogComponent,
+      componentProps: {
+        initValue: signal(task),
+        header: signal(task ? 'Edit task' : 'Create task'),
       },
-      height: '100vh',
       injector: Injector.create({
         providers: [
           { provide: AbstractTaskService, useValue: this.taskService },
@@ -126,15 +171,32 @@ export class BoardComponent {
         ],
       }),
     });
-    dialog.afterClosed().subscribe((result) => {
-      if (result) {
-        this.initNewSaerch();
-      }
-    });
+    dialog.present();
+    this.dialogCallBackFunction(dialog, taskCard);
   }
 
-  private initNewSaerch() {
-    this.initSaerchValue.update((t) => (t === null ? '' : null));
+  async dialogCallBackFunction(
+    dialog: HTMLIonModalElement,
+    taskCard?: TaskCardComponent,
+  ): Promise<void> {
+    const { role } = await dialog.onWillDismiss();
+    if (role === successModalEvent) {
+      this.resetTaskFilters();
+    }
+    if (taskCard) {
+      taskCard.menuOpen.set(false);
+    }
+  }
+
+  async resetTaskFilters(searchValue = ''): Promise<void> {
+    this.changeSearchValue(searchValue);
+    this.queryClient.cancelQueries();
+    this.queryClient.removeQueries();
+  }
+
+  changeSearchValue(searchValue: string | null) {
+    this.searchValue.set(searchValue);
+    this.currPage = 0;
   }
 
   onDrop(event: CdkDragDrop<Task[]>, status: TaskStatus): void {
@@ -162,27 +224,13 @@ export class BoardComponent {
               event.currentIndex,
             );
           }
-          this.cdr.detectChanges();
+          this.cdr().then((a) => a.detectChanges());
         },
       });
   }
 
-  accumulatorCallBack(
-    acc: TasksByStatus[],
-    curr: TasksByStatus[],
-  ): TasksByStatus[] {
-    return acc.map((e, index) => ({
-      status: e.status,
-      tasks: [...e.tasks, ...curr[index]!.tasks],
-    }));
-  }
-
-  hasMoreCallBack(curr: TasksByStatus[]): boolean {
-    return curr.some((e) => e.tasks.length === limit);
-  }
-
-  private showMessage(summary: string): void {
-    this.messageService.successEvent.next({
+  private async showMessage(summary: string): Promise<void> {
+    (await this.messageService()).successEvent.next({
       summary,
       detail: 'Task status changed successfully',
     });

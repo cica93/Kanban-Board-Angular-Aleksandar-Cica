@@ -1,7 +1,7 @@
-import { Provider } from "@angular/core";
+import { Provider } from '@angular/core';
 import { SocketService } from './socket.service';
 
-export class SocketServiceMock  {
+export class SocketServiceMock {
   connect = jasmine.createSpy('connect');
   sendMessage = jasmine.createSpy('sendMessage');
 }

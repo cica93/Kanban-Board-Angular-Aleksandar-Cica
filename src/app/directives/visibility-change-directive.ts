@@ -1,25 +1,15 @@
-import {
-  Directive,
-  ElementRef,
-  inject,
-  input,
-  OnDestroy,
-  output,
-} from '@angular/core';
+import { Directive, ElementRef, inject, input, OnDestroy, output } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { combineLatest } from 'rxjs';
 
-
 export type Measure = 'px' | 'rem' | 'vh' | 'vw' | '%';
-export type CssSize =`${number}${Measure}`
+export type CssSize = `${number}${Measure}`;
 
 @Directive({
   selector: '[appVisiblilityChange]',
 })
 export class VisiblilityChangeDirective implements OnDestroy {
-  private readonly hostElement = inject<ElementRef<HTMLElement>>(
-    ElementRef<HTMLElement>,
-  );
+  private readonly hostElement = inject<ElementRef<HTMLElement>>(ElementRef<HTMLElement>);
   patentElement = input<HTMLElement>();
   rootMargin = input<CssSize>('20px');
   threshold = input<number>(0.1);

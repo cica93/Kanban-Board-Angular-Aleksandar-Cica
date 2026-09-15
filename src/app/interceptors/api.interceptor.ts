@@ -12,14 +12,10 @@ export const ApiInterceptor: HttpInterceptorFn = (req, next) => {
 
   const errorHandlerService = inject(MessageHandlerService);
   const securityService = inject(SecurityService);
-  const isSkip = req.headers.get("skip");
+  const isSkip = req.headers.get('skip');
 
   const authReq = req.clone({
-    url: isSkip
-      ? req.url
-      : req.url.endsWith('/graphql')
-        ? req.url
-        : `${apiBaseUrl}/api/${req.url}`,
+    url: isSkip ? req.url : req.url.endsWith('/graphql') ? req.url : `${apiBaseUrl}/api/${req.url}`,
     setHeaders: {
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
@@ -34,11 +30,11 @@ export const ApiInterceptor: HttpInterceptorFn = (req, next) => {
         } else if (err.error?.message) {
           errorHandlerService.errorEvent.next({
             detail: err.error.message as string,
-            summary: "error",
+            summary: 'error',
           });
         }
       }
       return throwError(() => err);
-    })
+    }),
   );
 };

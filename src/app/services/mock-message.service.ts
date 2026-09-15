@@ -1,6 +1,6 @@
-import { Provider } from "@angular/core";
-import { MessageService } from "primeng/api";
-import { Subject } from "rxjs";
+import { Provider } from '@angular/core';
+import { MessageService } from 'primeng/api';
+import { Subject } from 'rxjs';
 
 export class MockMessageService {
   messageObserver = new Subject<any>();

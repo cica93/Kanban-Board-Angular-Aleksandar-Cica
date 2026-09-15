@@ -1,6 +1,6 @@
-import { Provider } from "@angular/core";
-import { Router } from "@angular/router";
-import { of, Subject } from "rxjs";
+import { Provider } from '@angular/core';
+import { Router } from '@angular/router';
+import { of, Subject } from 'rxjs';
 
 export class MockRouter {
   navigate = jasmine.createSpy('navigate').and.returnValue(of({}));
@@ -10,8 +10,8 @@ export class MockRouter {
   isActive() {
     return false;
   }
-};
+}
 
 export function provideMockRouter(): Provider {
-    return { provide: Router, useClass: MockRouter }
+  return { provide: Router, useClass: MockRouter };
 }

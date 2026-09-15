@@ -8,9 +8,8 @@ describe('SearchInputComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SearchInputComponent]
-    })
-    .compileComponents();
+      imports: [SearchInputComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(SearchInputComponent);
     component = fixture.componentInstance;

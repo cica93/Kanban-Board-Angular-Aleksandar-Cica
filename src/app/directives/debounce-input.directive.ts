@@ -1,11 +1,4 @@
-import {
-  Directive,
-  effect,
-  ElementRef,
-  inject,
-  input,
-  output,
-} from '@angular/core';
+import { Directive, effect, ElementRef, inject, input, output } from '@angular/core';
 import { outputToObservable, toSignal } from '@angular/core/rxjs-interop';
 import { IonInput } from '@ionic/angular';
 import { InputInputEventDetail } from '@ionic/core';
@@ -25,9 +18,9 @@ export class DebounceInputDirective {
       ? fromEvent<InputEvent>(this.el.nativeElement, 'input').pipe(
           map((e) => (e.target as HTMLInputElement).value),
         )
-      : outputToObservable<CustomEvent<InputInputEventDetail>>(
-          this.ionInput.ionInput,
-        ).pipe(map((e) => e.detail.value))
+      : outputToObservable<CustomEvent<InputInputEventDetail>>(this.ionInput.ionInput).pipe(
+          map((e) => e.detail.value),
+        )
     ).pipe(debounceTime(this.debounceTime()), distinctUntilChanged()),
     { initialValue: this.el.nativeElement.value ?? '' },
   );

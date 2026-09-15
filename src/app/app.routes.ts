@@ -8,6 +8,8 @@ import { AbstractTaskService } from '@service/abstract.task.service';
 import { sidebarGuard } from './guards/sidebar.guard';
 import { UserFormComponent } from './components/user-form/user-form.component';
 import { DIALOG_COMPONENT } from './components/users/users.component';
+import { FORM_TOKEN } from '@components/shared/base-dialog/base-dialog.component';
+import { TaskFormComponent } from '@components/board/task-card/task-form/task-form.component';
 
 const loginGuard = () => {
   const security = inject(SecurityService);
@@ -38,62 +40,35 @@ export const routes: Routes = [
     path: 'rest',
     title: 'Rest',
     canDeactivate: [sidebarGuard],
-    loadComponent: () =>
-      import('./components/board/board.component').then(
-        (c) => c.BoardComponent,
-      ),
-    providers: [{ provide: AbstractTaskService, useExisting: TaskService }],
-  },
-  {
-    path: 'user-dialog',
-    outlet: 'sidebar',
-    loadComponent: () =>
-      import('./components/user-form/user-form.component').then(
-        (m) => m.UserFormComponent,
-      ),
-    canActivate: [loginGuard],
+    loadComponent: () => import('./components/board/board.component').then((c) => c.BoardComponent),
+    providers: [
+      { provide: AbstractTaskService, useExisting: TaskService },
+      { provide: FORM_TOKEN, useValue: TaskFormComponent },
+    ],
   },
   {
     path: 'users',
     title: 'Users',
-    loadComponent: () =>
-      import('./components/users/users.component').then(
-        (m) => m.UsersComponent,
-      ),
+    loadComponent: () => import('./components/users/users.component').then((m) => m.UsersComponent),
     canActivate: [loginGuard],
     providers: [{ provide: DIALOG_COMPONENT, useValue: UserFormComponent }],
   },
-  {
-    path: '',
-    title: 'Rest',
-    canDeactivate: [sidebarGuard],
-    loadComponent: () =>
-      import('./components/board/board.component').then(
-        (c) => c.BoardComponent,
-      ),
-    providers: [{ provide: AbstractTaskService, useExisting: TaskService }],
-    canActivate: [loginGuard],
-  },
+
   {
     path: 'graphql',
     title: 'Graphql',
     canDeactivate: [sidebarGuard],
-    loadComponent: () =>
-      import('./components/board/board.component').then(
-        (c) => c.BoardComponent,
-      ),
+    loadComponent: () => import('./components/board/board.component').then((c) => c.BoardComponent),
     providers: [
       { provide: AbstractTaskService, useExisting: TaskGraphQlService },
+      { provide: FORM_TOKEN, useValue: TaskFormComponent },
     ],
     canActivate: [loginGuard],
   },
   {
     path: 'login',
     title: 'Login',
-    loadComponent: () =>
-      import('./components/login/login.component').then(
-        (c) => c.LoginComponent,
-      ),
+    loadComponent: () => import('./components/login/login.component').then((c) => c.LoginComponent),
     canActivate: [logoutGuard],
   },
 ];

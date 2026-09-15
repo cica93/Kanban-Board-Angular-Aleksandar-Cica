@@ -1,36 +1,38 @@
 @if (user$ | async; as user) {
-  <ion-grid>
-    <ion-row class="user-menu">
-      <app-avatar
-        class="cursor-pointer"
-        [size]="30"
-        [label]="user.fullName | slice: 0 : 1"
-      />
+  <ion-header>
+    <ion-grid>
+      <ion-row>
+        <ion-col class="user-menu">
+          <ion-avatar class="cursor-pointer avatar">{{ user.fullName | slice: 0 : 1 }}</ion-avatar>
 
-      <app-link-group>
-        @for (item of ['rest', 'graphql', 'users']; track item) {
-          <ion-router-link
-            [routerLink]="'/' + item"
-            routerDirection="root"
+          <app-link-group>
+            @for (item of ['rest', 'graphql', 'users']; track item) {
+              <ion-router-link
+                [routerLink]="'/' + item"
+                [routerLinkActive]="'activeLink'"
+                routerDirection="root"
+              >
+                {{ item | titlecase }}
+              </ion-router-link>
+            }
+          </app-link-group>
+
+          <ion-button
+            fill="solid"
+            shape="round"
+            color="danger"
+            class="logout-button"
+            (click)="logout()"
           >
-            {{ item | titlecase }}
-          </ion-router-link>
-        }
-      </app-link-group>
-
-      <ion-button
-        fill="solid"
-        shape="round"
-        class="logout-button"
-        (click)="logout()"
-      >
-        <ion-icon
-          slot="icon-only"
-          [icon]="logOutOutlineIcon"
-        />
-      </ion-button>
-    </ion-row>
-  </ion-grid>
+            <ion-icon
+              slot="icon-only"
+              [icon]="logOutOutlineIcon"
+            />
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-header>
 
   <router-outlet />
 } @else {

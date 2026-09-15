@@ -1,11 +1,4 @@
-import {
-  Component,
-  inject,
-  InjectionToken,
-  Injector,
-  signal,
-  Type,
-} from '@angular/core';
+import { Component, inject, InjectionToken, Injector, signal, Type } from '@angular/core';
 import { User } from '@service/user.service';
 import { httpResource } from '@angular/common/http';
 import { SearchInputComponent } from '@components/shared/search-input/search-input.component';
@@ -13,9 +6,7 @@ import { HeaderComponent } from '@components/shared/header/header.component';
 import { MatButton } from '@angular/material/button';
 import { MatRipple } from '@angular/material/core';
 
-export const DIALOG_COMPONENT = new InjectionToken<Type<any>>(
-  'DIALOG_COMPONENT',
-);
+export const DIALOG_COMPONENT = new InjectionToken<Type<any>>('DIALOG_COMPONENT');
 
 @Component({
   selector: 'app-users',

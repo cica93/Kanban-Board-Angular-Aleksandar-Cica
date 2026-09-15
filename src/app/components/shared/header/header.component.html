@@ -1,4 +1,13 @@
-<ng-content select="app-search-input" />
-<div class="flex gap-2">
-  <ng-content select="ion-button" />
-</div>
+<ion-grid>
+  <ion-row>
+    <ion-col [size]="4">
+      <ng-content select="app-search-input" />
+    </ion-col>
+    <ion-col
+      [size]="8"
+      class="ion-text-end"
+    >
+      <ng-content select="ion-button" />
+    </ion-col>
+  </ion-row>
+</ion-grid>

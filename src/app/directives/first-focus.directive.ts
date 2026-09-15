@@ -1,10 +1,4 @@
-import {
-  Directive,
-  ElementRef,
-  OnInit,
-  inject,
-  input,
-} from '@angular/core';
+import { Directive, ElementRef, OnInit, inject, input } from '@angular/core';
 
 export type Measure = 'px' | 'rem' | 'vh' | 'vw' | '%';
 export type CssSize = `${number}${Measure}`;
@@ -12,7 +6,7 @@ export type CssSize = `${number}${Measure}`;
 @Directive({
   selector: '[appFirstFocus]',
 })
-export class FirstFocusDirective implements OnInit  {
+export class FirstFocusDirective implements OnInit {
   private readonly hostElement = inject<ElementRef<HTMLElement>>(ElementRef);
 
   appFirstFocus = input<boolean>(false);

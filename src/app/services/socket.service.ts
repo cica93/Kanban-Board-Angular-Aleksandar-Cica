@@ -48,10 +48,7 @@ export class SocketService {
           }
         }
       } catch (error) {
-        console.error(
-          '[SocketService] Failed to parse websocket message',
-          error,
-        );
+        console.error('[SocketService] Failed to parse websocket message', error);
       }
     };
 

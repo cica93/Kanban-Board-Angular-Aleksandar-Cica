@@ -22,7 +22,6 @@ import {
 } from '@angular/forms/signals';
 import { FormsModule } from '@angular/forms';
 import { JwtUtils } from '@service/jwt.service';
-import { FirstFocusDirective } from 'src/app/directives/first-focus.directive';
 import { User } from '@service/user.service';
 
 declare const __brand: unique symbol;
@@ -52,9 +51,7 @@ export type Error = {
 
 export type DataStatus<T = any> = { http: string } & (Data<T> | Error);
 
-export function isError<T = any>(
-  d: DataStatus<T>,
-): d is { http: string } & Error {
+export function isError<T = any>(d: DataStatus<T>): d is { http: string } & Error {
   return 'error' in d;
 }
 
@@ -78,8 +75,11 @@ export function checkEmail(email: string): Email {
 }
 
 export type Measure = 'px' | 'rem' | 'vh' | 'vw' | '%';
-export type PositiveCssSize<S extends string = 'string'> =
-  S extends `-${string}` ? never : S extends `${number}${Measure}` ? S : never;
+export type PositiveCssSize<S extends string = 'string'> = S extends `-${string}`
+  ? never
+  : S extends `${number}${Measure}`
+    ? S
+    : never;
 
 export function setElementWidth<T extends HTMLElement, S extends string>(
   element: T,
@@ -88,9 +88,7 @@ export function setElementWidth<T extends HTMLElement, S extends string>(
   element.style.width = cssSize;
 }
 
-export type ObservableType<T> = T extends (...args: any) => Observable<infer R>
-  ? R
-  : never;
+export type ObservableType<T> = T extends (...args: any) => Observable<infer R> ? R : never;
 
 @Component({
   selector: 'app-login',
@@ -107,7 +105,6 @@ export type ObservableType<T> = T extends (...args: any) => Observable<infer R>
     IonCol,
     IonGrid,
     IonRow,
-    FirstFocusDirective,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
@@ -161,7 +158,9 @@ export class LoginComponent {
                 'email-not-registered',
               )
             : undefined,
-        onError: (_error, _ctx) => undefined,
+        onError: (_error, _ctx) => {
+          return undefined;
+        },
       });
     },
     {

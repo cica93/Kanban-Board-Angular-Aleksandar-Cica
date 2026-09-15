@@ -1,7 +1,7 @@
 <ion-grid class="full-height">
   <ion-row class="center-content">
     <ion-col
-      size="10"
+      size="8"
       size-md="6"
       size-lg="4"
     >
@@ -9,31 +9,32 @@
         <h1 style="text-align: center">Login</h1>
         <ion-list class="form-group">
           <ion-item>
+            @let emailInput = loginForm.email();
             <ion-input
               fill="solid"
-              errorText="ssss"
-              helperText="Enter a valid email"
+              [class.ion-invalid]="true"
+              [class.ion-touched]="true"
+              [helperText]="emailInput.errors()[0]?.message ?? 'Enter a valid email'"
               labelPlacement="floating"
               label="Email"
               placeholder="Enter email"
               [formField]="loginForm.email"
-              [appFirstFocus]="true"
-              class="w-full"
-              email
+              [autofocus]="true"
               id="email"
             />
           </ion-item>
-
           <ion-item>
+            @let passwordInput = loginForm.password();
             <ion-input
               fill="solid"
-              errorText="asdad"
-              helperText="Enter a valid password"
+              [errorText]="passwordInput.errors()[0]?.message"
+              [class.ion-invalid]="passwordInput.touched() && passwordInput.invalid()"
+              [class.ion-touched]="passwordInput.touched()"
+              [helperText]="passwordInput.errors()[0]?.message ?? 'Enter a valid password'"
               type="password"
               label="Password"
               [formField]="loginForm.password"
               labelPlacement="floating"
-              class="w-full"
               id="password"
             >
               <ion-input-password-toggle slot="end" />

@@ -21,7 +21,6 @@ export type User = z.infer<typeof userSchema> & {
   __typename?: 'Task';
 };
 
-
 @Injectable({
   providedIn: 'root',
 })

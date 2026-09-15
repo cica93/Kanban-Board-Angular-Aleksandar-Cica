@@ -25,7 +25,6 @@ export class JwtUtils {
   }
 
   static decodeJwt(token: string): Token {
-    console.log(token);
     const payload = token.split('.')[1];
     return JSON.parse(atob(payload ?? '')) as Token;
   }

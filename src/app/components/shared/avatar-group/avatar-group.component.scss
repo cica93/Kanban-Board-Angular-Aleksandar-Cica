@@ -2,8 +2,14 @@
   display: flex;
   flex-direction: row;
 
-  ::ng-deep app-avatar {
-    margin-left: -10px;
+  ::ng-deep ion-avatar {
+    width: 32px;
+    height: 32px;
+    margin-left: -8px;
+
+    &:first-child {
+      margin-left: 0;
+    }
 
     &:last-child {
       z-index: 1;

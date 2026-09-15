@@ -1,11 +1,4 @@
-import {
-  Directive,
-  ElementRef,
-  effect,
-  inject,
-  input,
-  output,
-} from '@angular/core';
+import { Directive, ElementRef, effect, inject, input, output } from '@angular/core';
 
 export type Measure = 'px' | 'rem' | 'vh' | 'vw' | '%';
 export type CssSize = `${number}${Measure}`;

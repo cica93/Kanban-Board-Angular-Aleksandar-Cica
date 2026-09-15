@@ -73,11 +73,7 @@ export class TaskGraphQlService extends AbstractTaskService {
       .pipe(map((result: any) => result.data.getTaskById));
   }
 
-  override get(
-    description = '',
-    limit = 20,
-    offset = 0,
-  ): Observable<TasksByStatus[]> {
+  override get(description = '', limit = 20, offset = 0): Observable<TasksByStatus[]> {
     return this.apollo
       .query<{
         getTasks: TasksByStatus[];
@@ -92,19 +88,11 @@ export class TaskGraphQlService extends AbstractTaskService {
       .pipe(map((result) => result.data?.getTasks ?? []));
   }
 
-  override put(
-    id: number,
-    version: number,
-    task: TaskForm,
-  ): Observable<Task | null | undefined> {
+  override put(id: number, version: number, task: TaskForm): Observable<Task | null | undefined> {
     return this.apollo
       .mutate<{ updateTask: Task }>({
         mutation: gql`
-          mutation updateTask(
-            $id: Int!
-            $version: Int!
-            $task: TaskModifyInput!
-          ) {
+          mutation updateTask($id: Int!, $version: Int!, $task: TaskModifyInput!) {
             updateTask(id: $id, version: $version, task: $task) {
               id
               title

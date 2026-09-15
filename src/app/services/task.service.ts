@@ -15,11 +15,7 @@ import {
 export class TaskService extends AbstractTaskService {
   private readonly http = inject(HttpClient);
 
-  override get(
-    description = '',
-    limit = 20,
-    offset = 0,
-  ): Observable<TasksByStatus[]> {
+  override get(description = '', limit = 20, offset = 0): Observable<TasksByStatus[]> {
     return this.http.get<TasksByStatus[]>('tasks', {
       params: {
         description: description == null ? '' : description,
@@ -49,5 +45,3 @@ export class TaskService extends AbstractTaskService {
     return this.http.put<Task>('tasks/drag', dragTask);
   }
 }
-
-

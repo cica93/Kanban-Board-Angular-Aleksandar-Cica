@@ -1,12 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import {
-  BehaviorSubject,
-  catchError,
-  EMPTY,
-  Observable,
-  Subject,
-  tap,
-} from 'rxjs';
+import { BehaviorSubject, catchError, EMPTY, Observable, Subject, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { User, UserService } from './user.service';
 import { JwtUtils } from './jwt.service';

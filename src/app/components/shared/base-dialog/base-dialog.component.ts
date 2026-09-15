@@ -13,19 +13,19 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { FieldTree, submit } from '@angular/forms/signals';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogActions,
-  MatDialogClose,
-  MatDialogContent,
-  MatDialogRef,
-  MatDialogTitle,
-} from '@angular/material/dialog';
-import { MatRippleModule } from '@angular/material/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { Subject } from 'rxjs';
-
+import {
+  IonButton,
+  IonButtons,
+  IonContent,
+  IonFooter,
+  IonHeader,
+  IonIcon,
+  IonTitle,
+  IonToolbar,
+  ModalController,
+} from '@ionic/angular';
+import { close } from 'ionicons/icons';
 
 export interface SubmitForm<INIT_VALUE = any, FORM_VALUE = any> {
   initValue: InputSignal<INIT_VALUE | null | undefined>;
@@ -34,6 +34,9 @@ export interface SubmitForm<INIT_VALUE = any, FORM_VALUE = any> {
 }
 
 export const FORM_TOKEN = new InjectionToken<Type<SubmitForm>>('app.config');
+export const successModalEvent = 'successModalEvent';
+export const cancelModalEvent = 'cancelModalEvent';
+export const closeDialogOnClick = 'closeDialogOnClick';
 
 export interface BaseDialogConfiguration<T = any> {
   cancelLabel?: string;
@@ -45,54 +48,48 @@ export interface BaseDialogConfiguration<T = any> {
 
 @Component({
   selector: 'app-base-dialog',
-  imports: [
-    MatRippleModule,
-    MatButtonModule,
-    MatDialogActions,
-    MatDialogContent,
-    MatDialogTitle,
-    MatIconModule,
-    MatDialogClose,
-  ],
+  imports: [IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonTitle, IonToolbar, IonFooter],
   templateUrl: './base-dialog.component.html',
 })
 export class BaseDialogComponent {
+  private readonly modalController = inject(ModalController);
   componentContainer = viewChild.required('container', {
     read: ViewContainerRef,
   });
 
+  initValue = input<unknown>();
   header = input<string>();
+  textContent = input<string>('');
+  cancelLabel = input<string>();
+  submitLabel = input<string>();
   data!: BaseDialogConfiguration;
-  private readonly dialogRef = inject(MatDialogRef<BaseDialogComponent>);
   submitClick = output<void>();
   submitComponent = inject(FORM_TOKEN, { optional: true });
   componentRef!: ComponentRef<SubmitForm>;
-  
-  closeDialog(result?: unknown): void {
-    this.dialogRef.close(result);
+  dialogClose = output<unknown>();
+
+  closeIcon = close;
+
+  closeDialog(result?: string): void {
+    this.dialogClose.emit(result);
+    this.modalController.dismiss(closeDialogOnClick, result);
   }
 
   constructor() {
-    this.data = inject<BaseDialogConfiguration>(MAT_DIALOG_DATA) ?? {};
     effect(() => {
       if (this.componentContainer() && this.submitComponent) {
-        this.componentRef = this.componentContainer()?.createComponent(
-          this.submitComponent!,
-          {
-            bindings: [
-              inputBinding('initValue', () =>
-                this.data.initValue
-                  ? structuredClone(this.data.initValue, {})
-                  : this.data.initValue,
-              ),
-            ],
-          },
-        );
-        this.componentRef.instance.onClose.asObservable().subscribe(result => {
+        this.componentRef = this.componentContainer()?.createComponent(this.submitComponent!, {
+          bindings: [
+            inputBinding('initValue', () =>
+              this.initValue() ? structuredClone(this.initValue(), {}) : this.initValue(),
+            ),
+          ],
+        });
+        this.componentRef.instance.onClose.asObservable().subscribe((result) => {
           if (result) {
-            this.closeDialog(result);
+            this.closeDialog(result ? successModalEvent : cancelModalEvent);
           }
-        })
+        });
       }
     });
   }
@@ -101,7 +98,7 @@ export class BaseDialogComponent {
     if (this.componentRef) {
       submit(this.componentRef.instance.form);
     } else {
-      this.closeDialog(true);
+      this.closeDialog(successModalEvent);
     }
   }
 }

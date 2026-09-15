@@ -1,9 +1,4 @@
-import {
-  ComponentFixture,
-  fakeAsync,
-  TestBed,
-  tick,
-} from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { LoginComponent } from './login.component';
 import { LoginService } from '@service/login.service';
 import { provideSecurityService } from '@service/mock-security.service';

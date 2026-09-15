@@ -6,5 +6,4 @@ import { Component } from '@angular/core';
   styleUrl: './avatar-group.component.scss',
   templateUrl: './avatar-group.component.html',
 })
-export class AvatarGroupComponent {
-}
+export class AvatarGroupComponent {}

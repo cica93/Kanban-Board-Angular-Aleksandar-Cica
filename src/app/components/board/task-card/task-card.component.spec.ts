@@ -2,11 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 
 import { TaskCardComponent } from './task-card.component';
-import {
-  Task,
-  TASK_PRIORITIES,
-  TASK_STATUSES,
-} from '@service/abstract.task.service';
+import { Task, TASK_PRIORITIES, TASK_STATUSES } from '@service/abstract.task.service';
 import { By } from '@angular/platform-browser';
 
 describe('TaskCardComponent', () => {
@@ -55,9 +51,7 @@ describe('TaskCardComponent', () => {
   it('should display the task description', () => {
     const descriptionElement = el.query(By.css('#description-1')); // Assuming a class 'task-card-description'
     expect(descriptionElement).toBeTruthy();
-    expect(descriptionElement.nativeElement.textContent).toContain(
-      mockTask.description,
-    );
+    expect(descriptionElement.nativeElement.textContent).toContain(mockTask.description);
   });
 
   it('should display the task status', () => {

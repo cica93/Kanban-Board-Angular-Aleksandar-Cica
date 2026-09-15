@@ -1,42 +1,50 @@
-<h2
-  mat-dialog-title
-  style="display: flex; align-items: center; justify-content: space-between"
->
-  <span>{{ data.dialogHeader ?? header() }}</span>
-  <button
-    style="margin-left: auto"
-    mat-icon-button
-    mat-dialog-close
-    [tabIndex]="-1"
-    type="button"
-    aria-label="Close dialog"
-  >
-    <mat-icon>close</mat-icon>
-  </button>
-</h2>
-<mat-dialog-content class="pt-2">
-  @let textContent = data.textContent;
-  @if (textContent) {
-    <p>{{ textContent }}</p>
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ header() }}</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button
+        fill="clear"
+        (click)="closeDialog()"
+        aria-label="Close dialog"
+      >
+        <ion-icon
+          slot="icon-only"
+          [icon]="closeIcon"
+        ></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  @if (textContent()) {
+    <p>{{ textContent() }}</p>
   }
-  <ng-content></ng-content>
-  <ng-container #container> </ng-container>
-</mat-dialog-content>
-<mat-dialog-actions>
-  <button
-    class="danger-button"
-    matButton
-    matRipple
-    mat-dialog-close
-    [tabindex]="-1"
-  >
-    {{ data.cancelLabel ?? 'Cancel' }}
-  </button>
-  <button
-    matButton
-    matRipple
-    (click)="submitForm()"
-  >
-    {{ data.submitLabel ?? 'Submit' }}
-  </button>
-</mat-dialog-actions>
+  <ng-content></ng-content> <ng-container #container></ng-container>
+  <ion-footer>
+    <ion-toolbar>
+      <ion-buttons
+        slot="end"
+        class="dialog-actions"
+      >
+        <ion-button
+          [size]="'large'"
+          [fill]="'outline'"
+          [color]="'danger'"
+          (click)="closeDialog()"
+        >
+          {{ cancelLabel() ?? 'Cancel' }}
+        </ion-button>
+        <ion-button
+          [size]="'large'"
+          [strong]="true"
+          [fill]="'outline'"
+          [color]="'primary'"
+          (click)="submitForm()"
+        >
+          {{ submitLabel() ?? 'Submit' }}
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-footer>
+</ion-content>

@@ -2,16 +2,7 @@ import { AsyncPipe } from '@angular/common';
 import { Component, contentChildren, OnInit } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { RouterLinkActive } from '@angular/router';
-import {
-  combineLatest,
-  map,
-  merge,
-  Observable,
-  scan,
-  startWith,
-  Subject,
-  switchMap,
-} from 'rxjs';
+import { combineLatest, map, merge, Observable, scan, startWith, Subject, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-link-group',
@@ -30,9 +21,7 @@ export class LinkGroupComponent implements OnInit {
       this.links$.pipe(
         switchMap((links) =>
           combineLatest(
-            links.map((e) =>
-              e.isActiveChange.asObservable().pipe(startWith(false)),
-            ),
+            links.map((e) => e.isActiveChange.asObservable().pipe(startWith(false))),
           ).pipe(
             map((isActiveAnyLink) => ({
               event: 'navigate',

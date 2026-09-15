@@ -12,11 +12,7 @@ import {
   withInMemoryScrolling,
   withRouterConfig,
 } from '@angular/router';
-import {
-  provideHttpClient,
-  withInterceptors,
-  withXhr,
-} from '@angular/common/http';
+import { provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
 import { routes } from './app.routes';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { ApiInterceptor } from './interceptors/api.interceptor';
@@ -34,6 +30,7 @@ import { provideSignalFormsConfig } from '@angular/forms/signals';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { GlobalErrorHandler } from '@service/error.handler.service';
 import { provideIonicAngular } from '@ionic/angular';
+import { provideTanStackQuery, QueryClient } from '@tanstack/angular-query-experimental';
 
 const apiInterceptor = ApiInterceptor;
 
@@ -45,6 +42,16 @@ export const appConfig: ApplicationConfig = {
       withComponentInputBinding(),
       withInMemoryScrolling(),
       withRouterConfig({ urlUpdateStrategy: 'deferred' }),
+    ),
+    provideTanStackQuery(
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            staleTime: 30_000,
+            refetchOnWindowFocus: false,
+          },
+        },
+      }),
     ),
     provideSignalFormsConfig({
       classes: {

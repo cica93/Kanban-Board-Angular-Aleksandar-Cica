@@ -12,6 +12,6 @@ export class KanbanTitle extends TitleStrategy {
     const title = this.buildTitle(snapshot);
     if (title) {
       this.title.setTitle(`Kanban | ${title}`);
-    } 
+    }
   }
 }

@@ -2,6 +2,7 @@ import {
   Component,
   forwardRef,
   inject,
+  injectAsync,
   input,
   signal,
   viewChild,
@@ -15,10 +16,7 @@ import {
   TaskStatus,
 } from '@service/abstract.task.service';
 import { firstValueFrom, Subject, zip } from 'rxjs';
-import {
-  SubmitForm,
-  FORM_TOKEN,
-} from '@components/shared/base-dialog/base-dialog.component';
+import { SubmitForm, FORM_TOKEN } from '@components/shared/base-dialog/base-dialog.component';
 import {
   form,
   FormField,
@@ -29,51 +27,41 @@ import {
   validate,
 } from '@angular/forms/signals';
 import { AsyncPipe } from '@angular/common';
-import { FormValueWrapperComponent } from 'src/app/form-value-wrapper/form-value-wrapper.component';
-import { User, UserService } from '@service/user.service';
+import { UserService } from '@service/user.service';
 import { NgSelectComponent, NgSelectModule } from '@ng-select/ng-select';
-import { MessageHandlerService } from '@service/message.handler.service';
 import { toObservable } from '@angular/core/rxjs-interop';
-import {
-  MatError,
-  MatFormField,
-  MatInput,
-  MatLabel,
-} from '@angular/material/input';
+import { IonInput } from '@ionic/angular/ion-input';
+import { IonItem, IonList, IonSelect, IonSelectOption, IonTextarea } from '@ionic/angular';
 
-export type NoTUpdatableTaskFields =
-  | 'id'
-  | 'taskOrder'
-  | 'version'
-  | 'createdBy'
-  | 'updatedBy';
+export type NoTUpdatableTaskFields = 'id' | 'taskOrder' | 'version' | 'createdBy' | 'updatedBy';
 export type TaskForm = Omit<Task, NoTUpdatableTaskFields>;
 @Component({
   selector: 'app-task-form',
   imports: [
     FormRoot,
     FormField,
-    FormValueWrapperComponent,
     NgSelectModule,
     AsyncPipe,
-    MatInput,
-    MatLabel,
-    MatFormField,
-    MatError,
+    IonInput,
+    IonItem,
+    IonList,
+    IonSelect,
+    IonSelectOption,
+    IonTextarea,
   ],
   templateUrl: './task-form.component.html',
   host: {
     class: 'flex h-full',
   },
-  providers: [
-    { provide: FORM_TOKEN, useClass: forwardRef(() => TaskFormComponent) },
-  ],
+  providers: [{ provide: FORM_TOKEN, useClass: forwardRef(() => TaskFormComponent) }],
 })
 export class TaskFormComponent implements SubmitForm<Task, TaskForm> {
   onClose: Subject<boolean> = new Subject<boolean>();
   initValue = input<Task | undefined | null>(null);
   private readonly taskService = inject(AbstractTaskService);
-  private readonly messageHandlerService = inject(MessageHandlerService);
+  private readonly messageHandlerService = injectAsync(() =>
+    import('@service/message.handler.service').then((a) => a.MessageHandlerService),
+  );
   users$ = inject(UserService).getUsers();
   TASK_STATUSES = TASK_STATUSES;
   TASK_PRIORITIES = TASK_PRIORITIES;
@@ -83,11 +71,14 @@ export class TaskFormComponent implements SubmitForm<Task, TaskForm> {
     read: NgSelectComponent,
   });
   protected model = signal<TaskForm>({
-    description: '',
-    taskPriority: this.TASK_PRIORITIES[0],
-    taskStatus: this.TASK_STATUSES[0].replace(' ', '_') as TaskStatus,
-    title: '',
-    users: [],
+    description: this.initValue()?.description ?? '',
+    taskPriority: this.initValue()?.taskPriority ?? this.TASK_PRIORITIES[0],
+    taskStatus: (this.initValue()?.taskStatus ?? this.TASK_STATUSES[0]).replace(
+      ' ',
+      '_',
+    ) as TaskStatus,
+    title: this.initValue()?.title ?? '',
+    users: this.initValue()?.users ?? [],
   });
 
   constructor() {
@@ -111,9 +102,7 @@ export class TaskFormComponent implements SubmitForm<Task, TaskForm> {
 
         select?.writeValue(
           users.filter((user) =>
-            initValue!.users.some(
-              (selectedUser) => selectedUser.id === user.id,
-            ),
+            initValue!.users.some((selectedUser) => selectedUser.id === user.id),
           ),
         );
       } else {
@@ -160,14 +149,9 @@ export class TaskFormComponent implements SubmitForm<Task, TaskForm> {
             const { id, version } = task;
             const formValue = this.form().value();
             await firstValueFrom(
-              id
-                ? this.taskService.put(id, version, formValue)
-                : this.taskService.post(formValue),
+              id ? this.taskService.put(id, version, formValue) : this.taskService.post(formValue),
             );
-            this.showMessage(
-              `Task ${id ? 'updated' : 'created'}`,
-              'Task changed successfully',
-            );
+            this.showMessage(`Task ${id ? 'updated' : 'created'}`, 'Task changed successfully');
 
             this.onClose.next(true);
             return undefined;
@@ -187,19 +171,10 @@ export class TaskFormComponent implements SubmitForm<Task, TaskForm> {
     },
   );
 
-  protected showMessage(summary: string, detail?: string): void {
-    this.messageHandlerService.successEvent.next({
+  protected async showMessage(summary: string, detail?: string): Promise<void> {
+    (await this.messageHandlerService()).successEvent.next({
       summary,
       detail,
     });
   }
-
-  compareWithId = (user: User | null, users: User[] | null): boolean => {
-    console.log(user);
-    if (!user || !users) {
-      return false;
-    }
-
-    return users.some((u) => u.id === user.id);
-  };
 }

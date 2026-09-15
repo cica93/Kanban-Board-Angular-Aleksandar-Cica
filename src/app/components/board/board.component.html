@@ -1,78 +1,78 @@
-@if (loading()) {
+<ion-grid>
+  <ion-row>
+    <ion-col>
+      <app-header>
+        <app-search-input
+          [autoFocus]="true"
+          [value]="searchValue()"
+          (valueChange)="changeSearchValue($event)"
+          [placeholder]="'Search'"
+        />
+        <ion-button  (click)="openTaskDialog()">
+          <ion-icon
+            slot="start"
+            name="add"
+          ></ion-icon>
+          Create Task
+        </ion-button>
+      </app-header>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+@let loading = tasksQuery.isLoading();
+@if (loading) {
+<div
+  class="fixed top-50 left-50 align-items-center justify-content-center"
+  style="z-index: 100"
+>
+  <ion-spinner></ion-spinner>
+</div>
+} @else {
   <div
-    class="fixed top-50 left-50 align-items-center justify-content-center"
-    style="z-index: 100"
+    style="overflow-y: auto; max-height: 80vh"
+    #mainContainer
   >
-    <mat-spinner></mat-spinner>
+    <ion-grid>
+      <ion-row>
+        @for (status of TASK_STATUSES; track status; let i = $index) {
+          @let tasksByStatus = tasks()[i]?.tasks ?? [];
+          <ion-col
+            size="12"
+            size-md="6"
+            size-lg="4"
+          >
+            <h2 class="ion-text-center">
+              {{ status }}
+            </h2>
+            <div
+              cdkDropList
+              [id]="status"
+              [cdkDropListData]="tasksByStatus"
+              [cdkDropListConnectedTo]="TASK_STATUSES"
+              (cdkDropListDropped)="onDrop($event, status)"
+            >
+              @for (task of tasksByStatus; track $index) {
+                <app-task-card
+                  #taskCard
+                  cdkDrag
+                  cdkDragBoundary="#main-container"
+                  [cdkDragData]="task"
+                  [task]="task"
+                  (onDelete)="deleteTask(task, taskCard)"
+                  (onEdit)="openTaskDialog(task, taskCard)"
+                />
+              }
+            </div>
+          </ion-col>
+        }
+      </ion-row>
+    </ion-grid>
+
+    <div
+      (becomeVisible)="loadMore()"
+      [threshold]="0.8"
+      style="visibility: hiden; transform: translateY(-40px); z-index: 100"
+    ></div>
   </div>
 }
-<div class="my-1 mx-5">
-  <app-header>
-    <app-search-input
-      class="w-3"
-      [autoFocus]="true"
-      [(value)]="initSaerchValue"
-      [placeholder]="loading() ? 'Searching...' : 'Search'"
-    />
-    <ion-button (click)="openTaskDialog()">
-      <ion-icon
-        slot="start"
-        name="add"
-      ></ion-icon>
-      Create Task
-    </ion-button>
-  </app-header>
-</div>
-<div
-  #mainContainer
-  class="flex relative"
-  (appFetchData)="tasks = $event"
-  [hasMoreCallBack]="hasMoreCallBack"
-  [accumulatorCallBack]="accumulatorCallBack"
-  [filterParams]="initSaerchValue()"
-  [becomeVisibleHtml]="becomeVisible()"
-  (loadingChange)="loading.set($event)"
->
-  @for (status of TASK_STATUSES; track status; let i = $index) {
-    <div class="flex w-4 my-1 mx-3 flex-column">
-      <div class="flex flex-row align-items-center justify-content-center gap-2">
-        <h2 class="text-center">
-          {{ status }}
-        </h2>
-      </div>
-      <div
-        class="flex flex-column row-gap-4"
-        cdkDropList
-        [id]="status"
-        [cdkDropListData]="tasks[i]?.tasks ?? []"
-        [cdkDropListConnectedTo]="TASK_STATUSES"
-        (cdkDropListDropped)="onDrop($event, status)"
-      >
-        @for (task of tasks[i]?.tasks; track $index) {
-          <app-task-card
-            cdkDrag
-            [cdkDragBoundary]="mainContainer"
-            [cdkDragData]="task"
-            [task]="task"
-            (onDelete)="deleteTask(task)"
-            (onEdit)="openTaskDialog(task)"
-          />
-        }
-      </div>
-    </div>
-  }
-  <div
-    becomeVisible
-    style="
-      visibility: hidden;
-      width: 10px;
-      height: 10px;
-      background: blue;
-      z-index: 100;
-      position: absolute;
-      bottom: 0px;
-      right: 50px;
-    "
-  ></div>
-</div>
 <app-scroll-top />
