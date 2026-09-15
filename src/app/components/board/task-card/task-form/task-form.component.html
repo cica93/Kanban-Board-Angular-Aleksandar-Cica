@@ -1,5 +1,5 @@
-<form [formRoot]="form">
-  <ion-list class="form-group">
+<form [formRoot]="form" >
+  <ion-list class="form-group margin-md">
     <ion-item>
       @let titleErrors =
         form.title().touched() && form.title().dirty() ? form.title().errors() : '';
@@ -27,12 +27,7 @@
       </ion-textarea>
     </ion-item>
     <ion-item>
-      <ion-select   [formField]="form.taskStatus" label="Select task status"  [placeholder]="'Select task status'" []>
-        @for(taskStatus of TASK_STATUSES_OPTIONS; track taskStatus.value){
-          <ion-select-option [value]="taskStatus.value">{{taskStatus.label}}</ion-select-option>
-        }
-    </ion-select>
-      <!-- <ng-select
+      <ng-select
         [attr.id]="'task-status'"
         [items]="TASK_STATUSES_OPTIONS"
         [openOnEnter]="true"
@@ -43,7 +38,7 @@
         [clearable]="false"
         [searchable]="false"
         class="w-full"
-      /> -->
+      />
     </ion-item>
     <ion-item>
       <ng-select

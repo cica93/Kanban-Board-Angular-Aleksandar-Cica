@@ -36,7 +36,6 @@ import { IonButton, IonCol, IonGrid, IonIcon, IonRow, IonSpinner } from '@ionic/
 import { add } from 'ionicons/icons';
 import { injectInfiniteQuery, injectMutation } from '@tanstack/angular-query-experimental';
 import { QueryClient } from '@tanstack/angular-query-experimental';
-import { TaskFormComponent } from './task-card/task-form/task-form.component';
 
 const limit = 5;
 
@@ -66,6 +65,7 @@ export class BoardComponent {
   showModal = signal<boolean>(false);
   TASK_STATUSES = [...TASK_STATUSES];
   becomeVisible = viewChild.required<BecomeVisibleDirective>(BecomeVisibleDirective);
+  private readonly formToken = inject(FORM_TOKEN);
   private readonly queryClient = inject(QueryClient);
   private readonly taskService = inject(AbstractTaskService);
   private readonly messageService = injectAsync(() =>
@@ -147,9 +147,11 @@ export class BoardComponent {
       component: BaseDialogComponent,
       componentProps: {
         textContent: signal('Are you sure that you want to delete task with id ' + task.id),
-        dialogHeader: signal('Delete task'),
+        header: signal('Delete task'),
         submitLabel: signal('Delete'),
+        headerTextAlign: signal('start'),
       },
+      cssClass: 'delete-modal',
     });
     dialog.present();
     this.dialogCallBackFunction(dialog, taskCard);
@@ -164,10 +166,11 @@ export class BoardComponent {
         initValue: signal(task),
         header: signal(task ? 'Edit task' : 'Create task'),
       },
+      cssClass: 'custom-modal',
       injector: Injector.create({
         providers: [
           { provide: AbstractTaskService, useValue: this.taskService },
-          { provide: FORM_TOKEN, useValue: TaskFormComponent },
+          { provide: FORM_TOKEN, useValue: this.formToken },
         ],
       }),
     });

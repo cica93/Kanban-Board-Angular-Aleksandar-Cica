@@ -6,10 +6,7 @@ import { TaskService } from '@service/task.service';
 import { TaskGraphQlService } from '@service/task.graphql.service';
 import { AbstractTaskService } from '@service/abstract.task.service';
 import { sidebarGuard } from './guards/sidebar.guard';
-import { UserFormComponent } from './components/user-form/user-form.component';
-import { DIALOG_COMPONENT } from './components/users/users.component';
 import { FORM_TOKEN } from '@components/shared/base-dialog/base-dialog.component';
-import { TaskFormComponent } from '@components/board/task-card/task-form/task-form.component';
 
 const loginGuard = () => {
   const security = inject(SecurityService);
@@ -37,13 +34,24 @@ const logoutGuard = () => {
 
 export const routes: Routes = [
   {
+    path: '',
+    redirectTo: 'rest',
+    pathMatch: 'full',
+  },
+  {
     path: 'rest',
     title: 'Rest',
     canDeactivate: [sidebarGuard],
     loadComponent: () => import('./components/board/board.component').then((c) => c.BoardComponent),
     providers: [
       { provide: AbstractTaskService, useExisting: TaskService },
-      { provide: FORM_TOKEN, useValue: TaskFormComponent },
+      {
+        provide: FORM_TOKEN,
+        useValue: () =>
+          import('@components/board/task-card/task-form/task-form.component').then(
+            (a) => a.TaskFormComponent,
+          ),
+      },
     ],
   },
   {
@@ -51,7 +59,13 @@ export const routes: Routes = [
     title: 'Users',
     loadComponent: () => import('./components/users/users.component').then((m) => m.UsersComponent),
     canActivate: [loginGuard],
-    providers: [{ provide: DIALOG_COMPONENT, useValue: UserFormComponent }],
+    providers: [
+      {
+        provide: FORM_TOKEN,
+        useValue: () =>
+          import('@components/user-form/user-form.component').then((a) => a.UserFormComponent),
+      },
+    ],
   },
 
   {
@@ -61,7 +75,13 @@ export const routes: Routes = [
     loadComponent: () => import('./components/board/board.component').then((c) => c.BoardComponent),
     providers: [
       { provide: AbstractTaskService, useExisting: TaskGraphQlService },
-      { provide: FORM_TOKEN, useValue: TaskFormComponent },
+      {
+        provide: FORM_TOKEN,
+        useValue: () =>
+          import('@components/board/task-card/task-form/task-form.component').then(
+            (a) => a.TaskFormComponent,
+          ),
+      },
     ],
     canActivate: [loginGuard],
   },

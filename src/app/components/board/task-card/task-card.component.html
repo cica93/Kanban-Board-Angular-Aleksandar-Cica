@@ -1,6 +1,6 @@
 @let taskId = task().id;
 <ion-card>
-  <ion-card-header style="display: flex; flex-direction: row; justify-content: space-between">
+  <ion-card-header class="flex justify-contnt-spacebetween" style="flex-direction: row"; >
     <ion-card-title id="title-{{ taskId }}">{{ task().title }} </ion-card-title>
     <ion-badge [color]="taskSeverityClass()">{{ task().taskPriority }}</ion-badge>
   </ion-card-header>
@@ -11,10 +11,9 @@
     >
       {{ task().description }}
     </p>
-    <ion-grid>
-      <ion-row>
-        <ion-col size="10">
-          @let users = task().users ?? [];
+
+    <div class="flex justify-contnt-spacebetween margin-top-md">
+          @let users = task().users;
           <app-avatar-group>
             @for (user of users | slice: 0 : maxVisibleImages; track user.id) {
               <ion-avatar
@@ -31,11 +30,7 @@
               <ion-avatar>{{ length - maxVisibleImages }}</ion-avatar>
             }
           </app-avatar-group>
-        </ion-col>
-        <ion-col
-          size="2"
-          class="ion-col-end"
-        >
+     
           <ion-button
             size="small"
             fill="clear"
@@ -47,9 +42,7 @@
               [icon]="ellipsisVerticalCircleIcon"
             ></ion-icon>
           </ion-button>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+   </div>
   </ion-card-content>
 </ion-card>
 

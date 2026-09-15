@@ -31,7 +31,7 @@ import { UserService } from '@service/user.service';
 import { NgSelectComponent, NgSelectModule } from '@ng-select/ng-select';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { IonInput } from '@ionic/angular/ion-input';
-import { IonItem, IonList, IonSelect, IonSelectOption, IonTextarea } from '@ionic/angular';
+import { IonItem, IonList, IonTextarea } from '@ionic/angular';
 
 export type NoTUpdatableTaskFields = 'id' | 'taskOrder' | 'version' | 'createdBy' | 'updatedBy';
 export type TaskForm = Omit<Task, NoTUpdatableTaskFields>;
@@ -45,13 +45,11 @@ export type TaskForm = Omit<Task, NoTUpdatableTaskFields>;
     IonInput,
     IonItem,
     IonList,
-    IonSelect,
-    IonSelectOption,
     IonTextarea,
   ],
   templateUrl: './task-form.component.html',
   host: {
-    class: 'flex h-full',
+    class: 'h-full',
   },
   providers: [{ provide: FORM_TOKEN, useClass: forwardRef(() => TaskFormComponent) }],
 })
@@ -71,14 +69,11 @@ export class TaskFormComponent implements SubmitForm<Task, TaskForm> {
     read: NgSelectComponent,
   });
   protected model = signal<TaskForm>({
-    description: this.initValue()?.description ?? '',
-    taskPriority: this.initValue()?.taskPriority ?? this.TASK_PRIORITIES[0],
-    taskStatus: (this.initValue()?.taskStatus ?? this.TASK_STATUSES[0]).replace(
-      ' ',
-      '_',
-    ) as TaskStatus,
-    title: this.initValue()?.title ?? '',
-    users: this.initValue()?.users ?? [],
+    description: '',
+    taskPriority: this.TASK_PRIORITIES[0],
+    taskStatus: this.TASK_STATUSES[0].replace(' ', '_') as TaskStatus,
+    title: '',
+    users: [],
   });
 
   constructor() {

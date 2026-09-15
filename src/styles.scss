@@ -88,3 +88,50 @@ form,
 .dialog-actions {
   margin-top: 0.75rem;
 }
+
+.flex {
+  display: flex;
+} 
+
+.justify-contnt-spacebetween {
+  justify-content: space-between;
+}
+
+.margin-top-md {
+  margin-top: 1rem;
+}
+
+.margin-md {
+  margin: 1rem;
+}
+
+.marin-x-md {
+    margin: 0 1rem;
+}
+
+.h-full {
+  height: 100%;
+}
+
+
+.custom-modal {
+  --width: 600px;
+  --height: 100vh;
+  --max-width: 90%;
+  --max-height: 100%;
+
+  app-base-dialog:has(.h-full) {
+    height: 100%;
+  }
+
+  app-base-dialog:not(:has(.h-full)) {
+    height: 200px;
+    background-color: red !important;
+  }
+}
+
+.delete-modal {
+   --height: auto;
+   --max-height: 100%;
+}
+

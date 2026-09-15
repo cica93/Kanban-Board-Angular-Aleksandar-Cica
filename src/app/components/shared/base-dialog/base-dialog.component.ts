@@ -17,7 +17,6 @@ import { Subject } from 'rxjs';
 import {
   IonButton,
   IonButtons,
-  IonContent,
   IonFooter,
   IonHeader,
   IonIcon,
@@ -33,7 +32,7 @@ export interface SubmitForm<INIT_VALUE = any, FORM_VALUE = any> {
   onClose: Subject<boolean>;
 }
 
-export const FORM_TOKEN = new InjectionToken<Type<SubmitForm>>('app.config');
+export const FORM_TOKEN = new InjectionToken<() => Promise<Type<SubmitForm>>>('app.config');
 export const successModalEvent = 'successModalEvent';
 export const cancelModalEvent = 'cancelModalEvent';
 export const closeDialogOnClick = 'closeDialogOnClick';
@@ -46,9 +45,11 @@ export interface BaseDialogConfiguration<T = any> {
   initValue?: T | null;
 }
 
+export type TextAlign = 'start' | 'center' | 'right';
+
 @Component({
   selector: 'app-base-dialog',
-  imports: [IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonTitle, IonToolbar, IonFooter],
+  imports: [IonButton, IonButtons, IonHeader, IonIcon, IonTitle, IonToolbar, IonFooter],
   templateUrl: './base-dialog.component.html',
 })
 export class BaseDialogComponent {
@@ -62,6 +63,7 @@ export class BaseDialogComponent {
   textContent = input<string>('');
   cancelLabel = input<string>();
   submitLabel = input<string>();
+  headerTextAlign = input<TextAlign>('center');
   data!: BaseDialogConfiguration;
   submitClick = output<void>();
   submitComponent = inject(FORM_TOKEN, { optional: true });
@@ -76,9 +78,10 @@ export class BaseDialogComponent {
   }
 
   constructor() {
-    effect(() => {
-      if (this.componentContainer() && this.submitComponent) {
-        this.componentRef = this.componentContainer()?.createComponent(this.submitComponent!, {
+    effect(async () => {
+      const component = this.submitComponent ? await this.submitComponent() : null;
+      if (this.componentContainer() && component) {
+        this.componentRef = this.componentContainer()?.createComponent(component, {
           bindings: [
             inputBinding('initValue', () =>
               this.initValue() ? structuredClone(this.initValue(), {}) : this.initValue(),

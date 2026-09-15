@@ -1,7 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>{{ header() }}</ion-title>
-
+    <ion-title class="ion-text-{{headerTextAlign()}}">{{ header() }}</ion-title>
     <ion-buttons slot="end">
       <ion-button
         fill="clear"
@@ -16,9 +15,9 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-<ion-content>
+  <div style="display: flex; flex-direction: column; justify-content: space-between; " [style.height]="componentRef ? '100%' : 'auto'">
   @if (textContent()) {
-    <p>{{ textContent() }}</p>
+    <p class="margin-md">{{ textContent() }}</p>
   }
   <ng-content></ng-content> <ng-container #container></ng-container>
   <ion-footer>
@@ -47,4 +46,4 @@
       </ion-buttons>
     </ion-toolbar>
   </ion-footer>
-</ion-content>
+  </div>
