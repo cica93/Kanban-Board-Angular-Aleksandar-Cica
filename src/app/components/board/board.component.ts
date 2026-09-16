@@ -26,16 +26,13 @@ import { BecomeVisibleDirective } from 'src/app/directives/become-visible-direct
 import { SearchInputComponent } from '@components/shared/search-input/search-input.component';
 import { HeaderComponent } from '@components/shared/header/header.component';
 import { ScrollTopComponent } from '@components/shared/scroll-top/scroll-top.component';
-import {
-  BaseDialogComponent,
-  FORM_TOKEN,
-  successModalEvent,
-} from '@components/shared/base-dialog/base-dialog.component';
+import { successModalEvent } from '@components/shared/base-dialog/base-dialog.component';
 import { addIcons } from 'ionicons';
 import { IonButton, IonCol, IonGrid, IonIcon, IonRow, IonSpinner } from '@ionic/angular';
 import { add } from 'ionicons/icons';
 import { injectInfiniteQuery, injectMutation } from '@tanstack/angular-query-experimental';
 import { QueryClient } from '@tanstack/angular-query-experimental';
+import { openDeleteModal, openEditModal } from '@components/shared/modalUtills';
 
 const limit = 5;
 
@@ -65,7 +62,7 @@ export class BoardComponent {
   showModal = signal<boolean>(false);
   TASK_STATUSES = [...TASK_STATUSES];
   becomeVisible = viewChild.required<BecomeVisibleDirective>(BecomeVisibleDirective);
-  private readonly formToken = inject(FORM_TOKEN);
+  private readonly injector = inject(Injector);
   private readonly queryClient = inject(QueryClient);
   private readonly taskService = inject(AbstractTaskService);
   private readonly messageService = injectAsync(() =>
@@ -73,10 +70,6 @@ export class BoardComponent {
   );
   private readonly cdr = injectAsync(() =>
     import('@angular/core').then((a) => a.ChangeDetectorRef),
-  );
-
-  private readonly modalController = injectAsync(() =>
-    import('@ionic/angular').then((a) => a.ModalController),
   );
 
   readonly tasksQuery = injectInfiniteQuery(() => ({
@@ -141,40 +134,16 @@ export class BoardComponent {
   }
 
   async deleteTask(task: Task, taskCard?: TaskCardComponent): Promise<void> {
-    const dialog = await (
-      await this.modalController()
-    ).create({
-      component: BaseDialogComponent,
-      componentProps: {
-        textContent: signal('Are you sure that you want to delete task with id ' + task.id),
-        header: signal('Delete task'),
-        submitLabel: signal('Delete'),
-        headerTextAlign: signal('start'),
-      },
-      cssClass: 'delete-modal',
-    });
-    dialog.present();
+    const dialog = await openDeleteModal(
+      this.injector,
+      `Are you sure that you want to delete task with id  ${task.id}?`,
+      'Delete task',
+    );
     this.dialogCallBackFunction(dialog, taskCard);
   }
 
   async openTaskDialog(task?: Partial<Task>, taskCard?: TaskCardComponent): Promise<void> {
-    const dialog = await (
-      await this.modalController()
-    ).create({
-      component: BaseDialogComponent,
-      componentProps: {
-        initValue: signal(task),
-        header: signal(task ? 'Edit task' : 'Create task'),
-      },
-      cssClass: 'custom-modal',
-      injector: Injector.create({
-        providers: [
-          { provide: AbstractTaskService, useValue: this.taskService },
-          { provide: FORM_TOKEN, useValue: this.formToken },
-        ],
-      }),
-    });
-    dialog.present();
+    const dialog = await openEditModal(this.injector, task, !task ? 'Create task' : 'Edit task');
     this.dialogCallBackFunction(dialog, taskCard);
   }
 

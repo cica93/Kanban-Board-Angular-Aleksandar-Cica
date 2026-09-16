@@ -32,7 +32,10 @@ export interface SubmitForm<INIT_VALUE = any, FORM_VALUE = any> {
   onClose: Subject<boolean>;
 }
 
-export const FORM_TOKEN = new InjectionToken<() => Promise<Type<SubmitForm>>>('app.config');
+export const SUBMIT_FORM_TOKEN_LOAD = new InjectionToken<() => Promise<Type<SubmitForm>>>(
+  'submit.form.token.load',
+);
+export const SUBMIT_FORM_TOKEN = new InjectionToken<Type<SubmitForm>>('app.config');
 export const successModalEvent = 'successModalEvent';
 export const cancelModalEvent = 'cancelModalEvent';
 export const closeDialogOnClick = 'closeDialogOnClick';
@@ -66,7 +69,7 @@ export class BaseDialogComponent {
   headerTextAlign = input<TextAlign>('center');
   data!: BaseDialogConfiguration;
   submitClick = output<void>();
-  submitComponent = inject(FORM_TOKEN, { optional: true });
+  submitComponent = inject(SUBMIT_FORM_TOKEN, { optional: true });
   componentRef!: ComponentRef<SubmitForm>;
   dialogClose = output<unknown>();
 
@@ -78,22 +81,37 @@ export class BaseDialogComponent {
   }
 
   constructor() {
-    effect(async () => {
-      const component = this.submitComponent ? await this.submitComponent() : null;
-      if (this.componentContainer() && component) {
-        this.componentRef = this.componentContainer()?.createComponent(component, {
-          bindings: [
-            inputBinding('initValue', () =>
-              this.initValue() ? structuredClone(this.initValue(), {}) : this.initValue(),
-            ),
-          ],
-        });
-        this.componentRef.instance.onClose.asObservable().subscribe((result) => {
-          if (result) {
-            this.closeDialog(result ? successModalEvent : cancelModalEvent);
-          }
-        });
+    effect(() => {
+      const container = this.componentContainer();
+      const component = this.submitComponent;
+
+      if (!container || !component || this.componentRef) {
+        return;
       }
+
+      this.componentRef = container.createComponent(component, {
+        bindings: [
+          inputBinding('initValue', () =>
+            this.initValue() ? structuredClone(this.initValue()) : this.initValue(),
+          ),
+        ],
+      });
+
+      this.componentRef.instance.onClose.subscribe((result) => {
+        if (result) {
+          this.closeDialog(successModalEvent);
+        }
+      });
+
+      // Render the dynamically created component first
+      this.componentRef.changeDetectorRef.detectChanges();
+      // this.requestAnimation();
+    });
+  }
+
+  requestAnimation() {
+    requestAnimationFrame(() => {
+      // this.componentReady.set(true);
     });
   }
 

@@ -1,6 +1,5 @@
 import { Component, input } from '@angular/core';
 import { FieldTree, FormField, required, schema } from '@angular/forms/signals';
-import { MatError, MatFormField, MatInput, MatLabel } from '@angular/material/input';
 import { FirstFocusDirective } from 'src/app/directives/first-focus.directive';
 
 export interface Address {
@@ -12,7 +11,7 @@ export interface Address {
 
 @Component({
   selector: 'app-address-form',
-  imports: [FirstFocusDirective, FormField, MatInput, MatFormField, MatError, MatLabel],
+  imports: [FirstFocusDirective, FormField],
   templateUrl: './address-form.component.html',
 })
 export class AddressFormComponent {

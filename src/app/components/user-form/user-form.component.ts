@@ -4,12 +4,9 @@ import {
   AddressFormComponent,
   addressSchema,
 } from '../address-form/address-form.component';
-import { apply, form, FormField, FormRoot, minLength, required } from '@angular/forms/signals';
-import { FORM_TOKEN, SubmitForm } from '../shared/base-dialog/base-dialog.component';
+import { apply, form, FormRoot, minLength, required } from '@angular/forms/signals';
+import { SUBMIT_FORM_TOKEN, SubmitForm } from '../shared/base-dialog/base-dialog.component';
 import { Subject } from 'rxjs';
-import { MatFormField, MatLabel } from '@angular/material/input';
-import { MatRipple } from '@angular/material/core';
-import { FirstFocusDirective } from 'src/app/directives/first-focus.directive';
 
 export type AddressFormInput = Omit<Address, 'id'>;
 
@@ -21,16 +18,8 @@ export interface AddressForm {
 
 @Component({
   selector: 'app-user-form',
-  imports: [
-    AddressFormComponent,
-    FormField,
-    FormRoot,
-    FirstFocusDirective,
-    MatFormField,
-    MatLabel,
-    MatRipple,
-  ],
-  providers: [{ provide: FORM_TOKEN, useClass: forwardRef(() => UserFormComponent) }],
+  imports: [AddressFormComponent, FormRoot],
+  providers: [{ provide: SUBMIT_FORM_TOKEN, useClass: forwardRef(() => UserFormComponent) }],
   templateUrl: './user-form.component.html',
 })
 export class UserFormComponent implements SubmitForm<AddressForm, AddressForm> {

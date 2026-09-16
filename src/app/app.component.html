@@ -18,9 +18,11 @@
           </app-link-group>
 
           <ion-button
-            fill="solid"
-            shape="round"
-            color="danger"
+            [fill]="'solid'"
+            [shape]="'round'"
+            [color]="'danger'"
+            [appTooltip]="'Logout'"
+            [tooltipPosition]="'left'"
             class="logout-button"
             (click)="logout()"
           >

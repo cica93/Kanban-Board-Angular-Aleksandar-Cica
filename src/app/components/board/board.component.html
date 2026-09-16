@@ -8,7 +8,7 @@
           (valueChange)="changeSearchValue($event)"
           [placeholder]="'Search'"
         />
-        <ion-button  (click)="openTaskDialog()">
+        <ion-button (click)="openTaskDialog()">
           <ion-icon
             slot="start"
             name="add"
@@ -21,12 +21,12 @@
 </ion-grid>
 @let loading = tasksQuery.isLoading();
 @if (loading) {
-<div
-  class="fixed top-50 left-50 align-items-center justify-content-center"
-  style="z-index: 100"
->
-  <ion-spinner></ion-spinner>
-</div>
+  <div
+    class="fixed top-50 left-50 align-items-center justify-content-center"
+    style="z-index: 100"
+  >
+    <ion-spinner></ion-spinner>
+  </div>
 } @else {
   <div
     style="overflow-y: auto; max-height: 80vh"

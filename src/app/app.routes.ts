@@ -6,7 +6,7 @@ import { TaskService } from '@service/task.service';
 import { TaskGraphQlService } from '@service/task.graphql.service';
 import { AbstractTaskService } from '@service/abstract.task.service';
 import { sidebarGuard } from './guards/sidebar.guard';
-import { FORM_TOKEN } from '@components/shared/base-dialog/base-dialog.component';
+import { SUBMIT_FORM_TOKEN_LOAD } from '@components/shared/base-dialog/base-dialog.component';
 
 const loginGuard = () => {
   const security = inject(SecurityService);
@@ -46,7 +46,7 @@ export const routes: Routes = [
     providers: [
       { provide: AbstractTaskService, useExisting: TaskService },
       {
-        provide: FORM_TOKEN,
+        provide: SUBMIT_FORM_TOKEN_LOAD,
         useValue: () =>
           import('@components/board/task-card/task-form/task-form.component').then(
             (a) => a.TaskFormComponent,
@@ -61,7 +61,7 @@ export const routes: Routes = [
     canActivate: [loginGuard],
     providers: [
       {
-        provide: FORM_TOKEN,
+        provide: SUBMIT_FORM_TOKEN_LOAD,
         useValue: () =>
           import('@components/user-form/user-form.component').then((a) => a.UserFormComponent),
       },
@@ -76,7 +76,7 @@ export const routes: Routes = [
     providers: [
       { provide: AbstractTaskService, useExisting: TaskGraphQlService },
       {
-        provide: FORM_TOKEN,
+        provide: SUBMIT_FORM_TOKEN_LOAD,
         useValue: () =>
           import('@components/board/task-card/task-form/task-form.component').then(
             (a) => a.TaskFormComponent,

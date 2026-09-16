@@ -1,6 +1,10 @@
 @let taskId = task().id;
 <ion-card>
-  <ion-card-header class="flex justify-contnt-spacebetween" style="flex-direction: row"; >
+  <ion-card-header
+    class="flex justify-contnt-spacebetween"
+    style="flex-direction: row"
+    ;
+  >
     <ion-card-title id="title-{{ taskId }}">{{ task().title }} </ion-card-title>
     <ion-badge [color]="taskSeverityClass()">{{ task().taskPriority }}</ion-badge>
   </ion-card-header>
@@ -13,36 +17,35 @@
     </p>
 
     <div class="flex justify-contnt-spacebetween margin-top-md">
-          @let users = task().users;
-          <app-avatar-group>
-            @for (user of users | slice: 0 : maxVisibleImages; track user.id) {
-              <ion-avatar
-                class="avatar"
-                id="avatar-group"
-                [matTooltip]="user.fullName"
-                [matTooltipPosition]="'below'"
-              >
-                {{ user.fullName | slice: 0 : 1 }}
-              </ion-avatar>
-            }
-            @let length = users.length;
-            @if (length > maxVisibleImages) {
-              <ion-avatar>{{ length - maxVisibleImages }}</ion-avatar>
-            }
-          </app-avatar-group>
-     
-          <ion-button
-            size="small"
-            fill="clear"
-            (click)="openMenu($event)"
-            [shape]="'round'"
+      @let users = task().users;
+      <app-avatar-group>
+        @for (user of users | slice: 0 : maxVisibleImages; track user.id) {
+          <ion-avatar
+            [appTooltip]="user.fullName"
+            [tooltipPosition]="'bottom'"
+            class="avatar cursor-pointer"
           >
-            <ion-icon
-              slot="icon-only"
-              [icon]="ellipsisVerticalCircleIcon"
-            ></ion-icon>
-          </ion-button>
-   </div>
+            {{ user.fullName | slice: 0 : 1 }}
+          </ion-avatar>
+        }
+        @let length = users.length;
+        @if (length > maxVisibleImages) {
+          <ion-avatar>{{ length - maxVisibleImages }}</ion-avatar>
+        }
+      </app-avatar-group>
+
+      <ion-button
+        size="small"
+        fill="clear"
+        (click)="openMenu($event)"
+        [shape]="'round'"
+      >
+        <ion-icon
+          slot="icon-only"
+          [icon]="ellipsisVerticalCircleIcon"
+        ></ion-icon>
+      </ion-button>
+    </div>
   </ion-card-content>
 </ion-card>
 
@@ -53,7 +56,7 @@
 >
   <ng-template>
     <ion-list>
-      <ion-item (click)="onEdit.emit(this.task())">
+      <ion-item class="cursor-pointer" (click)="onEdit.emit(this.task())">
         <ion-icon
           slot="start"
           [icon]="createOutlineIcon"
@@ -61,7 +64,7 @@
         <ion-label>Edit</ion-label>
       </ion-item>
 
-      <ion-item (click)="onDelete.emit(this.task())">
+      <ion-item class="cursor-pointer" (click)="onDelete.emit(this.task())">
         <ion-icon
           slot="start"
           [icon]="trashOutlineIcon"

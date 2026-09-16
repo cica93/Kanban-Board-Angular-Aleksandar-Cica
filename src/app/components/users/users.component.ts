@@ -1,31 +1,28 @@
-import { Component, inject, injectAsync, Injector, signal } from '@angular/core';
+import { Component, inject, Injector, signal } from '@angular/core';
 import { User } from '@service/user.service';
 import { httpResource } from '@angular/common/http';
 import { SearchInputComponent } from '@components/shared/search-input/search-input.component';
 import { HeaderComponent } from '@components/shared/header/header.component';
-import { MatButton } from '@angular/material/button';
-import { MatRipple } from '@angular/material/core';
-import {
-  BaseDialogComponent,
-  FORM_TOKEN,
-  successModalEvent,
-} from '@components/shared/base-dialog/base-dialog.component';
+import { successModalEvent } from '@components/shared/base-dialog/base-dialog.component';
+import { openEditModal } from '@components/shared/modalUtills';
+import { IonButton, IonIcon } from '@ionic/angular';
+import { createOutline, trashOutline, add } from 'ionicons/icons';
+import { TooltipDirective } from 'src/app/directives/tooltip.directive';
 
 @Component({
   selector: 'app-users',
-  imports: [MatButton, MatRipple, SearchInputComponent, HeaderComponent],
+  imports: [SearchInputComponent, HeaderComponent, IonButton, IonIcon, TooltipDirective],
   templateUrl: './users.component.html',
 })
 export class UsersComponent {
+  trashOutlineIcon = trashOutline;
+  createOutlineIcon = createOutline;
+  addIcon = add;
   keyword = signal('');
-  private readonly formToken = inject(FORM_TOKEN);
-  private readonly modalController = injectAsync(() =>
-    import('@ionic/angular').then((a) => a.ModalController),
-  );
   data = httpResource<User[]>(() => `users?keyword=${this.keyword()}`, {
     defaultValue: [],
   });
-  injector = inject(Injector);
+  private readonly injector = inject(Injector);
 
   editUser(user: User): void {
     console.log(user);
@@ -43,20 +40,7 @@ export class UsersComponent {
   }
 
   async openUserkDialog(user?: User): Promise<void> {
-    const dialog = await (
-      await this.modalController()
-    ).create({
-      component: BaseDialogComponent,
-      componentProps: {
-        initValue: signal(user),
-        header: signal(user ? 'Edit user' : 'Create user'),
-      },
-      cssClass: 'custom-modal',
-      injector: Injector.create({
-        providers: [{ provide: FORM_TOKEN, useValue: this.formToken }],
-      }),
-    });
-    dialog.present();
+    const dialog = await openEditModal(this.injector, user, user ? 'Edit user' : 'Create user');
     this.addUser();
     this.dialogCallBackFunction(dialog);
   }

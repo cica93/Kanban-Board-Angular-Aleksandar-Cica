@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title class="ion-text-{{headerTextAlign()}}">{{ header() }}</ion-title>
+    <ion-title class="ion-text-{{ headerTextAlign() }}">{{ header() }}</ion-title>
     <ion-buttons slot="end">
       <ion-button
         fill="clear"
@@ -15,7 +15,10 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-  <div style="display: flex; flex-direction: column; justify-content: space-between; " [style.height]="componentRef ? '100%' : 'auto'">
+<div
+  style="display: flex; flex-direction: column; justify-content: space-between"
+  [style.height]="componentRef ? '100%' : 'auto'"
+>
   @if (textContent()) {
     <p class="margin-md">{{ textContent() }}</p>
   }
@@ -46,4 +49,4 @@
       </ion-buttons>
     </ion-toolbar>
   </ion-footer>
-  </div>
+</div>

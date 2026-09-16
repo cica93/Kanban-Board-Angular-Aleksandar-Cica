@@ -19,6 +19,7 @@ import {
   IonRow,
 } from '@ionic/angular';
 import { logOutOutline } from 'ionicons/icons';
+import { TooltipDirective } from './directives/tooltip.directive';
 
 @Component({
   selector: 'app-root',
@@ -39,6 +40,7 @@ import { logOutOutline } from 'ionicons/icons';
     IonButton,
     IonHeader,
     RouterLinkActive,
+    TooltipDirective,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',

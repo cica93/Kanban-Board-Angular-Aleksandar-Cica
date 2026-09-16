@@ -16,7 +16,10 @@ import {
   TaskStatus,
 } from '@service/abstract.task.service';
 import { firstValueFrom, Subject, zip } from 'rxjs';
-import { SubmitForm, FORM_TOKEN } from '@components/shared/base-dialog/base-dialog.component';
+import {
+  SubmitForm,
+  SUBMIT_FORM_TOKEN,
+} from '@components/shared/base-dialog/base-dialog.component';
 import {
   form,
   FormField,
@@ -51,7 +54,7 @@ export type TaskForm = Omit<Task, NoTUpdatableTaskFields>;
   host: {
     class: 'h-full',
   },
-  providers: [{ provide: FORM_TOKEN, useClass: forwardRef(() => TaskFormComponent) }],
+  providers: [{ provide: SUBMIT_FORM_TOKEN, useClass: forwardRef(() => TaskFormComponent) }],
 })
 export class TaskFormComponent implements SubmitForm<Task, TaskForm> {
   onClose: Subject<boolean> = new Subject<boolean>();

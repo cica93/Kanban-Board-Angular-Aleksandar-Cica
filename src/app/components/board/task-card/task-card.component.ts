@@ -1,6 +1,5 @@
 import { Component, computed, input, output, signal } from '@angular/core';
 import { BADGE_COLOR_MAP, TASK_STATUSES, Task } from '@service/abstract.task.service';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { SlicePipe } from '@angular/common';
 import { AvatarGroupComponent } from '@components/shared/avatar-group/avatar-group.component';
 import {
@@ -15,20 +14,18 @@ import {
   IonLabel,
   IonList,
   IonPopover,
-  IonCol,
-  IonRow,
-  IonGrid,
   IonAvatar,
 } from '@ionic/angular';
 
 import { createOutline, ellipsisVertical, trashOutline } from 'ionicons/icons';
+import { User } from '@service/user.service';
+import { TooltipDirective } from 'src/app/directives/tooltip.directive';
 
 @Component({
   selector: 'app-task-card',
   imports: [
     IonIcon,
     AvatarGroupComponent,
-    MatTooltipModule,
     SlicePipe,
     IonCard,
     IonCardContent,
@@ -40,26 +37,26 @@ import { createOutline, ellipsisVertical, trashOutline } from 'ionicons/icons';
     IonItem,
     IonLabel,
     IonBadge,
-    IonCol,
-    IonRow,
     IonAvatar,
-    IonGrid,
+    TooltipDirective,
   ],
   templateUrl: './task-card.component.html',
 })
 export class TaskCardComponent {
-  menuOpen = signal(false);
-  menuEvent = signal<Event | null>(null);
-  trashOutlineIcon = trashOutline;
-  createOutlineIcon = createOutline;
-  ellipsisVerticalCircleIcon = ellipsisVertical;
-
+  public menuOpen = signal(false);
+  protected selectedUser = signal<User | null>(null);
+  protected userPopoverOpen = signal(false);
+  protected menuEvent = signal<Event | null>(null);
+  protected userMenuEvent = signal<Event | null>(null);
+  protected trashOutlineIcon = trashOutline;
+  protected createOutlineIcon = createOutline;
+  protected ellipsisVerticalCircleIcon = ellipsisVertical;
   protected readonly maxVisibleImages = 5;
-  TASK_STATUSES = TASK_STATUSES;
+  protected TASK_STATUSES = TASK_STATUSES;
   readonly task = input.required<Task>();
   readonly onDelete = output<Task>();
   readonly onEdit = output<Task>();
-  taskSeverityClass = computed(() => {
+  protected readonly taskSeverityClass = computed(() => {
     return BADGE_COLOR_MAP[this.task().taskPriority];
     // const p = this.task().taskPriority;
     // switch (p) {
@@ -79,5 +76,15 @@ export class TaskCardComponent {
   openMenu(event: Event) {
     this.menuEvent.set(event);
     this.menuOpen.set(true);
+  }
+
+  openUserMenu(event: Event, user: User) {
+    this.selectedUser.set(user);
+    this.userMenuEvent.set(event);
+    this.userPopoverOpen.set(true);
+  }
+
+  closeUserMenu(): void {
+    this.userPopoverOpen.set(true);
   }
 }

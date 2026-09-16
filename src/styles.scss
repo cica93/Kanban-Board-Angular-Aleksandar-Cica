@@ -91,7 +91,7 @@ form,
 
 .flex {
   display: flex;
-} 
+}
 
 .justify-contnt-spacebetween {
   justify-content: space-between;
@@ -106,13 +106,12 @@ form,
 }
 
 .marin-x-md {
-    margin: 0 1rem;
+  margin: 0 1rem;
 }
 
 .h-full {
   height: 100%;
 }
-
 
 .custom-modal {
   --width: 600px;
@@ -126,12 +125,50 @@ form,
 
   app-base-dialog:not(:has(.h-full)) {
     height: 200px;
-    background-color: red !important;
   }
 }
 
 .delete-modal {
-   --height: auto;
-   --max-height: 100%;
+  --height: auto;
+  --max-height: 100%;
 }
 
+.hidden {
+  display: none;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.app-tooltip {
+  position: fixed;
+  z-index: 10000;
+
+  max-width: 250px;
+  padding: 6px 10px;
+
+  border-radius: 4px;
+
+  background: #222;
+  color: #fff;
+
+  font-size: 13px;
+  line-height: 1.4;
+
+  white-space: nowrap;
+
+  opacity: 0;
+  visibility: hidden;
+
+  pointer-events: none;
+
+  transition:
+    opacity 100ms ease,
+    visibility 100ms ease;
+}
+
+.app-tooltip-visible {
+  opacity: 1;
+  visibility: visible;
+}
