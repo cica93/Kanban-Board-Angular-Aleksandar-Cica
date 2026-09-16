@@ -1,0 +1,24 @@
+<ion-button
+              (click)="editEntity()"
+              [size]="'small'"
+              appTooltip="Edit {{entityName()}}"
+              [tooltipPosition]="'right'"
+            >
+              <ion-icon
+                slot="icon-only"
+                [icon]="createOutlineIcon"
+              ></ion-icon>
+            </ion-button>
+
+            <ion-button
+              appTooltip="Delete {{entityName()}}"
+              [size]="'small'"
+              [tooltipPosition]="'right'"
+              [color]="'danger'"
+              (click)="deleteEntity()"
+            >
+              <ion-icon
+                slot="icon-only"
+                [icon]="trashOutlineIcon"
+              ></ion-icon>
+            </ion-button>

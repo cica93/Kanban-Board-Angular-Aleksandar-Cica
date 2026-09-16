@@ -1,6 +1,6 @@
 import { Component, effect, input, model, output, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { DebounceInputDirective } from 'src/app/directives/debounce-input.directive';
+import { DebounceInputDirective } from '@directives/debounce-input.directive';
 import { IonIcon, IonInput, IonItem, IonList } from '@ionic/angular';
 import { search } from 'ionicons/icons';
 

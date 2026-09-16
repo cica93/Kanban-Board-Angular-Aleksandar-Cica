@@ -31,6 +31,23 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { GlobalErrorHandler } from '@service/error.handler.service';
 import { provideIonicAngular } from '@ionic/angular';
 import { provideTanStackQuery, QueryClient } from '@tanstack/angular-query-experimental';
+import {
+  ModuleRegistry,
+  TextFilterModule,
+  NumberFilterModule,
+  RowApiModule,
+  ColumnAutoSizeModule,
+  CellStyleModule,
+} from 'ag-grid-community';
+
+ModuleRegistry.registerModules([
+  TextFilterModule,
+  NumberFilterModule,
+  RowApiModule,
+  ColumnAutoSizeModule,
+  CellStyleModule,
+]);
+
 
 const apiInterceptor = ApiInterceptor;
 
@@ -48,6 +65,7 @@ export const appConfig: ApplicationConfig = {
         defaultOptions: {
           queries: {
             staleTime: 30_000,
+            gcTime: 5 * 60_000,
             refetchOnWindowFocus: false,
           },
         },

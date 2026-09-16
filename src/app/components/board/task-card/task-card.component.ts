@@ -19,7 +19,7 @@ import {
 
 import { createOutline, ellipsisVertical, trashOutline } from 'ionicons/icons';
 import { User } from '@service/user.service';
-import { TooltipDirective } from 'src/app/directives/tooltip.directive';
+import { TooltipDirective } from '@directives/tooltip.directive';
 
 @Component({
   selector: 'app-task-card',
@@ -43,7 +43,9 @@ import { TooltipDirective } from 'src/app/directives/tooltip.directive';
   templateUrl: './task-card.component.html',
 })
 export class TaskCardComponent {
-  public menuOpen = signal(false);
+  menuOpen = input<boolean>(false);
+  openMenuEvent = output<void>();
+  dismissMenuEvent = output<void>();
   protected selectedUser = signal<User | null>(null);
   protected userPopoverOpen = signal(false);
   protected menuEvent = signal<Event | null>(null);
@@ -75,7 +77,7 @@ export class TaskCardComponent {
 
   openMenu(event: Event) {
     this.menuEvent.set(event);
-    this.menuOpen.set(true);
+    this.openMenuEvent.emit();
   }
 
   openUserMenu(event: Event, user: User) {

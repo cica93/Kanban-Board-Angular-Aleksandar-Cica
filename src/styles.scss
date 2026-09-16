@@ -105,7 +105,7 @@ form,
   margin: 1rem;
 }
 
-.marin-x-md {
+.margin-x-md {
   margin: 0 1rem;
 }
 
@@ -172,3 +172,41 @@ form,
   opacity: 1;
   visibility: visible;
 }
+
+
+.ag-header-cell.ag-header-center:has(.ag-header-cell-text) .ag-header-cell-label {
+  justify-content: center;
+}
+
+.ag-header-cell.ag-header-right:has(.ag-header-cell-text) .ag-header-cell-label {
+  justify-content: flex-end;
+}
+
+.ag-cell-value.ag-cell:has(app-crud-buttons){
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+/* styles.scss */
+.ag-body-horizontal-scroll {
+  display: none !important;
+}
+
+ag-grid-angular {
+  display: block;
+  width: 100%;
+}
+
+/* Remove AG Grid horizontal scrollbar */
+:host ::ng-deep .ag-body-horizontal-scroll {
+  display: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+}
+
+
+
+

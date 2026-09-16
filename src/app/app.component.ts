@@ -19,7 +19,7 @@ import {
   IonRow,
 } from '@ionic/angular';
 import { logOutOutline } from 'ionicons/icons';
-import { TooltipDirective } from './directives/tooltip.directive';
+import { TooltipDirective } from '@directives/tooltip.directive';
 
 @Component({
   selector: 'app-root',

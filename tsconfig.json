@@ -29,7 +29,8 @@
     "paths": {
       "@/domain/*": ["src/domain/*"],
       "@service/*": ["src/app/services/*"],
-      "@components/*": ["src/app/components/*"]
+      "@components/*": ["src/app/components/*"],
+      "@directives/*": ["src/app/directives/*"]
     }
   },
 

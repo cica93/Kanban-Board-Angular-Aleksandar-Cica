@@ -1,56 +1,34 @@
-<div class="card m-3 base-200">
-  <app-header>
-    <app-search-input
-      (inputChange)="keyword.set($event)"
-      [autoFocus]="true"
-      [placeholder]="'Search Users'"
-    />
-    <ion-button (click)="addUser()">
-      <ion-icon
-        slot="start"
-        [icon]="addIcon"
-      ></ion-icon>
-      Create User
-    </ion-button>
-  </app-header>
-
-  <table [style]="{ 'min-width': '50rem' }">
-    <tr>
-      <th>Full Name</th>
-      <th>Email</th>
-      <th>Actions</th>
-    </tr>
-    @for (user of data.value(); track user.id) {
-      <tr>
-        <td>{{ user.fullName }}</td>
-        <td>{{ user.email }}</td>
-        <td>
-          <div class="flex gap-1">
-            <ion-button
-              (click)="openUserkDialog(user)"
-              [appTooltip]="'Edit user'"
-              [tooltipPosition]="'right'"
-            >
-              <ion-icon
-                slot="icon-only"
-                [icon]="createOutlineIcon"
-              ></ion-icon>
-            </ion-button>
-
-            <ion-button
-              [appTooltip]="'Delete user'"
-              [tooltipPosition]="'right'"
-              [color]="'danger'"
-              (click)="deleteUser(user)"
-            >
-              <ion-icon
-                slot="icon-only"
-                [icon]="trashOutlineIcon"
-              ></ion-icon>
-            </ion-button>
-          </div>
-        </td>
-      </tr>
-    }
-  </table>
-</div>
+<ion-grid>
+  <ion-row>
+    <ion-col>
+      <app-header>
+        <app-search-input
+          (inputChange)="keyword.set($event)"
+          [autoFocus]="true"
+          [placeholder]="'Search Users'"
+        />
+        <ion-button (click)="addUser()">
+          <ion-icon
+            slot="start"
+            [icon]="addIcon"
+          ></ion-icon>
+          Create User
+        </ion-button>
+      </app-header>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col class="margin-x-md">
+      <div style="width: 700px">
+        <ag-grid-angular
+          [columnDefs]="columnDefs"
+          [defaultColDef]="defaultColDef"
+          [rowData]="data.value()"
+          [animateRows]="true"
+          [domLayout]="'autoHeight'"
+          (rowClicked)="onRowClicked($event)"
+        />
+      </div>
+    </ion-col>
+  </ion-row>
+</ion-grid>

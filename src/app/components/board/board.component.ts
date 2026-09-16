@@ -22,12 +22,11 @@ import {
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 
-import { BecomeVisibleDirective } from 'src/app/directives/become-visible-directive';
+import { BecomeVisibleDirective } from '@directives/become-visible-directive';
 import { SearchInputComponent } from '@components/shared/search-input/search-input.component';
 import { HeaderComponent } from '@components/shared/header/header.component';
 import { ScrollTopComponent } from '@components/shared/scroll-top/scroll-top.component';
 import { successModalEvent } from '@components/shared/base-dialog/base-dialog.component';
-import { addIcons } from 'ionicons';
 import { IonButton, IonCol, IonGrid, IonIcon, IonRow, IonSpinner } from '@ionic/angular';
 import { add } from 'ionicons/icons';
 import { injectInfiniteQuery, injectMutation } from '@tanstack/angular-query-experimental';
@@ -56,7 +55,10 @@ const limit = 5;
 })
 export class BoardComponent {
   hasMoreTasks = true;
+  addIcon = add;
+  menuIsOpen = signal<{ [key: number]: boolean }>({});
   restart = signal(false);
+  requestId = signal<string>(crypto.randomUUID());
   currPage = 0;
   searchValue = signal<string | null>(null);
   showModal = signal<boolean>(false);
@@ -77,6 +79,8 @@ export class BoardComponent {
       'tasks',
       {
         search: this.searchValue(),
+        requestId: this.requestId(),
+        offset: this.currPage,
       },
     ],
     initialPageParam: this.currPage,
@@ -124,44 +128,71 @@ export class BoardComponent {
 
   readonly deleteTaskMutation = injectMutation(() => ({
     mutationFn: ({ id, version }: Task) => firstValueFrom(this.taskService.delete(id, version)),
-    onSuccess: () => {
-      this.resetTaskFilters();
-    },
   }));
 
-  constructor() {
-    addIcons({ add });
-  }
-
-  async deleteTask(task: Task, taskCard?: TaskCardComponent): Promise<void> {
+  async deleteTask(task: Task): Promise<void> {
     const dialog = await openDeleteModal(
       this.injector,
       `Are you sure that you want to delete task with id  ${task.id}?`,
       'Delete task',
     );
-    this.dialogCallBackFunction(dialog, taskCard);
+    this.dismissMenu();
+    const isSussessMoadalEvent = await this.isSussessMoadalEvent(dialog);
+    if (isSussessMoadalEvent) {
+      this.deleteTaskMutation.mutate(task, {
+        onSuccess: () => {
+          this.dialogCallBackFunction(
+            dialog,
+            'Task deleted',
+            `Task with id ${task.id} successfully deleted`,
+          );
+        },
+        onError: async () => {
+          (await this.messageService()).errorEvent.next({
+            summary: 'Error',
+            detail: `Task with id: ${task.id} can not be deleted`,
+          });
+        },
+      });
+    }
   }
 
-  async openTaskDialog(task?: Partial<Task>, taskCard?: TaskCardComponent): Promise<void> {
+  async openTaskDialog(task?: Partial<Task>): Promise<void> {
     const dialog = await openEditModal(this.injector, task, !task ? 'Create task' : 'Edit task');
-    this.dialogCallBackFunction(dialog, taskCard);
+    this.dialogCallBackFunction(dialog);
+  }
+
+  private async isSussessMoadalEvent(dialog: HTMLIonModalElement): Promise<boolean> {
+    const { role } = await dialog.onWillDismiss();
+    return role === successModalEvent;
   }
 
   async dialogCallBackFunction(
     dialog: HTMLIonModalElement,
-    taskCard?: TaskCardComponent,
+    summary?: string,
+    detail?: string,
   ): Promise<void> {
-    const { role } = await dialog.onWillDismiss();
-    if (role === successModalEvent) {
+    this.dismissMenu();
+    const isSussessMoadalEvent = await this.isSussessMoadalEvent(dialog);
+    if (isSussessMoadalEvent) {
       this.resetTaskFilters();
     }
-    if (taskCard) {
-      taskCard.menuOpen.set(false);
+    if (summary && detail) {
+      (await this.messageService()).successEvent.next({ summary, detail });
     }
   }
 
-  async resetTaskFilters(searchValue = ''): Promise<void> {
+  dismissMenu(): void {
+    this.menuIsOpen.set({});
+  }
+
+  openMenu(taskId: number): void {
+    this.menuIsOpen.set({ [taskId]: true });
+  }
+
+  resetTaskFilters(searchValue = ''): void {
     this.changeSearchValue(searchValue);
+    this.requestId.set(crypto.randomUUID());
     this.queryClient.cancelQueries();
     this.queryClient.removeQueries();
   }

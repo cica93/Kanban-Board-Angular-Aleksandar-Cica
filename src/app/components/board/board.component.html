@@ -11,7 +11,7 @@
         <ion-button (click)="openTaskDialog()">
           <ion-icon
             slot="start"
-            name="add"
+            [icon]="addIcon"
           ></ion-icon>
           Create Task
         </ion-button>
@@ -53,13 +53,15 @@
             >
               @for (task of tasksByStatus; track $index) {
                 <app-task-card
-                  #taskCard
                   cdkDrag
                   cdkDragBoundary="#main-container"
+                  [menuOpen]="menuIsOpen()[task.id] ?? false"
+                  (openMenuEvent)="openMenu(task.id)"
+                  (dismissMenuEvent)="dismissMenu()"
                   [cdkDragData]="task"
                   [task]="task"
-                  (onDelete)="deleteTask(task, taskCard)"
-                  (onEdit)="openTaskDialog(task, taskCard)"
+                  (onDelete)="deleteTask(task)"
+                  (onEdit)="openTaskDialog(task)"
                 />
               }
             </div>
