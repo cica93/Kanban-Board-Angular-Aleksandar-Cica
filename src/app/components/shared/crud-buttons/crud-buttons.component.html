@@ -1,3 +1,4 @@
+@if(showEditButton()){
 <ion-button
               (click)="editEntity()"
               [size]="'small'"
@@ -9,6 +10,23 @@
                 [icon]="createOutlineIcon"
               ></ion-icon>
             </ion-button>
+          }
+          @if(showCreateButton()){
+
+            <ion-button
+              (click)="createEntity()"
+              [size]="'small'"
+              appTooltip="Create {{entityName()}}"
+              [tooltipPosition]="'right'"
+            >
+              <ion-icon
+                slot="icon-only"
+                [icon]="addIcon"
+              ></ion-icon>
+            </ion-button>
+          }
+
+          @if(showDeleteButton()){
 
             <ion-button
               appTooltip="Delete {{entityName()}}"
@@ -22,3 +40,4 @@
                 [icon]="trashOutlineIcon"
               ></ion-icon>
             </ion-button>
+          }

@@ -1,10 +1,4 @@
-import {
-  ApplicationConfig,
-  ErrorHandler,
-  inject,
-  provideAppInitializer,
-  provideZoneChangeDetection,
-} from '@angular/core';
+import { ApplicationConfig, ErrorHandler, inject, provideAppInitializer } from '@angular/core';
 import {
   provideRouter,
   TitleStrategy,
@@ -38,6 +32,10 @@ import {
   RowApiModule,
   ColumnAutoSizeModule,
   CellStyleModule,
+  InfiniteRowModelModule,
+  ValidationModule,
+  PaginationModule,
+  ColumnApiModule,
 } from 'ag-grid-community';
 
 ModuleRegistry.registerModules([
@@ -46,8 +44,11 @@ ModuleRegistry.registerModules([
   RowApiModule,
   ColumnAutoSizeModule,
   CellStyleModule,
+  InfiniteRowModelModule,
+  ValidationModule,
+  PaginationModule,
+  ColumnApiModule,
 ]);
-
 
 const apiInterceptor = ApiInterceptor;
 
@@ -79,7 +80,6 @@ export const appConfig: ApplicationConfig = {
         'pending-input': ({ state }) => state().pending(),
       },
     }),
-    provideZoneChangeDetection(),
     Title,
     { provide: TitleStrategy, useClass: KanbanTitle },
     { provide: ErrorHandler, useClass: GlobalErrorHandler },

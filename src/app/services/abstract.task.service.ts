@@ -52,6 +52,11 @@ export interface EntityChange<T> {
 export type NoTUpdatableTaskFields = 'id' | 'taskOrder' | 'version' | 'createdBy' | 'updatedBy';
 export type TaskForm = Omit<Task, NoTUpdatableTaskFields>;
 
+export interface PageResponse<T> {
+  content: T[];
+  totalCount: number;
+}
+
 export abstract class AbstractTaskService {
   taskChange = new Subject<EntityChange<Task>>();
   abstract get(

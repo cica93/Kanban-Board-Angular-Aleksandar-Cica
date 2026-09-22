@@ -15,7 +15,7 @@ import {
   TASK_STATUSES_OPTIONS,
   TaskStatus,
 } from '@service/abstract.task.service';
-import { firstValueFrom, Subject, zip } from 'rxjs';
+import { firstValueFrom, map, Subject, zip } from 'rxjs';
 import {
   SubmitForm,
   SUBMIT_FORM_TOKEN,
@@ -30,7 +30,7 @@ import {
   validate,
 } from '@angular/forms/signals';
 import { AsyncPipe } from '@angular/common';
-import { UserService } from '@service/user.service';
+import { User, UserService } from '@service/user.service';
 import { NgSelectComponent, NgSelectModule } from '@ng-select/ng-select';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { IonInput } from '@ionic/angular/ion-input';
@@ -63,7 +63,9 @@ export class TaskFormComponent implements SubmitForm<Task, TaskForm> {
   private readonly messageHandlerService = injectAsync(() =>
     import('@service/message.handler.service').then((a) => a.MessageHandlerService),
   );
-  users$ = inject(UserService).getUsers();
+  users$ = inject(UserService)
+    .getUsers()
+    .pipe(map(({ content }) => content));
   TASK_STATUSES = TASK_STATUSES;
   TASK_PRIORITIES = TASK_PRIORITIES;
   TASK_STATUSES_OPTIONS = [...TASK_STATUSES_OPTIONS];
@@ -80,33 +82,30 @@ export class TaskFormComponent implements SubmitForm<Task, TaskForm> {
   });
 
   constructor() {
-    zip(
-      this.users$,
-      toObservable(this.usersSelect),
-      toObservable(this.initValue),
-      toObservable(this.initValue),
-    ).subscribe(([users, select, initValue]) => {
-      if (initValue) {
-        this.model.set({
-          description: initValue.description,
-          taskPriority: initValue.taskPriority,
-          taskStatus: initValue.taskStatus.replace(' ', '_') as TaskStatus,
-          title: initValue.title,
-          users: (initValue.users ?? []).map((user) => {
-            const { __typename, ...userData } = user;
-            return userData;
-          }),
-        });
+    zip(this.users$, toObservable(this.usersSelect), toObservable(this.initValue)).subscribe(
+      ([users, select, initValue]) => {
+        if (initValue) {
+          this.model.set({
+            description: initValue.description,
+            taskPriority: initValue.taskPriority,
+            taskStatus: initValue.taskStatus.replace(' ', '_') as TaskStatus,
+            title: initValue.title,
+            users: (initValue.users ?? []).map((user) => {
+              const { __typename, ...userData } = user;
+              return userData;
+            }),
+          });
 
-        select?.writeValue(
-          users.filter((user) =>
-            initValue!.users.some((selectedUser) => selectedUser.id === user.id),
-          ),
-        );
-      } else {
-        select?.writeValue([]);
-      }
-    });
+          select?.writeValue(
+            users.filter((user: User) =>
+              initValue!.users.some((selectedUser) => selectedUser.id === user.id),
+            ),
+          );
+        } else {
+          select?.writeValue([]);
+        }
+      },
+    );
   }
 
   form = form<TaskForm>(

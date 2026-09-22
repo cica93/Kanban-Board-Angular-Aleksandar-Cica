@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { z } from 'zod';
-import { Task } from './abstract.task.service';
+import { PageResponse, Task } from './abstract.task.service';
 
 export const userSchema = z.object({
   id: z.number().int().positive(),
@@ -31,18 +31,25 @@ export class UserService {
     return this.http.get<User>('users/current');
   }
 
-  getUsers(keyword = '', limit = 10, offset = 0): Observable<User[]> {
+  getUsers(
+    keyword = '',
+    limit = 10,
+    offset = 0,
+    columnSort = 'id',
+    direction = 'asc',
+  ): Observable<PageResponse<User>> {
     return this.http
-      .get<User[]>('users', {
-        params: { keyword, limit, offset },
+      .get<PageResponse<User>>('users', {
+        params: { keyword, limit, offset, columnSort, direction },
       })
       .pipe(
-        map((users) =>
-          users.map((user) => {
+        map(({ totalCount, content }) => ({
+          content: content.map((user) => {
             const { tasks, token, image, ...rest } = user;
             return rest as User;
           }),
-        ),
+          totalCount,
+        })),
       );
   }
 

@@ -15,6 +15,11 @@
 
 @import '@ng-select/ng-select/themes/material.theme.css';
 
+:root {
+  --ag-auto-height-min-body-height: 80px;
+  --ag-auto-height-max-body-height: 180px;
+}
+
 .invalid-input.touched-input {
   .helper-text {
     color: red !important;
@@ -182,7 +187,7 @@ form,
   justify-content: flex-end;
 }
 
-.ag-cell-value.ag-cell:has(app-crud-buttons){
+.ag-cell-value.ag-cell:has(app-crud-buttons), .ag-header-cell.align-center .ag-header-cell-comp-wrapper{
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -206,6 +211,26 @@ ag-grid-angular {
   min-height: 0 !important;
   max-height: 0 !important;
 }
+
+.ag-row:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+.ag-row:nth-child(even) {
+  background-color: #f5f5f5;
+}
+
+ion-popover  ion-list  ion-item:hover {
+  --ion-item-background: #f5f5f5;
+}
+
+.ag-layout-auto-height, .ag-layout-print {
+    .ag-grid-scrolling-rows {
+        max-height: var(--ag-auto-height-max-body-height);
+        overflow-y: auto;
+    }
+}
+
 
 
 
