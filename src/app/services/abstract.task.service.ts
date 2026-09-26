@@ -30,6 +30,7 @@ export interface Task {
   createdBy: string;
   updatedBy: string;
   users: User[];
+  createdAt?: number;
 }
 
 export interface TasksByStatus {

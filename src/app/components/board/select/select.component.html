@@ -1,0 +1,22 @@
+<div id="priority-filter-container-{{ id() }}">
+  <ng-select
+    (focus)="isOpen.set(true)"
+    (blur)="isOpen.set(false)"
+    class="w-full"
+    [items]="items()"
+    [isOpen]="isOpen()"
+    [closeOnSelect]="multiple() ? false : true"
+    [multiple]="multiple()"
+    [bindLabel]="bindLabel()"
+    [bindValue]="bindValue()"
+    [ngModel]="value()"
+    [disabled]="disabled()"
+    (ngModelChange)="onValueChange($event)"
+    [placeholder]="placeholder()"
+    [openOnEnter]="openOnEnter()"
+    [clearable]="clearable()"
+    [searchable]="searchable()"
+    appendTo="#priority-filter-container-{{ id() }}"
+  >
+  </ng-select>
+</div>

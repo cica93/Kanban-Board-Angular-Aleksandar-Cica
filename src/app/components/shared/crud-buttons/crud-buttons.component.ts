@@ -3,7 +3,7 @@ import { TooltipDirective } from '@directives/tooltip.directive';
 import { IonButton, IonIcon } from '@ionic/angular';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
 import { ICellRendererParams } from 'ag-grid-community';
-import { createOutline, trashOutline, add } from 'ionicons/icons';
+import { createOutline, trashOutline, add, close } from 'ionicons/icons';
 
 @Component({
   imports: [TooltipDirective, IonButton, IonIcon],
@@ -27,24 +27,30 @@ export class CrudButtonsComponent implements ICellRendererAngularComp {
     this.showCreateButton.set(params.showCreateButton);
     this.showEditButton.set(params.showEditButton);
     this.showDeleteButton.set(params.showDeleteButton);
+    this.showClearButton.set(params.showClearButton);
     this.editClickedFunction = params.editClickedFunction;
     this.deleteClickedFunction = params.deleteClickedFunction;
+    this.clearClickedFunction = params.clearClickedFunction;
     this.createClickedFunction = params.createClickedFunction;
   }
 
   protected createOutlineIcon = createOutline;
   protected trashOutlineIcon = trashOutline;
   protected addIcon = add;
+  protected closeIcon = close;
   private editClickedFunction: (a: any) => void = () => {};
   private deleteClickedFunction: (a: any) => void = () => {};
   private createClickedFunction: () => void = () => {};
+  private clearClickedFunction: () => void = () => {};
   entity = model<any>();
   entityName = model<any>();
   editClicked = output<any>();
   deleteClicked = output<any>();
   createClicked = output<void>();
+  clearClicked = output<void>();
 
   showDeleteButton = model(true);
+  showClearButton = model(false);
   showEditButton = model(true);
   showCreateButton = model(false);
 
@@ -61,5 +67,10 @@ export class CrudButtonsComponent implements ICellRendererAngularComp {
   createEntity(): void {
     this.createClickedFunction();
     this.createClicked.emit();
+  }
+
+  close(): void {
+    this.clearClickedFunction();
+    this.clearClicked.emit();
   }
 }

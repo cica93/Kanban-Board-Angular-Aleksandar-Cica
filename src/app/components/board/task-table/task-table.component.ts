@@ -1,31 +1,38 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, viewChild } from '@angular/core';
 import { CrudButtonsComponent } from '@components/shared/crud-buttons/crud-buttons.component';
 import { IonCol, IonGrid, IonRow } from '@ionic/angular';
-import { PageResponse, Task, TASK_PRIORITIES, TASK_STATUSES_OPTIONS } from '@service/abstract.task.service';
+import { Task, TASK_PRIORITIES, TASK_STATUSES_OPTIONS } from '@service/abstract.task.service';
+import { ColDef } from 'ag-grid-community';
+import { SelectComponent } from '../select/select.component';
+import {
+  AgGridWrapperComponent,
+  GRID_DATA_PROVIDER,
+  GridDataProviderFunction,
+} from '@components/ag-grid-wrapper/ag-grid-wrapper.component';
 import { TaskService } from '@service/task.service';
-import { AgGridAngular } from 'ag-grid-angular';
-import { ColDef, GridApi, GridOptions, GridReadyEvent, IDatasource, IGetRowsParams, PaginationChangedEvent } from 'ag-grid-community';
-import { SelectFilterComponent } from '../select-filter/select-filter.component';
 
 @Component({
-  imports: [AgGridAngular, IonGrid, IonRow, IonCol],
+  imports: [AgGridWrapperComponent, IonGrid, IonRow, IonCol, AgGridWrapperComponent],
   selector: 'app-task-table',
   templateUrl: './task-table.component.html',
+  providers: [
+    {
+      provide: GRID_DATA_PROVIDER,
+      useFactory: (taskService: TaskService): GridDataProviderFunction => {
+        return (
+          filter: string,
+          limit: number,
+          offset: number,
+          sortColumn: string,
+          direction: string,
+        ) => taskService.getTableResponse(filter, limit, offset, sortColumn, direction);
+      },
+      deps: [TaskService],
+    },
+  ],
 })
 export class TaskTableComponent {
-  gridOptions: GridOptions = {
-    sortingOrder: ['asc', 'desc'],
-    rowModelType: 'infinite',
-    cacheBlockSize: 50,
-    maxBlocksInCache: 1,
-    animateRows: true,
-    domLayout: 'autoHeight',
-    pagination: true,
-  };
-  paginationPageSize = signal(50);
-  datasource!: IDatasource;
-  private readonly taskService = inject(TaskService);
-  protected gridApi!: GridApi<Task>;
+  gridWrapper = viewChild.required(AgGridWrapperComponent);
   readonly columnDefs: ColDef<Task>[] = [
     {
       field: 'title',
@@ -39,10 +46,34 @@ export class TaskTableComponent {
       flex: 1,
     },
     {
+      field: 'version',
+      headerName: 'Version',
+      flex: 0.5,
+      valueFormatter: ({ value }) => value ?? 0,
+      filter: 'agNumberColumnFilter',
+      filterParams: {
+        filterOptions: [
+          'equals',
+          'notEqual',
+          'greaterThan',
+          'greaterThanOrEqual',
+          'lessThan',
+          'lessThanOrEqual',
+        ],
+      },
+    },
+    {
+      field: 'createdAt',
+      headerName: 'Created at',
+      flex: 1,
+      valueFormatter: ({ value }) => value ?? new Date(),
+      filter: 'agDateColumnFilter',
+    },
+    {
       field: 'taskStatus',
       headerName: 'Status',
-      flex: 1,
-      filter: SelectFilterComponent,
+      flex: 0.5,
+      filter: SelectComponent,
       filterParams: {
         items: TASK_STATUSES_OPTIONS,
         bindValue: 'value',
@@ -50,18 +81,20 @@ export class TaskTableComponent {
         placeholder: 'Select task status',
         multiple: true,
         id: 'task-status',
+        openOnInit: true,
       },
     },
     {
       field: 'taskPriority',
       headerName: 'Priority',
-      flex: 1,
-      filter: SelectFilterComponent,
+      flex: 0.5,
+      filter: SelectComponent,
       filterParams: {
         items: TASK_PRIORITIES,
         placeholder: 'Select task priority',
         multiple: true,
         id: 'task-priority',
+        openOnInit: true,
       },
     },
     {
@@ -74,9 +107,14 @@ export class TaskTableComponent {
       headerComponent: CrudButtonsComponent,
       headerComponentParams: {
         showCreateButton: true,
+        showClearButton: true,
+        deleteTitle: 'Clear filters',
         entityName: 'User',
         createClickedFunction: () => {
           console.log('create');
+        },
+        clearClickedFunction: () => {
+          this.gridWrapper().clearAllFilters();
         },
       },
       headerClass: 'align-center',
@@ -98,56 +136,4 @@ export class TaskTableComponent {
       },
     },
   ];
-
-  constructor() {
-    this.datasource = {
-      getRows: (params: IGetRowsParams) => {
-        const { filterModel, sortModel, startRow, endRow } = params;
-        this.taskService
-          .getTableResponse(
-            JSON.stringify(filterModel),
-            endRow - startRow,
-            startRow,
-            sortModel[0]?.colId ?? 'id',
-            sortModel[0]?.sort ?? 'desc',
-          )
-          .subscribe({
-            next: ({ content, totalCount }: PageResponse<Task>) => {
-              params.successCallback(content, totalCount);
-            },
-            error: () => {
-              params.failCallback();
-            },
-          });
-      },
-    };
-  }
-
-  onGridReady(event: GridReadyEvent): void {
-    this.gridApi = event.api;
-  }
-
-  bodyScroll(event: any): void {
-    console.log(event);
-  }
-
-  changePageSize(pagination: PaginationChangedEvent<Task, any>): void {
-    const { api } = pagination;
-    const pageSize = api.paginationGetPageSize();
-
-    if (pageSize !== this.paginationPageSize()) {
-      this.paginationPageSize.set(pageSize);
-      api.setGridOption('cacheBlockSize', pageSize);
-      api.setGridOption('paginationPageSize', pageSize);
-      api.paginationGoToFirstPage();
-      api.refreshInfiniteCache();
-    }
-  }
-
-  readonly defaultColDef: ColDef<Task> = {
-    resizable: true,
-    sortable: true,
-    filter: true,
-    minWidth: 0,
-  };
 }

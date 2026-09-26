@@ -1,30 +1,25 @@
 import { Component, inject, Injector, signal } from '@angular/core';
 import { User, UserService } from '@service/user.service';
-import { SearchInputComponent } from '@components/shared/search-input/search-input.component';
-import { HeaderComponent } from '@components/shared/header/header.component';
 import { successModalEvent } from '@components/shared/base-dialog/base-dialog.component';
 import { openEditModal } from '@components/shared/modalUtills';
 import { IonGrid, IonRow, IonCol, IonList, IonIcon, IonItem, IonLabel } from '@ionic/angular';
 import { createOutline, trashOutline, add } from 'ionicons/icons';
-import {
-  CellContextMenuEvent,
-  ColDef,
-  GridApi,
-  GridReadyEvent,
-  IGetRowsParams,
-  RowClickedEvent,
-} from 'ag-grid-community';
-import { AgGridAngular } from 'ag-grid-angular';
 import { CrudButtonsComponent } from '@components/shared/crud-buttons/crud-buttons.component';
 import { IonPopover } from '@ionic/angular/common';
+import {
+  AgGridWrapperComponent,
+  GRID_DATA_PROVIDER,
+  GridDataProviderFunction,
+} from '@components/ag-grid-wrapper/ag-grid-wrapper.component';
+
+import { CellContextMenuEvent, ColDef, GridApi, RowClickedEvent } from 'ag-grid-community';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-users',
   styleUrl: './users.component.scss',
   imports: [
-    SearchInputComponent,
-    HeaderComponent,
-    AgGridAngular,
+    AgGridWrapperComponent,
     IonGrid,
     IonRow,
     IonCol,
@@ -34,6 +29,24 @@ import { IonPopover } from '@ionic/angular/common';
     IonIcon,
     IonLabel,
   ],
+  providers: [
+    {
+      provide: GRID_DATA_PROVIDER,
+      useFactory: (userService: UserService): GridDataProviderFunction => {
+        return (
+          filter: string,
+          limit: number,
+          offset: number,
+          sortColumn: string,
+          direction: string,
+        ) =>
+          userService
+            .getUsers(filter, limit, offset, sortColumn, direction)
+            .pipe(map((e) => e.content));
+      },
+      deps: [UserService],
+    },
+  ],
   templateUrl: './users.component.html',
 })
 export class UsersComponent {
@@ -42,9 +55,7 @@ export class UsersComponent {
   addIcon = add;
   contentMenuEvent = signal<Event | null | undefined>(null);
   firstInpuChange = true;
-
   contentMenuOpen = signal(false);
-  private readonly userService = inject(UserService);
 
   protected gridApi!: GridApi<User>;
 
@@ -158,31 +169,5 @@ export class UsersComponent {
     this.contentMenuEvent.set(event);
     this.contentMenuOpen.set(true);
     this.selectedUser.set(data ?? null);
-  }
-
-  onGridReady(event: GridReadyEvent): void {
-    this.gridApi = event.api;
-    event.api.setGridOption('datasource', {
-      getRows: (params: IGetRowsParams) => {
-        const { startRow, endRow, sortModel, filterModel } = params;
-
-        this.userService
-          .getUsers(
-            JSON.stringify(filterModel),
-            endRow - startRow,
-            startRow,
-            sortModel[0]?.colId,
-            sortModel[0]?.sort,
-          )
-          .subscribe({
-            next: ({ content, totalCount }) => {
-              params.successCallback(content, totalCount);
-            },
-            error: () => {
-              params.failCallback();
-            },
-          });
-      },
-    });
   }
 }

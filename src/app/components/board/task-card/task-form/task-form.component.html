@@ -27,8 +27,8 @@
       </ion-textarea>
     </ion-item>
     <ion-item>
-      <ng-select
-        [attr.id]="'task-status'"
+      <app-select
+        [id]="'task-status'"
         [items]="TASK_STATUSES_OPTIONS"
         [openOnEnter]="true"
         [bindLabel]="'label'"
@@ -37,12 +37,11 @@
         [placeholder]="'Select task status'"
         [clearable]="false"
         [searchable]="false"
-        class="w-full"
       />
     </ion-item>
     <ion-item>
-      <ng-select
-        [attr.id]="'task-priority'"
+      <app-select
+        [id]="'task-priority'"
         [items]="[...TASK_PRIORITIES]"
         [openOnEnter]="true"
         [formField]="form.taskPriority"
@@ -53,8 +52,8 @@
     </ion-item>
     <ion-item>
       @let users = (users$ | async) ?? [];
-      <ng-select
-        #usersSelect
+      <app-select
+        [id]="'users'"
         [multiple]="true"
         [items]="users"
         [bindLabel]="'fullName'"
@@ -63,9 +62,7 @@
         [formField]="form.users"
         [placeholder]="'Select users'"
         [clearable]="false"
-        [closeOnSelect]="false"
         [clearOnBackspace]="false"
-        styleClass="w-full"
       />
     </ion-item>
   </ion-list>

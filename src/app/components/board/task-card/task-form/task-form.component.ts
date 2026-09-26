@@ -30,11 +30,12 @@ import {
   validate,
 } from '@angular/forms/signals';
 import { AsyncPipe } from '@angular/common';
-import { User, UserService } from '@service/user.service';
-import { NgSelectComponent, NgSelectModule } from '@ng-select/ng-select';
+import { UserService } from '@service/user.service';
+import { NgSelectComponent } from '@ng-select/ng-select';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { IonInput } from '@ionic/angular/ion-input';
 import { IonItem, IonList, IonTextarea } from '@ionic/angular';
+import { SelectComponent } from '@components/board/select/select.component';
 
 export type NoTUpdatableTaskFields = 'id' | 'taskOrder' | 'version' | 'createdBy' | 'updatedBy';
 export type TaskForm = Omit<Task, NoTUpdatableTaskFields>;
@@ -43,7 +44,7 @@ export type TaskForm = Omit<Task, NoTUpdatableTaskFields>;
   imports: [
     FormRoot,
     FormField,
-    NgSelectModule,
+    SelectComponent,
     AsyncPipe,
     IonInput,
     IonItem,
@@ -82,30 +83,20 @@ export class TaskFormComponent implements SubmitForm<Task, TaskForm> {
   });
 
   constructor() {
-    zip(this.users$, toObservable(this.usersSelect), toObservable(this.initValue)).subscribe(
-      ([users, select, initValue]) => {
-        if (initValue) {
-          this.model.set({
-            description: initValue.description,
-            taskPriority: initValue.taskPriority,
-            taskStatus: initValue.taskStatus.replace(' ', '_') as TaskStatus,
-            title: initValue.title,
-            users: (initValue.users ?? []).map((user) => {
-              const { __typename, ...userData } = user;
-              return userData;
-            }),
-          });
-
-          select?.writeValue(
-            users.filter((user: User) =>
-              initValue!.users.some((selectedUser) => selectedUser.id === user.id),
-            ),
-          );
-        } else {
-          select?.writeValue([]);
-        }
-      },
-    );
+    zip(this.users$, toObservable(this.initValue)).subscribe(([_, initValue]) => {
+      if (initValue) {
+        this.model.set({
+          description: initValue.description,
+          taskPriority: initValue.taskPriority,
+          taskStatus: initValue.taskStatus.replace(' ', '_') as TaskStatus,
+          title: initValue.title,
+          users: (initValue.users ?? []).map((user) => {
+            const { __typename, ...userData } = user;
+            return userData;
+          }),
+        });
+      }
+    });
   }
 
   form = form<TaskForm>(

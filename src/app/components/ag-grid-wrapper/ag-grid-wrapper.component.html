@@ -1,0 +1,13 @@
+<ag-grid-angular
+  [gridOptions]="gridOptions"
+  [columnDefs]="columnDefs()"
+  [pagination]="pagination()"
+  (cellContextMenu)="onCellContextMenu.emit($event)"
+  (rowClicked)="onRowClicked.emit($event)"
+  [defaultColDef]="defaultColDef"
+  [datasource]="datasource"
+  [paginationPageSize]="paginationPageSize()"
+  [paginationPageSizeSelector]="[10, 25, 50, 100]"
+  (gridReady)="onGridReady($event)"
+  (paginationChanged)="changePageSize($event)"
+/>
