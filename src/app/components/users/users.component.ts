@@ -43,7 +43,6 @@ export class UsersComponent {
   contentMenuEvent = signal<Event | null | undefined>(null);
   firstInpuChange = true;
 
-  keyword = signal('');
   contentMenuOpen = signal(false);
   private readonly userService = inject(UserService);
 
@@ -124,6 +123,8 @@ export class UsersComponent {
     // );
   }
 
+  //'infinite' | 'viewport' | 'clientSide' | 'serverSide'
+
   addUser(): void {
     // this.data.update((users) => [
     //   { fullName: 'Saban', email: 's@gmail.com', id: 76 } as unknown as User,
@@ -165,10 +166,9 @@ export class UsersComponent {
       getRows: (params: IGetRowsParams) => {
         const { startRow, endRow, sortModel, filterModel } = params;
 
-        console.log(filterModel);
         this.userService
           .getUsers(
-            this.keyword(),
+            JSON.stringify(filterModel),
             endRow - startRow,
             startRow,
             sortModel[0]?.colId,
@@ -184,17 +184,5 @@ export class UsersComponent {
           });
       },
     });
-  }
-
-  inputChange(event: string): void {
-    if (this.firstInpuChange) {
-      this.firstInpuChange = false;
-    } else {
-      this.keyword.set(event);
-      this.gridApi.applyColumnState({
-        state: [{ colId: 'fullName', sort: 'desc' }],
-      });
-      this.gridApi.refreshInfiniteCache();
-    }
   }
 }

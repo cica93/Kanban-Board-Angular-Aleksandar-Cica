@@ -119,7 +119,6 @@ export class TaskGraphQlService extends AbstractTaskService {
   }
 
   override post(task: TaskForm): Observable<Task | null | undefined> {
-    console.log(task);
     return this.apollo
       .mutate<{ createTask: Task }>({
         mutation: gql`

@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import {
   AbstractTaskService,
   DragTask,
+  PageResponse,
   Task,
   TaskForm,
   TasksByStatus,
@@ -16,6 +17,24 @@ export class TaskService extends AbstractTaskService {
   private readonly http = inject(HttpClient);
 
   private readonly baseUrl = 'tasks';
+
+  getTableResponse(
+    filter = '',
+    limit = 20,
+    offset = 0,
+    sortColumn = 'id',
+    direction = 'desc',
+  ): Observable<PageResponse<Task>> {
+    return this.http.get<PageResponse<Task>>(`${this.baseUrl}/getTableResponse`, {
+      params: {
+        filter,
+        limit,
+        offset,
+        sortColumn,
+        direction,
+      },
+    });
+  }
 
   override get(description = '', limit = 20, offset = 0): Observable<TasksByStatus[]> {
     return this.http.get<TasksByStatus[]>(this.baseUrl, {

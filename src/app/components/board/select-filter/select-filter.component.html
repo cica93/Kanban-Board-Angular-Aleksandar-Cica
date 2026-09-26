@@ -1,0 +1,16 @@
+<div id="priority-filter-container-{{id}}">
+  <ng-select
+    [items]="items"
+    [isOpen]="isOpen()"
+    [closeOnSelect]="false"
+    [multiple]="true"
+    [bindLabel]="bindLabel"
+    [bindValue]="bindValue"
+    [ngModel]="selectedPriority"
+    (ngModelChange)="onPriorityChange($event)"
+    [placeholder]="placeholder"
+    [clearable]="true"
+    [searchable]="true"
+    appendTo="#priority-filter-container-{{id}}">
+  </ng-select>
+</div>

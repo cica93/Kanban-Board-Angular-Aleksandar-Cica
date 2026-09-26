@@ -1,16 +1,5 @@
 <ion-grid>
   <ion-row>
-    <ion-col>
-      <app-header>
-        <app-search-input
-          (inputChange)="inputChange($event)"
-          [autoFocus]="true"
-          [placeholder]="'Search Users'"
-        />
-      </app-header>
-    </ion-col>
-  </ion-row>
-  <ion-row>
     <ion-col class="margin-x-md">
       <div class="grid-wrapper" style="width: 700px; max-height: 120px;"  (contextmenu)="$event.preventDefault()">
         <ag-grid-angular

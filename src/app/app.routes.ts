@@ -42,7 +42,7 @@ export const routes: Routes = [
     path: 'rest',
     title: 'Rest',
     canDeactivate: [sidebarGuard],
-    loadComponent: () => import('./components/board/board.component').then((c) => c.BoardComponent),
+    loadComponent: () => import('@components/board/board.component').then((c) => c.BoardComponent),
     providers: [
       { provide: AbstractTaskService, useExisting: TaskService },
       {
@@ -57,7 +57,7 @@ export const routes: Routes = [
   {
     path: 'users',
     title: 'Users',
-    loadComponent: () => import('./components/users/users.component').then((m) => m.UsersComponent),
+    loadComponent: () => import('@components/users/users.component').then((m) => m.UsersComponent),
     canActivate: [loginGuard],
     providers: [
       {
@@ -67,12 +67,19 @@ export const routes: Routes = [
       },
     ],
   },
+  {
+    path: 'table',
+    title: 'Table',
+    loadComponent: () =>
+      import('@components/board/task-table/task-table.component').then((m) => m.TaskTableComponent),
+    canActivate: [loginGuard],
+  },
 
   {
     path: 'graphql',
     title: 'Graphql',
     canDeactivate: [sidebarGuard],
-    loadComponent: () => import('./components/board/board.component').then((c) => c.BoardComponent),
+    loadComponent: () => import('@components/board/board.component').then((c) => c.BoardComponent),
     providers: [
       { provide: AbstractTaskService, useExisting: TaskGraphQlService },
       {
@@ -88,7 +95,7 @@ export const routes: Routes = [
   {
     path: 'login',
     title: 'Login',
-    loadComponent: () => import('./components/login/login.component').then((c) => c.LoginComponent),
+    loadComponent: () => import('@components/login/login.component').then((c) => c.LoginComponent),
     canActivate: [logoutGuard],
   },
 ];

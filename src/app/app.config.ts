@@ -25,30 +25,9 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { GlobalErrorHandler } from '@service/error.handler.service';
 import { provideIonicAngular } from '@ionic/angular';
 import { provideTanStackQuery, QueryClient } from '@tanstack/angular-query-experimental';
-import {
-  ModuleRegistry,
-  TextFilterModule,
-  NumberFilterModule,
-  RowApiModule,
-  ColumnAutoSizeModule,
-  CellStyleModule,
-  InfiniteRowModelModule,
-  ValidationModule,
-  PaginationModule,
-  ColumnApiModule,
-} from 'ag-grid-community';
+import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
 
-ModuleRegistry.registerModules([
-  TextFilterModule,
-  NumberFilterModule,
-  RowApiModule,
-  ColumnAutoSizeModule,
-  CellStyleModule,
-  InfiniteRowModelModule,
-  ValidationModule,
-  PaginationModule,
-  ColumnApiModule,
-]);
+ModuleRegistry.registerModules([AllCommunityModule]);
 
 const apiInterceptor = ApiInterceptor;
 
