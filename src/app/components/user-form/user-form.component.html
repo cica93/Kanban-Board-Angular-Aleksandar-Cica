@@ -4,8 +4,8 @@
 >
   <h4>Shipping Address</h4>
   <!-- Pass the 'address' branch of the FieldTree to the child -->
-  <app-address-form [addressFields]="form.address" />
+  <app-address-form [addressFields]="form.address" [submitted]="submitted()" />
   <h4>Billing Address</h4>
   <!-- Pass the 'address' branch of the FieldTree to the child -->
-  <app-address-form [addressFields]="form.billingAddress" />
+  <app-address-form [addressFields]="form.billingAddress" [submitted]="submitted()" />
 </form>

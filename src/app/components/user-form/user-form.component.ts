@@ -25,6 +25,7 @@ export interface AddressForm {
 export class UserFormComponent implements SubmitForm<AddressForm, AddressForm> {
   initValue = input<AddressForm | null | undefined>(null);
   onClose: Subject<boolean> = new Subject();
+  submitted = signal(false);
   formSubmitted = output<any>();
   userModel = signal<{
     name: string;
@@ -56,7 +57,8 @@ export class UserFormComponent implements SubmitForm<AddressForm, AddressForm> {
           //this.closeModal();
         },
         onInvalid: () => {
-          this.form().markAsDirty();
+          this.form().markAsTouched();
+          this.submitted.set(true);
           this.form().focusBoundControl();
         },
         ignoreValidators: 'pending',

@@ -29,6 +29,10 @@ export const GRID_DATA_PROVIDER = new InjectionToken<GridDataProviderFunction>(
   imports: [AgGridAngular],
   selector: 'app-ag-grid-wrapper',
   templateUrl: './ag-grid-wrapper.component.html',
+  host: {
+    style: 'display: flex; width: 100%;',
+    '[style.height]': 'tableHeight()',
+  },
 })
 export class AgGridWrapperComponent<T> {
   columnDefs = input.required<ColDef<T>[]>();
@@ -36,14 +40,22 @@ export class AgGridWrapperComponent<T> {
   onRowClicked = output<RowClickedEvent<T>>();
   pagination = signal(true);
   private readonly dataProvider = inject(GRID_DATA_PROVIDER);
-  protected readonly gridOptions: GridOptions = {
+  protected readonly gridOptions = {
     sortingOrder: ['asc', 'desc'],
     rowModelType: 'infinite',
     cacheBlockSize: 50,
     maxBlocksInCache: 1,
     animateRows: true,
-    domLayout: 'autoHeight',
-  };
+    enableBrowserTooltips: false,
+    domLayout: 'normal',
+    tooltipShowDelay: 0,
+    headerHeight: 49,
+    rowHeight: 42,
+    tooltipHideDelay: 3000,
+    suppressContextMenu: true,
+    suppressDragLeaveHidesColumns: true,
+    suppressMakeColumnVisibleAfterUnGroup: true,
+  } satisfies GridOptions<T>;
   protected readonly defaultColDef: ColDef<T> = {
     resizable: true,
     sortable: true,
@@ -56,6 +68,7 @@ export class AgGridWrapperComponent<T> {
   protected paginationPageSize = signal(50);
   protected datasource!: IDatasource;
   protected gridApi!: GridApi<T>;
+  tableHeight = signal('100%');
 
   constructor() {
     this.datasource = {
@@ -72,9 +85,13 @@ export class AgGridWrapperComponent<T> {
             if (Array.isArray(data)) {
               this.pagination.set(false);
               params.successCallback(data, data.length);
+              this.tableHeight.set(
+                `${data.length * this.gridOptions.rowHeight + this.gridOptions.headerHeight}px`,
+              );
             } else {
               this.pagination.set(true);
               params.successCallback(data.content, data.totalCount);
+              this.tableHeight.set('100%');
             }
           },
           error: () => {

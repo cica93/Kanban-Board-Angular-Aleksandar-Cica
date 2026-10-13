@@ -1,41 +1,42 @@
-<!-- <div class="flex gap-2 flex-column">
-  <div class="flex flex-row gap-2 w-full">
-    <mat-form-field>
-      <mat-label>Street</mat-label>
-      <input
+  <ion-list class="form-group margin-md">
+    <ion-item>
+      @let streetFiled = addressFields().street;
+      @let streetErrors =
+        streetFiled().touched() && streetFiled().dirty() ? streetFiled().errors()[0]?.message : '';
+      <ion-input
         [appFirstFocus]="true"
         [attr.id]="'street'"
-        placeholder="Enter street"
-        [formField]="addressFields().street"
-        styleClass="w-full"
-        matInput
-        class="flex-auto"
+        [labelPlacement]="'floating'"
+        [label]="'Street'"
+        [helperText]="streetErrors"
+        [placeholder]="'Enter street'"
+        [formField]="streetFiled"
       />
-    </mat-form-field>
-    <mat-error></mat-error>
-    <mat-form-field>
-      <mat-label>Zip Code</mat-label>
-      <input
+    </ion-item>
+    <ion-item>
+       @let zipCodeFiled = addressFields().zipCode;
+       @let zipCodeErrors =
+        zipCodeFiled().touched() && zipCodeFiled().dirty() ? zipCodeFiled().errors()[0]?.message : '';
+      <ion-input
         [attr.id]="'zip-code'"
-        placeholder="Enter zip code"
-        [formField]="addressFields().zipCode"
-        styleClass="w-full"
-        pInputText
-        class="flex-auto"
+        [labelPlacement]="'floating'"
+        [label]="'Zip Code'"
+        [helperText]="zipCodeErrors"
+        [placeholder]="'Enter zip code'"
+        [formField]="zipCodeFiled"
       />
-    </mat-form-field>
-  </div>
-  <div class="flex flex-row w-full">
-    <mat-form-field>
-      <mat-label>City</mat-label>
-      <input
+    </ion-item >
+    <ion-item>
+       @let cityFiled = addressFields().city;
+       @let cityErrors =
+        cityFiled().touched() && cityFiled().dirty() ? cityFiled().errors()[0]?.message : '';
+      <ion-input
         [attr.id]="'city'"
-        placeholder="Enter city"
-        [formField]="addressFields().city"
-        styleClass="w-full"
-        pInputText
-        class="flex-auto"
+        [labelPlacement]="'floating'"
+        [label]="'City'"
+        [helperText]="cityErrors"
+        [placeholder]="'Enter city'"
+        [formField]="cityFiled"
       />
-    </mat-form-field>
-  </div>
-</div> -->
+    </ion-item>
+</ion-list>

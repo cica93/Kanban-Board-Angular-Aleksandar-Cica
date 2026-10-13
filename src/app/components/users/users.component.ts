@@ -91,7 +91,7 @@ export class UsersComponent {
         showCreateButton: true,
         entityName: 'User',
         createClickedFunction: () => {
-          console.log('create');
+          this.openUserkDialog();
         },
       },
       headerClass: 'align-center',
@@ -105,7 +105,7 @@ export class UsersComponent {
         showDeleteButton: true,
         showEditButton: true,
         editClickedFunction: (user: User) => {
-          this.editUser(user);
+          this.openUserkDialog(user);
         },
         deleteClickedFunction: (user: User) => {
           this.deleteUser(user);

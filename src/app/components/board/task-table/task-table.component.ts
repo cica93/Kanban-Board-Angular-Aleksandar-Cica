@@ -1,4 +1,4 @@
-import { Component, viewChild } from '@angular/core';
+import { Component, inject, viewChild } from '@angular/core';
 import { CrudButtonsComponent } from '@components/shared/crud-buttons/crud-buttons.component';
 import { IonCol, IonGrid, IonRow } from '@ionic/angular';
 import { Task, TASK_PRIORITIES, TASK_STATUSES_OPTIONS } from '@service/abstract.task.service';
@@ -10,12 +10,14 @@ import {
   GridDataProviderFunction,
 } from '@components/ag-grid-wrapper/ag-grid-wrapper.component';
 import { TaskService } from '@service/task.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
   imports: [AgGridWrapperComponent, IonGrid, IonRow, IonCol, AgGridWrapperComponent],
   selector: 'app-task-table',
   templateUrl: './task-table.component.html',
   providers: [
+    DatePipe,
     {
       provide: GRID_DATA_PROVIDER,
       useFactory: (taskService: TaskService): GridDataProviderFunction => {
@@ -33,46 +35,27 @@ import { TaskService } from '@service/task.service';
 })
 export class TaskTableComponent {
   gridWrapper = viewChild.required(AgGridWrapperComponent);
+  private readonly datePipe = inject(DatePipe);
   readonly columnDefs: ColDef<Task>[] = [
     {
       field: 'title',
       headerName: 'Title',
       flex: 1,
       sort: 'desc',
+      tooltipValueGetter: overflowTooltip,
     },
     {
       field: 'description',
       headerName: 'Description',
       flex: 1,
+      tooltipValueGetter: overflowTooltip,
     },
-    {
-      field: 'version',
-      headerName: 'Version',
-      flex: 0.5,
-      valueFormatter: ({ value }) => value ?? 0,
-      filter: 'agNumberColumnFilter',
-      filterParams: {
-        filterOptions: [
-          'equals',
-          'notEqual',
-          'greaterThan',
-          'greaterThanOrEqual',
-          'lessThan',
-          'lessThanOrEqual',
-        ],
-      },
-    },
-    {
-      field: 'createdAt',
-      headerName: 'Created at',
-      flex: 1,
-      valueFormatter: ({ value }) => value ?? new Date(),
-      filter: 'agDateColumnFilter',
-    },
+
     {
       field: 'taskStatus',
       headerName: 'Status',
       flex: 0.5,
+      tooltipValueGetter: overflowTooltip,
       filter: SelectComponent,
       filterParams: {
         items: TASK_STATUSES_OPTIONS,
@@ -88,6 +71,7 @@ export class TaskTableComponent {
       field: 'taskPriority',
       headerName: 'Priority',
       flex: 0.5,
+      tooltipValueGetter: overflowTooltip,
       filter: SelectComponent,
       filterParams: {
         items: TASK_PRIORITIES,
@@ -96,6 +80,36 @@ export class TaskTableComponent {
         id: 'task-priority',
         openOnInit: true,
       },
+    },
+    {
+      field: 'version',
+      headerName: 'Version',
+      flex: 0.5,
+      tooltipValueGetter: overflowTooltip,
+      valueFormatter: ({ value }) => value ?? 0,
+      filter: 'agNumberColumnFilter',
+      headerClass: 'ag-header-right',
+      cellStyle: { textAlign: 'right' },
+      filterParams: {
+        filterOptions: [
+          'equals',
+          'notEqual',
+          'greaterThan',
+          'greaterThanOrEqual',
+          'lessThan',
+          'lessThanOrEqual',
+        ],
+      },
+    },
+    {
+      field: 'createdAt',
+      headerName: 'Created at',
+      flex: 0.5,
+      tooltipValueGetter: overflowTooltip,
+      headerClass: 'ag-header-right',
+      cellStyle: { textAlign: 'right' },
+      valueFormatter: ({ value }) => this.datePipe.transform(value, 'yyyy-MM-dd') ?? '-',
+      filter: 'agDateColumnFilter',
     },
     {
       headerName: 'Actions',
@@ -137,3 +151,16 @@ export class TaskTableComponent {
     },
   ];
 }
+
+const overflowTooltip = (params: any) => {
+  const cell = document.querySelector<HTMLElement>(
+    `.ag-row[row-index="${params.rowIndex}"] .ag-cell[col-id="${params.column.getColId()}"]`,
+  );
+
+  if (cell!.scrollWidth > cell!.clientWidth) {
+    return params.valueFormatted || params.value
+      ? String(params.valueFormatted ?? params.value)
+      : null;
+  }
+  return null;
+};
