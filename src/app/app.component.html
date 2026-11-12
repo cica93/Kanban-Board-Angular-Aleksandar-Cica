@@ -1,42 +1,13 @@
 @if (user$ | async; as user) {
-  <ion-header>
-    <ion-grid>
-      <ion-row>
-        <ion-col class="user-menu">
-          <ion-avatar class="cursor-pointer avatar">{{ user.fullName | slice: 0 : 1 }}</ion-avatar>
-
-          <app-link-group>
-            @for (item of ['rest', 'graphql', 'users', 'table']; track item) {
-              <ion-router-link
-                [routerLink]="'/' + item"
-                [routerLinkActive]="'activeLink'"
-                routerDirection="root"
-              >
-                {{ item | titlecase }}
-              </ion-router-link>
-            }
-          </app-link-group>
-
-          <ion-button
-            [fill]="'solid'"
-            [shape]="'round'"
-            [color]="'danger'"
-            [appTooltip]="'Logout'"
-            [tooltipPosition]="'left'"
-            class="logout-button"
-            (click)="logout()"
-          >
-            <ion-icon
-              slot="icon-only"
-              [icon]="logOutOutlineIcon"
-            />
-          </ion-button>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </ion-header>
-
-  <router-outlet />
+  <div class="grid-container">
+    <app-sidebar
+      [user]="user"
+      (logout)="logout()"
+    />
+    <div style="flex: 1; overflow-y: auto; height: 100vh">
+      <router-outlet />
+    </div>
+  </div>
 } @else {
   <router-outlet />
 }

@@ -1,23 +1,11 @@
-@import '@ionic/angular/css/core.css';
-
-/* Basic CSS for apps built with Ionic */
-@import '@ionic/angular/css/normalize.css';
-@import '@ionic/angular/css/structure.css';
-@import '@ionic/angular/css/typography.css';
-@import '@ionic/angular/css/display.css';
-
-/* Optional CSS utils that can be commented out */
-@import '@ionic/angular/css/padding.css';
-@import '@ionic/angular/css/float-elements.css';
-@import '@ionic/angular/css/text-alignment.css';
-@import '@ionic/angular/css/text-transformation.css';
-@import '@ionic/angular/css/flex-utils.css';
-
-@import '@ng-select/ng-select/themes/material.theme.css';
+/* Ionic and ng-select stylesheets are loaded via angular.json "styles". */
 
 :root {
   --ag-auto-height-min-body-height: 140px;
   --ag-auto-height-max-body-height: 600px;
+  --sidebar-width: 250px;
+  --sidebar-header-height: 60px;
+  --horizontal-sidebar-height: 60px;
 }
 
 .invalid-input.touched-input {
@@ -36,14 +24,6 @@
 
 .left-50 {
   left: 50%;
-}
-
-.align-items-center {
-  align-items: center;
-}
-
-.justify-content-center {
-  justify-content: center;
 }
 
 ion-badge {
@@ -69,9 +49,10 @@ html {
 }
 
 body {
-  margin: 0;
   height: 100%;
   margin: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
 }
 
 ion-item > ng-select {
@@ -86,43 +67,65 @@ form,
 }
 
 .ion-col-end {
-  display: flex;
-  justify-content: flex-end;
+  @extend .justify-content-flex-end;
 }
 
 .dialog-actions {
   margin-top: 0.75rem;
 }
 
+// Shared spacing/flex utility scale
+$spacing-md: 1rem;
+
+// Flex utilities (consolidated)
 .flex {
   display: flex;
 }
 
-.justify-contnt-spacebetween {
+.align-items-center {
+  align-items: center;
+}
+
+.justify-content-center {
+  justify-content: center;
+}
+
+.justify-content-space-between {
   justify-content: space-between;
 }
 
+.justify-content-flex-end {
+  display: flex;
+  justify-content: flex-end;
+}
+
+// Spacing utilities (consolidated)
 .margin-top-md {
-  margin-top: 1rem;
+  margin-top: $spacing-md;
 }
 
 .margin-md {
-  margin: 1rem;
+  margin: $spacing-md;
 }
 
 .margin-x-md {
-  margin: 0 1rem;
+  margin: 0 $spacing-md;
 }
 
 .h-full {
   height: 100%;
 }
 
+// Shared modal sizing mixin
+@mixin dialog-sizing($width, $height, $max-width: 100%, $max-height: 100%) {
+  --width: #{$width};
+  --height: #{$height};
+  --max-width: #{$max-width};
+  --max-height: #{$max-height};
+}
+
 .custom-modal {
-  --width: 600px;
-  --height: 100vh;
-  --max-width: 90%;
-  --max-height: 100%;
+  @include dialog-sizing(600px, 100vh, 90%, 100%);
 
   app-base-dialog:has(.h-full) {
     height: 100%;
@@ -134,8 +137,7 @@ form,
 }
 
 .delete-modal {
-  --height: auto;
-  --max-height: 100%;
+  @include dialog-sizing(auto, auto);
 }
 
 .hidden {
@@ -195,18 +197,13 @@ form,
   justify-content: center;
 }
 
-/* styles.scss */
-.ag-body-horizontal-scroll {
-  display: none !important;
-}
-
 ag-grid-angular {
   display: block;
   width: 100%;
 }
 
-/* Remove AG Grid horizontal scrollbar */
-:host ::ng-deep .ag-body-horizontal-scroll {
+/* Hide AG Grid horizontal scrollbar (global rule; do not use :host ::ng-deep in a global stylesheet) */
+.ag-body-horizontal-scroll {
   display: none !important;
   height: 0 !important;
   min-height: 0 !important;
@@ -242,4 +239,10 @@ ag-grid-wrapper {
   display: flex;
   height: 700px;
   min-height: 400px;
+}
+
+html[data-sidebar-direction='horizontal'] {
+  app-sidebar app-sidebar-link:last-child .nav-label {
+    display: none;
+  }
 }

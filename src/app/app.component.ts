@@ -1,47 +1,20 @@
 import { Component, inject, injectAsync, OnInit, signal, viewChild } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { Observable, tap } from 'rxjs';
-import { AsyncPipe, SlicePipe, TitleCasePipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { User } from '@service/user.service';
 import { BaseDialogComponent } from './components/shared/base-dialog/base-dialog.component';
-import { LinkGroupComponent } from '@components/shared/link-group/link-group.component';
 import { MessageHandlerService } from '@service/message.handler.service';
 import { SecurityService } from '@service/security.service';
 import { SocketService } from '@service/socket.service';
-import {
-  IonAvatar,
-  IonButton,
-  IonCol,
-  IonGrid,
-  IonHeader,
-  IonIcon,
-  IonRouterLink,
-  IonRow,
-} from '@ionic/angular';
+
 import { logOutOutline } from 'ionicons/icons';
-import { TooltipDirective } from '@directives/tooltip.directive';
+import { SidebarComponent } from '@components/sidebar/sidebar.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [
-    RouterOutlet,
-    AsyncPipe,
-    RouterLink,
-    TitleCasePipe,
-    SlicePipe,
-    LinkGroupComponent,
-    IonAvatar,
-    IonGrid,
-    IonRow,
-    IonIcon,
-    IonCol,
-    IonRouterLink,
-    IonButton,
-    IonHeader,
-    RouterLinkActive,
-    TooltipDirective,
-  ],
+  imports: [RouterOutlet, AsyncPipe, SidebarComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })

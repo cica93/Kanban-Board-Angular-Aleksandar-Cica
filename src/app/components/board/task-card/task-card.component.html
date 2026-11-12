@@ -1,7 +1,7 @@
 @let taskId = task().id;
 <ion-card>
   <ion-card-header
-    class="flex justify-contnt-spacebetween"
+    class="flex justify-content-space-between"
     style="flex-direction: row"
     ;
   >
@@ -16,7 +16,7 @@
       {{ task().description }}
     </p>
 
-    <div class="flex justify-contnt-spacebetween margin-top-md">
+    <div class="flex justify-content-space-between margin-top-md">
       @let users = task().users;
       <app-avatar-group>
         @for (user of users | slice: 0 : maxVisibleImages; track user.id) {
