@@ -1,0 +1,75 @@
+<div class="setup-container">
+  <fieldset>
+    <legend>Sidebar direction</legend>
+    <div class="radio-container">
+      <input
+        id="direction-vertical"
+        name="direction"
+        type="radio"
+        (input)="setHtmlProperty('direction', 'vertical')"
+      />
+      <label for="direction-vertical">Vertical</label>
+    </div>
+    <div class="radio-container">
+      <input
+        id="direction-horizontal"
+        name="direction"
+        type="radio"
+        (input)="setHtmlProperty('direction', 'horizontal')"
+      />
+      <label for="direction-horizontal">Horizontal</label>
+    </div>
+  </fieldset>
+  <fieldset>
+    <legend>Sidebar size</legend>
+    <div class="radio-container">
+      <input
+        id="size-sm"
+        name="size"
+        type="radio"
+        (input)="setHtmlProperty('size', 'sm')"
+      />
+      <label for="size-sm">Small</label>
+    </div>
+    <div class="radio-container">
+      <input
+        id="size-md"
+        name="size"
+        type="radio"
+        (input)="setHtmlProperty('size', 'md')"
+      />
+      <label for="size-md">Medium</label>
+    </div>
+    <div class="radio-container">
+      <input
+        id="size-lg"
+        name="size"
+        type="radio"
+        (input)="setHtmlProperty('size', 'lg')"
+      />
+      <label for="size-lg">Large</label>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Sidebar theme</legend>
+    <div class="radio-container">
+      <input
+        name="theme"
+        id="theme-light"
+        type="radio"
+        (input)="setHtmlProperty('theme', 'light')"
+      />
+      <label for="theme-light">Light</label>
+    </div>
+    <div class="radio-container">
+      <input
+        name="theme"
+        type="radio"
+        id="theme-dark"
+        (input)="setHtmlProperty('theme', 'dark')"
+      />
+      <label for="theme-dark">Dark</label>
+    </div>
+  </fieldset>
+</div>

@@ -77,8 +77,8 @@ app-sidebar-link:last-child {
 }
 
 :host-context(html[data-sidebar-size='sm'][data-sidebar-direction='vertical']),
-:host-context(html[data-sidebar-size='md'][data-sidebar-direction='vertical']):host(:hover)  {
-   --sidebar-header-height: 100px;
+:host-context(html[data-sidebar-size='md'][data-sidebar-direction='vertical']):host(:hover) {
+  --sidebar-header-height: 100px;
   .sidebar {
     .sidebar-header {
       flex-direction: column;
@@ -104,9 +104,9 @@ app-sidebar-link:last-child {
 }
 
 :host-context(html[data-sidebar-size='md'][data-sidebar-direction='vertical']) :host:not(:hover) {
-   .sidebar-header {
-      padding: 24px 0px;
-      justify-content: center;
+  .sidebar-header {
+    padding: 24px 0px;
+    justify-content: center;
   }
 }
 
@@ -156,8 +156,7 @@ app-sidebar-link:last-child {
   }
 }
 
-
 :host-context(html[data-sidebar-theme='light']) {
-  --light:#151a2d;
-  --dark:#eef2ff;
+  --light: #151a2d;
+  --dark: #eef2ff;
 }

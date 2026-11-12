@@ -33,36 +33,36 @@
     #mainContainer
   >
     <div class="grid-container">
-        @for (status of TASK_STATUSES; track status; let i = $index) {
-          @let tasksByStatus = tasks()[i]?.tasks ?? [];
-          <div class="column-wrapper">
-            <h2>
-              {{ status }}
-            </h2>
-            <div
-              cdkDropList
-              [id]="status"
-              [cdkDropListData]="tasksByStatus"
-              [cdkDropListConnectedTo]="TASK_STATUSES"
-              (cdkDropListDropped)="onDrop($event, status)"
-            >
-              @for (task of tasksByStatus; track $index) {
-                <app-task-card
-                  cdkDrag
-                  cdkDragBoundary="#main-container"
-                  [menuOpen]="menuIsOpen()[task.id] ?? false"
-                  (openMenuEvent)="openMenu(task.id)"
-                  (dismissMenuEvent)="dismissMenu()"
-                  [cdkDragData]="task"
-                  [task]="task"
-                  (onDelete)="deleteTask(task)"
-                  (onEdit)="openTaskDialog(task)"
-                />
-              }
-            </div>
+      @for (status of TASK_STATUSES; track status; let i = $index) {
+        @let tasksByStatus = tasks()[i]?.tasks ?? [];
+        <div class="column-wrapper">
+          <h2>
+            {{ status }}
+          </h2>
+          <div
+            cdkDropList
+            [id]="status"
+            [cdkDropListData]="tasksByStatus"
+            [cdkDropListConnectedTo]="TASK_STATUSES"
+            (cdkDropListDropped)="onDrop($event, status)"
+          >
+            @for (task of tasksByStatus; track $index) {
+              <app-task-card
+                cdkDrag
+                cdkDragBoundary="#main-container"
+                [menuOpen]="menuIsOpen()[task.id] ?? false"
+                (openMenuEvent)="openMenu(task.id)"
+                (dismissMenuEvent)="dismissMenu()"
+                [cdkDragData]="task"
+                [task]="task"
+                (onDelete)="deleteTask(task)"
+                (onEdit)="openTaskDialog(task)"
+              />
+            }
           </div>
-        }
-      </div>
+        </div>
+      }
+    </div>
 
     <div
       (becomeVisible)="loadMore()"

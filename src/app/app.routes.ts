@@ -76,6 +76,13 @@ export const routes: Routes = [
   },
 
   {
+    path: 'setup',
+    title: 'Setup',
+    loadComponent: () => import('@components/setup/setup.component').then((m) => m.SetupComponent),
+    canActivate: [loginGuard],
+  },
+
+  {
     path: 'graphql',
     title: 'Graphql',
     canDeactivate: [sidebarGuard],

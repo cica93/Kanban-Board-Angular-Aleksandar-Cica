@@ -30,6 +30,11 @@
         [url]="'/table'"
       />
       <app-sidebar-link
+        [icon]="'help'"
+        [label]="'Setup'"
+        [url]="'/setup'"
+      />
+      <app-sidebar-link
         (linkClick)="logout.emit()"
         [icon]="'logout'"
         [label]="'Logout'"
