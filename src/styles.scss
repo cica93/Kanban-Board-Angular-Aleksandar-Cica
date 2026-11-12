@@ -1,4 +1,6 @@
-/* Ionic and ng-select stylesheets are loaded via angular.json "styles". */
+@import "@ionic/angular/css/core.css";
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/typography.css";
 
 :root {
   --ag-auto-height-min-body-height: 140px;
@@ -8,6 +10,8 @@
   --horizontal-sidebar-height: 60px;
   --dark:#151a2d;
   --light:#eef2ff;
+  --ion-color-primary:#004acd;
+  --sidebar-header-height: 40px;
 }
 
 .invalid-input.touched-input {
@@ -247,4 +251,10 @@ html[data-sidebar-direction='horizontal'] {
   app-sidebar app-sidebar-link:last-child .nav-label {
     display: none;
   }
+}
+
+ion-card-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

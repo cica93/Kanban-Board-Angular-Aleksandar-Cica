@@ -52,6 +52,7 @@ const limit = 5;
     IonSpinner,
   ],
   templateUrl: './board.component.html',
+  styleUrl: './board.component.scss',
 })
 export class BoardComponent {
   hasMoreTasks = true;

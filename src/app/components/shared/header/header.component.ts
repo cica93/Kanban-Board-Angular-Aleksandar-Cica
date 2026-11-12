@@ -1,12 +1,9 @@
 import { Component } from '@angular/core';
-import { IonCol, IonGrid, IonRow } from '@ionic/angular';
 
 @Component({
   selector: 'app-header',
-  imports: [IonGrid, IonRow, IonCol],
+  imports: [],
   templateUrl: './header.component.html',
-  host: {
-    class: 'flex flex-row justify-content-between',
-  },
+  styleUrl: './header.component.scss',
 })
 export class HeaderComponent {}

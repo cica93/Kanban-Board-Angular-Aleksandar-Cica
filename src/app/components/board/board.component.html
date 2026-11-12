@@ -32,16 +32,11 @@
     style="overflow-y: auto; max-height: 80vh"
     #mainContainer
   >
-    <ion-grid>
-      <ion-row>
+    <div class="grid-container">
         @for (status of TASK_STATUSES; track status; let i = $index) {
           @let tasksByStatus = tasks()[i]?.tasks ?? [];
-          <ion-col
-            size="12"
-            size-md="6"
-            size-lg="4"
-          >
-            <h2 class="ion-text-center">
+          <div class="column-wrapper">
+            <h2>
               {{ status }}
             </h2>
             <div
@@ -65,10 +60,9 @@
                 />
               }
             </div>
-          </ion-col>
+          </div>
         }
-      </ion-row>
-    </ion-grid>
+      </div>
 
     <div
       (becomeVisible)="loadMore()"
