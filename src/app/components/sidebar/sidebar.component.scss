@@ -7,7 +7,7 @@
   z-index: 1000;
   height: 100vh;
   width: var(--sidebar-width);
-  background-color: #151a2d;
+  background-color: var(--dark);
   transition: all 0.4s ease-in-out;
 }
 
@@ -18,9 +18,10 @@
   padding: 25px;
   align-items: center;
   justify-content: space-between;
+  --ion-color-dark:var(--ion-color-primary);
 
   .sidebar-toggler:hover {
-    background-color: #d9e1fd;
+    background-color: var(--light);
   }
 }
 
@@ -28,11 +29,11 @@
 .sidebar-menu-button {
   width: 35px;
   height: 35px;
-  color: #151a2d;
+  color: var(--dark);
   border: none;
   cursor: pointer;
   display: flex;
-  background: #fff;
+  background: var(--light);
   border-radius: 8px;
   align-items: center;
   justify-content: center;
@@ -40,12 +41,12 @@
   transition: all 0.4s ease;
 
   &:hover {
-    background: #d9e1fd;
+    background: var(--light);
   }
 
   .toggle-icon {
     font-size: 18px;
-    color: #151a2d;
+    color: var(--dark);
   }
 }
 
@@ -59,7 +60,6 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: 0 15px;
   transform: translateY(15px);
   transition: 0.4s ease;
 }
@@ -76,7 +76,8 @@ app-sidebar-link:last-child {
   margin-top: auto;
 }
 
-:host-context(html[data-sidebar-size='sm'][data-sidebar-direction='vertical']) {
+:host-context(html[data-sidebar-size='sm'][data-sidebar-direction='vertical']),
+:host-context(html[data-sidebar-size='md'][data-sidebar-direction='vertical']) {
   --sidebar-header-height: 150px;
   .sidebar {
     .sidebar-header {
@@ -92,6 +93,29 @@ app-sidebar-link:last-child {
     }
     .sidebar-nav .primary-nav {
       overflow-y: unset;
+    }
+  }
+}
+
+:host-context(html[data-sidebar-size='md'][data-sidebar-direction='vertical']) :host(:hover) {
+  --sidebar-header-height: 60px;
+
+  .sidebar {
+    .sidebar-header {
+      flex-direction: row;
+    }
+
+    .sidebar-header .sidebar-toggler {
+      transform: none;
+    }
+
+    .sidebar-header .sidebar-toggler span {
+      transform: none;
+    }
+
+    .sidebar-nav .primary-nav {
+      overflow-y: auto;
+      height: calc(100vh - var(--sidebar-header-height));
     }
   }
 }
@@ -140,4 +164,10 @@ app-sidebar-link:last-child {
       margin-left: auto;
     }
   }
+}
+
+
+:host-context(html[data-sidebar-theme='light']) {
+  --light:#151a2d;
+  --dark:#eef2ff;
 }

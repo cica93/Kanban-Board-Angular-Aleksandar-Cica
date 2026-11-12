@@ -3,9 +3,11 @@
 :root {
   --ag-auto-height-min-body-height: 140px;
   --ag-auto-height-max-body-height: 600px;
-  --sidebar-width: 250px;
+  --sidebar-width: 70px;
   --sidebar-header-height: 60px;
   --horizontal-sidebar-height: 60px;
+  --dark:#151a2d;
+  --light:#eef2ff;
 }
 
 .invalid-input.touched-input {

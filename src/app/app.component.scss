@@ -7,8 +7,14 @@
   background-color: #f5f5f5;
 }
 
-:host-context(html[data-sidebar-size='sm'][data-sidebar-direction='vertical']) {
-  --sidebar-width: 85px;
+:host-context(html[data-sidebar-size='lg'][data-sidebar-direction='vertical']) {
+  --sidebar-width: 250px;
+}
+
+:host-context(html[data-sidebar-size='md'][data-sidebar-direction='vertical']) {
+  .grid-container:has(app-sidebar:hover) {
+    --sidebar-width: 250px;
+  }
 }
 
 :host-context(html[data-sidebar-direction='horizontal']) {
