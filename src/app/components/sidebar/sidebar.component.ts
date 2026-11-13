@@ -8,6 +8,7 @@ import { SidebarWrapperComponent } from './sidebar-wrapper/sidebar-wrapper.compo
 @Component({
   imports: [SidebarLinkComponent, SidebarWrapperComponent, IonAvatar, SlicePipe],
   selector: 'app-sidebar',
+  styleUrl: './sidebar.component.scss',
   templateUrl: './sidebar.component.html',
 })
 export class SidebarComponent implements OnInit {

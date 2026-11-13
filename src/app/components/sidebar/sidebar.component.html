@@ -9,14 +9,20 @@
   <img
     src="../../../assets/images/image.png"
     width="250"
-    height="80"
+    height="90"
     class="logo-image-lg"
   />
   <app-sidebar-link
     [icon]="'group'"
-    [label]="'Users'"
     [url]="'/users'"
-  />
+  >
+  <ng-template #labelTemplate>
+    <div class="user-label-wrapper">
+       <label>Users</label>
+       <label class="info">1</label>
+    </div>
+  </ng-template>  
+</app-sidebar-link>
   <app-sidebar-link
     [icon]="'grid_on'"
     [label]="'Board'"

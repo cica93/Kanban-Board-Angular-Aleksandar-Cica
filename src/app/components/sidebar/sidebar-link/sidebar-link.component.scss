@@ -7,6 +7,10 @@
     margin: 0 var(--sidebar-gap-sm);
   }
 
+  .no-content {
+    display: none;
+  }
+
   .nav-item .nav-link {
     color: var(--light);
     display: flex;
@@ -33,6 +37,7 @@
 
   .nav-link .nav-label {
     transition: opacity 03s ease;
+    width: 100%;
   }
 
   .dropdown-icon {
@@ -58,7 +63,6 @@
   .nav-item .dropdown-menu {
     display: none;
     position: absolute;
-
     width: 200px;
     height: auto !important;
     overflow: visible;
@@ -71,6 +75,14 @@
   }
   .nav-item:hover > .dropdown-menu {
     display: block;
+  }
+
+  .nav-item:hover > .dropdown-menu:has(.no-content) {
+    display: none;
+  }
+
+  .nav-link.dropdown-link.no-content {
+      display: none;
   }
 }
 

@@ -3,16 +3,14 @@
     theme()
   }}"
 >
-
-   <button
-      (click)="toggleMenu()"
-      class="sidebar-toggler"
-      aria-label="Toggle Sidebar"
-    >
-      <span class="material-symbols-rounded">chevron_left</span>
-    </button>
-  <div
-    class="sidebar-header" >
+  <button
+    (click)="toggleMenu()"
+    class="sidebar-toggler"
+    aria-label="Toggle Sidebar"
+  >
+    <span class="material-symbols-rounded">chevron_left</span>
+  </button>
+  <div class="sidebar-header">
     <div class="logo-image-wrapper-lg">
       <ng-content select=".logo-image-lg" />
     </div>

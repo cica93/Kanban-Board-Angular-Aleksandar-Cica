@@ -10,7 +10,15 @@
     [class.dropdown-toggle]="hasChildren"
   >
     <span class="material-symbols-rounded">{{ icon() }}</span>
-    <span class="nav-label">{{ label() }}</span>
+    <span class="nav-label"  [class.no-content]="!labelTemplate() && !label()">
+      @if (labelTemplate(); as template) {
+    <ng-container
+      [ngTemplateOutlet]="template"
+    />
+  } @else {
+    {{label()}}
+  }
+    </span>
     @if (hasChildren) {
       <span class="material-symbols-rounded dropdown-icon">keyboard_arrow_down</span>
     }
@@ -34,7 +42,14 @@
           [routerLink]="url()"
           routerLinkActive="active"
           class="nav-link dropdown-link"
-          >{{ label() }}</a
+          [class.no-content]="!labelTemplate() && !label()"
+          >      @if (labelTemplate(); as template) {
+    <ng-container
+      [ngTemplateOutlet]="template"
+    />
+  } @else {
+    {{label()}}
+  }</a
         >
       </div>
     }

@@ -1,5 +1,13 @@
-import { AsyncPipe } from '@angular/common';
-import { Component, inject, input, output, viewChildren } from '@angular/core';
+import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
+import {
+  Component,
+  contentChild,
+  inject,
+  input,
+  output,
+  TemplateRef,
+  viewChildren,
+} from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { combineLatest, map, merge, scan, startWith, Subject, switchMap } from 'rxjs';
@@ -10,7 +18,7 @@ export interface SidebarChildLink {
 }
 
 @Component({
-  imports: [RouterLink, RouterLinkActive, AsyncPipe],
+  imports: [RouterLink, RouterLinkActive, AsyncPipe, NgTemplateOutlet],
   selector: 'app-sidebar-link',
   styleUrl: './sidebar-link.component.scss',
   templateUrl: './sidebar-link.component.html',
@@ -18,10 +26,11 @@ export interface SidebarChildLink {
 export class SidebarLinkComponent {
   url = input<string | undefined>();
   icon = input.required<string>();
-  label = input.required<string>();
+  label = input<string | undefined>();
   childLinks = input<SidebarChildLink[] | undefined>();
   linkClick = output<void>();
   links$ = viewChildren(RouterLinkActive);
+  labelTemplate = contentChild<TemplateRef<any>>('labelTemplate');
 
   private readonly router = inject(Router);
 
