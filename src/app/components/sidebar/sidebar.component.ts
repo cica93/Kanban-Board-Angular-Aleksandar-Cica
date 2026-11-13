@@ -1,12 +1,24 @@
 import { Component, input, OnInit, output, signal } from '@angular/core';
-import { SidebarLinkComponent } from './sidebar-link/sidebar-link.component';
 import { IonAvatar } from '@ionic/angular';
 import { SlicePipe } from '@angular/common';
-import { User } from '@service/user.service';
-import { SidebarWrapperComponent } from './sidebar-wrapper/sidebar-wrapper.component';
+import {
+  SidebarLinkComponent,
+  SidebarLinkTemplateDirective,
+  SidebarWrapperComponent,
+} from 'cica-ui';
+
+export interface SidebarUser {
+  fullName: string;
+}
 
 @Component({
-  imports: [SidebarLinkComponent, SidebarWrapperComponent, IonAvatar, SlicePipe],
+  imports: [
+    SidebarLinkComponent,
+    SidebarWrapperComponent,
+    IonAvatar,
+    SlicePipe,
+    SidebarLinkTemplateDirective,
+  ],
   selector: 'app-sidebar',
   styleUrl: './sidebar.component.scss',
   templateUrl: './sidebar.component.html',
@@ -45,7 +57,7 @@ export class SidebarComponent implements OnInit {
       attributeFilter: [sidebarSize, sidebarPosition, sidebarTheme],
     });
   }
-  user = input.required<User>();
+  user = input.required<SidebarUser>();
   logout = output<void>();
 
   toggleMenu(): void {

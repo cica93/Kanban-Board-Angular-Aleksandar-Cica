@@ -4,7 +4,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "ignoreDeprecations": "6.0",
-    "outDir": "./dist/out-tsc",
+    "rootDir": "./src",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitOverride": true,
@@ -30,7 +30,8 @@
       "@/domain/*": ["src/domain/*"],
       "@service/*": ["src/app/services/*"],
       "@components/*": ["src/app/components/*"],
-      "@directives/*": ["src/app/directives/*"]
+      "@directives/*": ["src/app/directives/*"],
+      "cica-ui": ["./dist/cica-ui"]
     }
   },
 
@@ -41,5 +42,13 @@
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
-  }
+  },
+  "references": [
+    {
+      "path": "./projects/cica-ui/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/cica-ui/tsconfig.spec.json"
+    }
+  ]
 }

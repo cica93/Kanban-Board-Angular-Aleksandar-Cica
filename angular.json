@@ -26,7 +26,7 @@
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": ["src/styles.scss"],
             "stylePreprocessorOptions": {
-              "includePaths": ["src/assets/styles"]
+              "includePaths": ["src/assets/styles", "projects/cica-ui/src"]
             },
             "scripts": [],
             "allowedCommonJsDependencies": [
@@ -91,6 +91,32 @@
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": ["src/styles.scss"],
             "scripts": []
+          }
+        }
+      }
+    },
+    "cica-ui": {
+      "projectType": "library",
+      "root": "projects/cica-ui",
+      "sourceRoot": "projects/cica-ui/src",
+      "prefix": "cica-ui",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/cica-ui/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/cica-ui/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "projects/cica-ui/tsconfig.spec.json"
           }
         }
       }

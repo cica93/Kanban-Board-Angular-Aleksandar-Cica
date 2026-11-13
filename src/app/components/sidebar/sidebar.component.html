@@ -7,7 +7,7 @@
     user().fullName | slice: 0 : 1
   }}</ion-avatar>
   <img
-    src="../../../assets/images/image.png"
+    src="/assets/images/image.png"
     width="220"
     height="90"
     class="logo-image-lg"
@@ -16,11 +16,12 @@
   <app-sidebar-link
     [icon]="'grid_on'"
     [label]="'Board'"
-    [childLinks]="[
-      { url: '/rest', label: 'Rest' },
-      { url: '/graphql', label: 'Graphql' },
-    ]"
-  />
+  >
+  <ng-template appSidebarLink [url]="'/rest'">
+    Rest <span class="info">4</span>
+  </ng-template>  
+   <ng-template appSidebarLink [url]="'/graphql'">Graphql <span class="info">6</span></ng-template> 
+</app-sidebar-link>
   <app-sidebar-link
     [icon]="'table_view'"
     [label]="'Table'"

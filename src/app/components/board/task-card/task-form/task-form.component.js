@@ -1,0 +1,132 @@
+import { __decorate } from "tslib";
+import { Component, forwardRef, inject, injectAsync, input, signal, viewChild, } from '@angular/core';
+import { AbstractTaskService, TASK_PRIORITIES, TASK_STATUSES, TASK_STATUSES_OPTIONS, } from '@service/abstract.task.service';
+import { firstValueFrom, map, Subject, zip } from 'rxjs';
+import { SUBMIT_FORM_TOKEN, } from '@components/shared/base-dialog/base-dialog.component';
+import { form, FormField, FormRoot, maxLength, minLength, required, validate, } from '@angular/forms/signals';
+import { AsyncPipe } from '@angular/common';
+import { UserService } from '@service/user.service';
+import { NgSelectComponent } from '@ng-select/ng-select';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { IonInput } from '@ionic/angular/ion-input';
+import { IonItem, IonList, IonTextarea } from '@ionic/angular';
+import { SelectComponent } from '@components/board/select/select.component';
+let TaskFormComponent = class TaskFormComponent {
+    onClose = new Subject();
+    initValue = input(null);
+    taskService = inject(AbstractTaskService);
+    messageHandlerService = injectAsync(() => import('@service/message.handler.service').then((a) => a.MessageHandlerService));
+    users$ = inject(UserService)
+        .getUsers()
+        .pipe(map(({ content }) => content));
+    TASK_STATUSES = TASK_STATUSES;
+    TASK_PRIORITIES = TASK_PRIORITIES;
+    TASK_STATUSES_OPTIONS = [...TASK_STATUSES_OPTIONS];
+    usersSelect = viewChild('usersSelect', {
+        read: NgSelectComponent,
+    });
+    model = signal({
+        description: '',
+        taskPriority: this.TASK_PRIORITIES[0],
+        taskStatus: this.TASK_STATUSES[0].replace(' ', '_'),
+        title: '',
+        users: [],
+    });
+    constructor() {
+        zip(this.users$, toObservable(this.initValue)).subscribe(([_, initValue]) => {
+            if (initValue) {
+                this.model.set({
+                    description: initValue.description,
+                    taskPriority: initValue.taskPriority,
+                    taskStatus: initValue.taskStatus.replace(' ', '_'),
+                    title: initValue.title,
+                    users: (initValue.users ?? []).map((user) => {
+                        const { __typename, ...userData } = user;
+                        return userData;
+                    }),
+                });
+            }
+        });
+    }
+    form = form(this.model, (path) => {
+        required(path.title, { message: 'Title is required' });
+        maxLength(path.title, 20, {
+            message: 'Title must be less than 20 characters',
+        });
+        required(path.description, { message: 'Description is required' });
+        minLength(path.description, 2, {
+            message: 'Description must be at least 2 characters long',
+        });
+        maxLength(path.description, 50, {
+            message: 'Description must be less than 50 characters',
+        });
+        required(path.taskStatus, { message: 'Task status is required' });
+        required(path.taskPriority, { message: 'Task priority is required' });
+        required(path.users, { message: 'Users are required' });
+        validate(path.users, ({ value }) => {
+            if (!value() || (Array.isArray(value()) && value().length === 0)) {
+                return {
+                    kind: 'required',
+                    message: 'At least one user must be assigned to the task',
+                };
+            }
+            return undefined;
+        });
+    }, {
+        submission: {
+            action: async () => {
+                try {
+                    const task = this.initValue() ?? {
+                        id: null,
+                        version: 0,
+                    };
+                    const { id, version } = task;
+                    const formValue = this.form().value();
+                    await firstValueFrom(id ? this.taskService.put(id, version, formValue) : this.taskService.post(formValue));
+                    this.showMessage(`Task ${id ? 'updated' : 'created'}`, 'Task changed successfully');
+                    this.onClose.next(true);
+                    return undefined;
+                }
+                catch (error) {
+                    return {
+                        kind: 'Invalid email or password',
+                        message: 'invalid-credentials',
+                    };
+                }
+            },
+            onInvalid: () => {
+                this.form().markAsTouched();
+                this.form().focusBoundControl();
+            },
+            ignoreValidators: 'none',
+        },
+    });
+    async showMessage(summary, detail) {
+        (await this.messageHandlerService()).successEvent.next({
+            summary,
+            detail,
+        });
+    }
+};
+TaskFormComponent = __decorate([
+    Component({
+        selector: 'app-task-form',
+        imports: [
+            FormRoot,
+            FormField,
+            SelectComponent,
+            AsyncPipe,
+            IonInput,
+            IonItem,
+            IonList,
+            IonTextarea,
+        ],
+        templateUrl: './task-form.component.html',
+        host: {
+            class: 'h-full',
+        },
+        providers: [{ provide: SUBMIT_FORM_TOKEN, useClass: forwardRef(() => TaskFormComponent) }],
+    })
+], TaskFormComponent);
+export { TaskFormComponent };
+//# sourceMappingURL=task-form.component.js.map

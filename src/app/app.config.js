@@ -1,0 +1,73 @@
+import { ErrorHandler, inject, provideAppInitializer } from '@angular/core';
+import { provideRouter, TitleStrategy, withComponentInputBinding, withInMemoryScrolling, withRouterConfig, } from '@angular/router';
+import { provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
+import { routes } from './app.routes';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { ApiInterceptor } from './interceptors/api.interceptor';
+import { JwtUtils } from '@service/jwt.service';
+import { SecurityService } from '@service/security.service';
+import { InMemoryCache } from '@apollo/client/core';
+import { HttpLink } from 'apollo-angular/http';
+import { Apollo, APOLLO_OPTIONS } from 'apollo-angular';
+import { Title } from '@angular/platform-browser';
+import { KanbanTitle } from '@service/kanban.title.service';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { EMPTY } from 'rxjs/internal/observable/empty';
+import { provideSignalFormsConfig } from '@angular/forms/signals';
+import { provideZonelessChangeDetection } from '@angular/core';
+import { GlobalErrorHandler } from '@service/error.handler.service';
+import { provideIonicAngular } from '@ionic/angular';
+import { provideTanStackQuery, QueryClient } from '@tanstack/angular-query-experimental';
+import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
+ModuleRegistry.registerModules([AllCommunityModule]);
+const apiInterceptor = ApiInterceptor;
+export const appConfig = {
+    providers: [
+        provideZonelessChangeDetection(),
+        provideRouter(routes, withComponentInputBinding(), withInMemoryScrolling(), withRouterConfig({ urlUpdateStrategy: 'deferred' })),
+        provideTanStackQuery(new QueryClient({
+            defaultOptions: {
+                queries: {
+                    staleTime: 30_000,
+                    gcTime: 5 * 60_000,
+                    refetchOnWindowFocus: false,
+                },
+            },
+        })),
+        provideSignalFormsConfig({
+            classes: {
+                'invalid-input': ({ state }) => state().invalid() && state().touched(),
+                'valid-input': ({ state }) => state().valid(),
+                'touched-input': ({ state }) => state().touched(),
+                'pending-input': ({ state }) => state().pending(),
+            },
+        }),
+        Title,
+        { provide: TitleStrategy, useClass: KanbanTitle },
+        { provide: ErrorHandler, useClass: GlobalErrorHandler },
+        Apollo,
+        provideAnimations(),
+        provideHttpClient(withXhr(), withInterceptors([apiInterceptor])),
+        {
+            provide: APOLLO_OPTIONS,
+            useFactory: (httpLink) => ({
+                link: httpLink.create({ uri: 'http://localhost:3033/graphql' }),
+                cache: new InMemoryCache({ resultCaching: false }),
+            }),
+            deps: [HttpLink],
+        },
+        provideIonicAngular({
+            mode: 'ios',
+        }),
+        provideAppInitializer(() => {
+            const securityService = inject(SecurityService);
+            if (!JwtUtils.isTokenValid()) {
+                securityService.logout();
+                return EMPTY;
+            }
+            return securityService.getCurrentUser();
+        }),
+        provideAnimationsAsync(),
+    ],
+};
+//# sourceMappingURL=app.config.js.map

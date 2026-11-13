@@ -1,0 +1,28 @@
+<div
+  class="sidebar sidebar-size-{{ size() }} sidebar-position-{{ position() }} sidebar-theme-{{
+    theme()
+  }}"
+>
+
+
+  <button
+    (click)="toggleMenu()"
+    class="sidebar-toggler"
+    aria-label="Toggle Sidebar"
+  >
+    <span class="material-symbols-rounded">chevron_left</span>
+  </button>
+  <div class="sidebar-header">
+    <div class="logo-image-wrapper-lg">
+      <ng-content select=".logo-image-lg" />
+    </div>
+    <div class="logo-image-wrapper-sm">
+      <ng-content select=".logo-image-sm" />
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-list primary-nav">
+      <ng-content select="app-sidebar-link" />
+    </div>
+  </nav>
+</div>

@@ -1,0 +1,62 @@
+@let hasChildren = linkTemplates().length > 0;
+<div
+  class="nav-item"
+  (click)="linkClicked()"
+  [class.dropdown-container]="hasChildren"
+>
+  <a
+    (click)="toggle.next({ event: 'click' })"
+    class="nav-link"
+    [class.dropdown-toggle]="hasChildren"
+  >
+  @if(icon()){
+    <span class="material-symbols-rounded">{{ icon() }}</span>
+  }
+    <span class="nav-label"  [class.no-content]="!labelTemplate() && !label()">
+      @if (labelTemplate(); as template) {
+    <ng-container
+      [ngTemplateOutlet]="template"
+    />
+  } @else {
+    {{label()}}
+  }
+    </span>
+    @if (hasChildren) {
+      <span class="material-symbols-rounded dropdown-icon">keyboard_arrow_down</span>
+    }
+  </a>
+  <div
+    class="dropdown-menu"
+    [class.open]="isOpen$ | async"
+  >
+    @for (childLink of linkTemplates(); track childLink.url) {
+      <div class="nav-item">
+        <a
+          [routerLink]="childLink.url()"
+          routerLinkActive="active"
+          class="nav-link dropdown-link"
+          >
+          <ng-template [ngTemplateOutlet]="childLink.templateRef">
+
+          </ng-template></a
+        >
+      </div>
+    } @empty {
+      <div class="nav-item">
+        <a
+          [routerLink]="url()"
+          routerLinkActive="active"
+          class="nav-link dropdown-link"
+          [class.no-content]="!labelTemplate() && !label()"
+          >      @if (labelTemplate(); as template) {
+    <ng-container
+      [ngTemplateOutlet]="template"
+    />
+  } @else {
+    {{label()}}
+  }</a
+        >
+      </div>
+    }
+  </div>
+</div>
