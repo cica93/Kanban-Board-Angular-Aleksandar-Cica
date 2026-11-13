@@ -6,20 +6,3 @@
   grid-column-gap: 20px;
   background-color: #f5f5f5;
 }
-
-:host-context(html[data-sidebar-size='lg'][data-sidebar-direction='vertical']) {
-  --sidebar-width: 250px;
-}
-
-:host-context(html[data-sidebar-size='md'][data-sidebar-direction='vertical']) {
-  .grid-container:has(app-sidebar:hover) {
-    --sidebar-width: 250px;
-  }
-}
-
-:host-context(html[data-sidebar-direction='horizontal']) {
-  .grid-container {
-    grid-template-columns: 1fr;
-    grid-template-rows: var(--horizontal-sidebar-height) 1fr;
-  }
-}

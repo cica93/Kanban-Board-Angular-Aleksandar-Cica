@@ -6,12 +6,20 @@
   --ag-auto-height-min-body-height: 140px;
   --ag-auto-height-max-body-height: 600px;
   --sidebar-width: 70px;
-  --sidebar-header-height: 60px;
   --horizontal-sidebar-height: 60px;
   --dark: #151a2d;
   --light: #eef2ff;
   --ion-color-primary: #004acd;
-  --sidebar-header-height: 40px;
+}
+
+.grid-container:has(app-sidebar-wrapper .sidebar.sidebar-size-lg.sidebar-position-left),
+.grid-container:has(app-sidebar-wrapper:hover .sidebar.sidebar-size-md.sidebar-position-left) {
+  --sidebar-width: 250px;
+}
+
+.grid-container:has(app-sidebar-wrapper .sidebar.sidebar-position-top) {
+  grid-template-columns: 1fr;
+  grid-template-rows: var(--horizontal-sidebar-height) 1fr;
 }
 
 .invalid-input.touched-input {

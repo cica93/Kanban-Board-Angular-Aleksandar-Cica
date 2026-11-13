@@ -14,7 +14,7 @@ export class SetupComponent implements OnInit, OnDestroy {
     document.querySelector<HTMLInputElement>('#size-' + html.getAttribute(sidebarSize))!.checked =
       true;
     document.querySelector<HTMLInputElement>(
-      '#direction-' + html.getAttribute('data-sidebar-direction'),
+      '#position-' + html.getAttribute('data-sidebar-position'),
     )!.checked = true;
     document.querySelector<HTMLInputElement>(
       '#theme-' + html.getAttribute('data-sidebar-theme'),
