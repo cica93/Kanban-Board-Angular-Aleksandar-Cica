@@ -8,21 +8,11 @@
   }}</ion-avatar>
   <img
     src="../../../assets/images/image.png"
-    width="250"
+    width="220"
     height="90"
     class="logo-image-lg"
   />
-  <app-sidebar-link
-    [icon]="'group'"
-    [url]="'/users'"
-  >
-  <ng-template #labelTemplate>
-    <div class="user-label-wrapper">
-       <label>Users</label>
-       <label class="info">1</label>
-    </div>
-  </ng-template>  
-</app-sidebar-link>
+ 
   <app-sidebar-link
     [icon]="'grid_on'"
     [label]="'Board'"
@@ -36,6 +26,17 @@
     [label]="'Table'"
     [url]="'/table'"
   />
+   <app-sidebar-link
+    [icon]="'group'"
+    [url]="'/users'"
+  >
+  <ng-template #labelTemplate>
+    <div class="user-label-wrapper">
+       <label>Users</label>
+       <label class="info">1</label>
+    </div>
+  </ng-template>  
+</app-sidebar-link>
   <app-sidebar-link
     [icon]="'help'"
     [label]="'Setup'"

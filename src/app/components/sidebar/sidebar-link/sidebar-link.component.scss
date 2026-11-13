@@ -1,10 +1,9 @@
+@use 'variables' as vars;
+
 :host {
-  --sidebar-gap-xs: 4px;
-  --sidebar-gap-sm: 8px;
-  --sidebar-gap-lg: 16px;
 
   .nav-item {
-    margin: 0 var(--sidebar-gap-sm);
+    margin: 0 vars.$space-xs;
   }
 
   .no-content {
@@ -14,10 +13,10 @@
   .nav-item .nav-link {
     color: var(--light);
     display: flex;
-    gap: 12px;
+    gap: vars.$space-s;
     white-space: nowrap;
-    border-radius: var(--sidebar-gap-sm);
-    padding: calc((var(--sidebar-gap-lg) + var(--sidebar-gap-sm)) * 0.5) var(--sidebar-gap-lg);
+    border-radius: vars.$space-xs;
+    padding: vars.$space-s;
     align-items: center;
     text-decoration: none;
     border: 1px solid var(--dark);
@@ -55,14 +54,13 @@
 :host-context(.sidebar.sidebar-position-top) {
   .dropdown-menu .nav-link {
     min-width: 160px;
-    padding: var(--sidebar-gap-sm) var(--sidebar-gap-lg);
   }
 }
 
 :host-context(.sidebar.sidebar-size-sm.sidebar-position-left) {
   .nav-item .dropdown-menu {
-    display: none;
-    position: absolute;
+   display: none;
+   position: absolute;
     width: 200px;
     height: auto !important;
     overflow: visible;
@@ -70,29 +68,25 @@
     z-index: 1001;
     pointer-events: auto;
     background-color: var(--dark);
-    border-top-right-radius: var(--sidebar-gap-sm);
-    border-bottom-right-radius: var(--sidebar-gap-sm);
+    border-top-right-radius: vars.$space-xs;
+    border-bottom-right-radius: vars.$space-xs;
   }
   .nav-item:hover > .dropdown-menu {
     display: block;
   }
 
-  .nav-item:hover > .dropdown-menu:has(.no-content) {
+  .nav-item:hover > .dropdown-menu:has(.no-content), .nav-link.dropdown-link.no-content  {
     display: none;
-  }
-
-  .nav-link.dropdown-link.no-content {
-      display: none;
   }
 }
 
 :host-context(.sidebar.sidebar-size-sm.sidebar-position-left) {
   .nav-item {
-    margin: 0 var(--sidebar-gap-sm);
+    margin: 0 vars.$space-xs;
   }
 
   .nav-item > .dropdown-menu {
-    left: calc(100% + var(--sidebar-gap-sm));
+    left: 100%;
     top: 0;
   }
 }
@@ -124,7 +118,7 @@
   }
 
   .dropdown-menu:has(.dropdown-link) {
-    padding: 7px 10px 7px 24px;
+    padding: vars.$space-xs;
   }
 
   .nav-item:hover > .dropdown-menu {
@@ -133,13 +127,6 @@
     pointer-events: auto;
     transition: all 0.4s ease;
   }
-}
-
-.secondary-nav {
-  position: absolute;
-  bottom: 35px;
-  width: 100%;
-  background-color: var(--dark);
 }
 
 .nav-item {
@@ -154,16 +141,16 @@
 }
 
 .dropdown-menu {
-  height: 0px;
+  height: 0;
   overflow-y: hidden;
-  padding-left: 15px;
+  padding-left: vars.$space-m;
   transition: height 0.4s ease;
 }
 
 .dropdown-menu .nav-item .nav-link,
 .dropdown-menu .nav-item .nav-link .dropdown-title {
   color: var(--light);
-  padding: var(--sidebar-gap-sm) var(--sidebar-gap-lg);
+  padding: vars.$space-xs vars.$space-s;
 }
 
 .dropdown-menu .nav-item .nav-link .dropdown-title {
@@ -171,19 +158,19 @@
 }
 
 .dropdown-menu:has(.dropdown-link) .nav-item .dropdown-title {
-  font-weight: 500px;
-  padding: var(--sidebar-gap-sm) var(--sidebar-gap-lg);
+  font-weight: 500;
+  padding: vars.$space-xs vars.$space-s;
 }
 
 :host-context(.sidebar.sidebar-position-top) {
   .dropdown-menu {
-    border-bottom-left-radius: var(--sidebar-gap-sm);
-    border-bottom-right-radius: var(--sidebar-gap-sm);
-    padding-bottom: var(--sidebar-gap-xs);
+    border-radius: vars.$space-xs;
+    padding-bottom: vars.$space-xxs;
+    padding: vars.$space-xs 0;
   }
 
   .nav-item:has(.dropdown-menu):has(a.active):not(:hover) .nav-link:not(.dropdown-link) {
-    border-bottom: 2px solid var(--ion-color-primary);
+    border-bottom: vars.$space-xxxs solid var(--ion-color-primary);
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
   }
@@ -204,6 +191,7 @@
     position: absolute;
     top: 100%;
     left: 0;
+    transform: translateY(vars.$space-xxs);
     z-index: 1001;
     min-width: 100%;
     padding-left: 0;
@@ -237,12 +225,12 @@
 :host-context(.sidebar.sidebar-size-md.sidebar-position-left app-sidebar:hover),
 :host-context(.sidebar.sidebar-size-lg.sidebar-position-left) {
   a.active {
-    border-left: 4px solid var(--ion-color-primary);
+    border-left: vars.$space-xxs solid var(--ion-color-primary);
   }
 
   .nav-item:has(.dropdown-menu a.active) {
-    border-left: 4px solid var(--ion-color-primary);
-    margin-left: 4px;
+    border-left: vars.$space-xxs solid var(--ion-color-primary);
+    margin-left: vars.$space-xxs;
   }
 
   .nav-item .dropdown-menu a.nav-link.dropdown-link.active {

@@ -1,7 +1,10 @@
+@use 'variables' as vars;
 @import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap);
 
+
+
 :host {
-  --header-height: 100px;
+  --header-height: 120px;
   .sidebar {
     position: fixed;
     box-sizing: border-box;
@@ -16,7 +19,7 @@
 
   .sidebar-header {
     position: relative;
-    padding: 20px;
+    padding: calc(1.25 * vars.$space-s);
     display: flex;
     box-sizing: border-box;
     flex-direction: row;
@@ -45,11 +48,11 @@
 
   .sidebar-toggler {
     position: absolute;
-    right: 0px;
+    right: 0;
     top: var(--header-height);
     transform: translate(50%, -50%);
     transition: left 0.3s ease;
-    border: 2px solid var(--ion-color-primary);
+    border: vars.$space-xxxs solid var(--ion-color-primary);
     border-radius: 50%;
     z-index: 2001;
     &:hover {
@@ -64,7 +67,7 @@
   .sidebar-nav .nav-list {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: vars.$space-xxs;
     transition: 0.4s ease;
   }
 
@@ -81,9 +84,6 @@
       align-items: center;
     }
 
-    .sidebar-toggler {
-      transform: translate(-4px 65px);
-    }
     .sidebar-toggler span {
       transform: rotate(180deg);
     }
@@ -116,7 +116,7 @@
     }
   }
 
-  .sidebar.sidebar-size-sm.sidebar-position-left {
+  .sidebar.sidebar-size-sm.sidebar-position-left, .sidebar.sidebar-position-top  {
     .nav-list.primary-nav {
       overflow: visible;
     }

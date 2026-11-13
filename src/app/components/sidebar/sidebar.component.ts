@@ -15,7 +15,7 @@ export class SidebarComponent implements OnInit {
   observer?: MutationObserver;
   sidebarSize = signal<'sm' | 'md' | 'lg'>('sm');
   sidebarTheme = signal<'light' | 'dark'>('dark');
-  sidebarPosition = signal<'top' | 'left'>('left');
+  sidebarPosition = signal<'top' | 'left'>('top');
   ngOnInit(): void {
     const sidebarSize = 'data-sidebar-size';
     const sidebarPosition = 'data-sidebar-position';
