@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 
 @Component({
   imports: [],
@@ -6,12 +6,13 @@ import { Component, OnInit } from '@angular/core';
   styleUrl: './setup.component.scss',
   templateUrl: './setup.component.html',
 })
-export class SetupComponent implements OnInit {
+export class SetupComponent implements OnInit, OnDestroy {
+  observer?: MutationObserver;
   ngOnInit(): void {
+    const sidebarSize = 'data-sidebar-size';
     const html = this.getHtmlElement();
-    document.querySelector<HTMLInputElement>(
-      '#size-' + html.getAttribute('data-sidebar-size'),
-    )!.checked = true;
+    document.querySelector<HTMLInputElement>('#size-' + html.getAttribute(sidebarSize))!.checked =
+      true;
     document.querySelector<HTMLInputElement>(
       '#direction-' + html.getAttribute('data-sidebar-direction'),
     )!.checked = true;
@@ -19,20 +20,27 @@ export class SetupComponent implements OnInit {
       '#theme-' + html.getAttribute('data-sidebar-theme'),
     )!.checked = true;
 
-    const observer = new MutationObserver((mutations) => {
+    this.observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
-        if (mutation.attributeName === 'data-sidebar-size') {
-          const element = mutation.target as HTMLElement;
-          const newValue = element.getAttribute('data-sidebar-size');
+        if (mutation.attributeName === sidebarSize) {
+          const newValue = this.getAttribute(mutation, sidebarSize);
           document.querySelector<HTMLInputElement>('#size-' + newValue)!.checked = true;
         }
       });
     });
 
-    observer.observe(html, {
+    this.observer.observe(html, {
       attributes: true,
-      attributeFilter: ['data-sidebar-size'],
+      attributeFilter: [sidebarSize],
     });
+  }
+
+  private getAttribute(mutation: MutationRecord, attrinuteName: string): string | null {
+    return (mutation.target as HTMLElement).getAttribute(attrinuteName);
+  }
+
+  ngOnDestroy(): void {
+    this.observer?.disconnect();
   }
 
   setHtmlProperty(proerty: string, value: string): void {
