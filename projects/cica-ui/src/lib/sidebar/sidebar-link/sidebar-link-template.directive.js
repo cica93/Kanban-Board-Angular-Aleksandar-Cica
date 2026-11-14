@@ -5,10 +5,13 @@ let SidebarLinkTemplateDirective = class SidebarLinkTemplateDirective {
     url = input.required();
     label = input();
 };
-SidebarLinkTemplateDirective = __decorate([
+SidebarLinkTemplateDirective = __decorate(
+  [
     Directive({
-        selector: '[appSidebarLink]',
-    })
-], SidebarLinkTemplateDirective);
+      selector: '[cicaSidebarLink]',
+    }),
+  ],
+  SidebarLinkTemplateDirective,
+);
 export { SidebarLinkTemplateDirective };
 //# sourceMappingURL=sidebar-link-template.directive.js.map

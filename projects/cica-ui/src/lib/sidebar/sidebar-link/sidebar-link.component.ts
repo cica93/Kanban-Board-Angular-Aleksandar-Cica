@@ -21,13 +21,12 @@ export interface SidebarChildLink {
 
 @Component({
   imports: [RouterLink, RouterLinkActive, AsyncPipe, NgTemplateOutlet],
-  selector: 'app-sidebar-link',
+  selector: 'cica-sidebar-link',
   styleUrl: './sidebar-link.component.scss',
   templateUrl: './sidebar-link.component.html',
 })
 export class SidebarLinkComponent {
   url = input<string | undefined>();
-  icon = input<string | undefined>();
   label = input<string | undefined>();
   linkClick = output<void>();
   links$ = viewChildren(RouterLinkActive);

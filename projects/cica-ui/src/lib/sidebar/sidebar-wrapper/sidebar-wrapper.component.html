@@ -3,14 +3,14 @@
     theme()
   }}"
 >
-
-
   <button
     (click)="toggleMenu()"
     class="sidebar-toggler"
     aria-label="Toggle Sidebar"
   >
-    <span class="material-symbols-rounded">chevron_left</span>
+    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="currentColor">
+  <path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z"/>
+</svg>
   </button>
   <div class="sidebar-header">
     <div class="logo-image-wrapper-lg">
@@ -22,7 +22,7 @@
   </div>
   <nav class="sidebar-nav">
     <div class="nav-list primary-nav">
-      <ng-content select="app-sidebar-link" />
+      <ng-content select="cica-sidebar-link" />
     </div>
   </nav>
 </div>

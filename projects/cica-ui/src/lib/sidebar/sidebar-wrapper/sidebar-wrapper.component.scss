@@ -1,7 +1,4 @@
 @use '../../../_variables' as vars;
-@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap);
-
-
 
 :host {
   --header-height: 120px;
@@ -12,8 +9,8 @@
     left: 0;
     z-index: 1000;
     height: 100vh;
-    width: var(--sidebar-width);
-    background-color: var(--dark);
+    width: var(--sidebar-width, 250px);
+    background-color: var(--sidebar-dark, #151a2d);
     transition: all 0.4s ease-in-out;
   }
 
@@ -24,9 +21,8 @@
     box-sizing: border-box;
     flex-direction: row;
     align-items: center;
-    height: var(--header-height);
+    height: var(--sidebar-header-height, 120px);
     justify-content: space-between;
-    --ion-color-dark: var(--ion-color-primary);
   }
 
   .logo-image-wrapper-sm,
@@ -48,19 +44,20 @@
 
   .sidebar-toggler {
     position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     right: 0;
-    top: var(--header-height);
+    top: var(--sidebar-header-height, 120px);
     transform: translate(50%, -50%);
     transition: left 0.3s ease;
-    border: vars.$space-xxxs solid var(--ion-color-primary);
+    border: vars.$space-xxxs solid var(--sidebar-primary, rgb(86, 107, 223));
     border-radius: 50%;
     z-index: 2001;
-    &:hover {
-      background-color: var(--light);
-    }
-    span {
+    svg {
       font-size: 1.75rem;
       transition: 0.4s ease;
+      transform: rotate(90deg);
     }
   }
 
@@ -84,8 +81,8 @@
       align-items: center;
     }
 
-    .sidebar-toggler span {
-      transform: rotate(180deg);
+    .sidebar-toggler svg {
+      transform: rotate(270deg);
     }
   }
 
@@ -93,7 +90,7 @@
     nav.sidebar-nav {
       display: block;
       .nav-list.primary-nav {
-        height: calc(100% - var(--header-height) - 20px);
+        height: calc(100% - var(--sidebar-header-height, 120px) - 20px);
       }
     }
   }
@@ -102,6 +99,11 @@
     .sidebar-toggler {
       display: none;
     }
+  }
+
+  .sidebar.sidebar-position-left.sidebar-size-sm,
+  .sidebar:not(:hover).sidebar-size-md.sidebar-position-left {
+    width: var(--sidebar-small-width, 70px);
   }
 
   .sidebar.sidebar-position-left.sidebar-size-sm,
@@ -124,7 +126,7 @@
 
   .sidebar.sidebar-position-top {
     --sidebar-width: 100vw;
-    height: var(--horizontal-sidebar-height);
+    height: var(--top-sidebar-height, 60px);
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -142,16 +144,5 @@
       }
     }
   }
-
-  .sidebar.sidebar-theme-light {
-    --light: #151a2d;
-    --dark: #eef2ff;
-  }
-}
-
-.mobile-menu {
-  padding: vars.$space-xs;
-  border-radius: 50%;
-  display: none;
 }
 

@@ -1,22 +1,19 @@
-
 :host {
   .user-label-wrapper {
-    display: flex;  
-    flex-direction: row; 
+    display: flex;
+    flex-direction: row;
     column-gap: 8px;
-    justify-content: space-between; 
-    width: 100%; 
+    justify-content: space-between;
+    width: 100%;
     align-items: center;
   }
 
-    .info {
-      background-color: var(--ion-color-primary); 
-      padding: 4px 8px;
-      font-size: 12px; 
-      border-radius: 4px;
-    }
-
-
+  .info {
+    background-color: var(--ion-color-primary);
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 4px;
+  }
 
   app-sidebar-link:hover .info {
     color: var(--light);

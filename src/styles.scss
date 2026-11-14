@@ -1,25 +1,24 @@
 @import '@ionic/angular/css/core.css';
 @import '@ionic/angular/css/normalize.css';
 @import '@ionic/angular/css/typography.css';
+@import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap);
 
 :root {
   --ag-auto-height-min-body-height: 140px;
   --ag-auto-height-max-body-height: 600px;
-  --sidebar-width: 70px;
-  --horizontal-sidebar-height: 60px;
-  --dark: #151a2d;
-  --light: #eef2ff;
-  --ion-color-primary: #004acd;
+  --d-sidebar-width: 70px;
+  --top-sidebar-height: 60px;
+  --sidebar-header-height: 120px;
 }
 
-.grid-container:has(app-sidebar-wrapper .sidebar.sidebar-size-lg.sidebar-position-left),
-.grid-container:has(app-sidebar-wrapper:hover .sidebar.sidebar-size-md.sidebar-position-left) {
-  --sidebar-width: 250px;
+.grid-container:has(cica-sidebar-wrapper .sidebar.sidebar-size-lg.sidebar-position-left),
+.grid-container:has(cica-sidebar-wrapper:hover .sidebar.sidebar-size-md.sidebar-position-left) {
+  --d-sidebar-width: 250px;
 }
 
-.grid-container:has(app-sidebar-wrapper .sidebar.sidebar-position-top) {
+.grid-container:has(cica-sidebar-wrapper .sidebar.sidebar-position-top) {
   grid-template-columns: 1fr;
-  grid-template-rows: var(--horizontal-sidebar-height) 1fr;
+  grid-template-rows: var(--top-sidebar-height) 1fr;
 }
 
 .invalid-input.touched-input {

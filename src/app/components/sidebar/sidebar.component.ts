@@ -25,9 +25,9 @@ export interface SidebarUser {
 })
 export class SidebarComponent implements OnInit {
   observer?: MutationObserver;
-  sidebarSize = signal<'sm' | 'md' | 'lg'>('sm');
+  sidebarSize = signal<'sm' | 'md' | 'lg'>('lg');
   sidebarTheme = signal<'light' | 'dark'>('dark');
-  sidebarPosition = signal<'top' | 'left'>('top');
+  sidebarPosition = signal<'top' | 'left'>('left');
   ngOnInit(): void {
     const sidebarSize = 'data-sidebar-size';
     const sidebarPosition = 'data-sidebar-position';
@@ -60,14 +60,8 @@ export class SidebarComponent implements OnInit {
   user = input.required<SidebarUser>();
   logout = output<void>();
 
-  toggleMenu(): void {
-    const sidebarSizeAttribute = 'data-sidebar-size';
-    const html = document.getElementsByTagName('html')[0]!;
-    if (html.getAttribute(sidebarSizeAttribute) === 'lg') {
-      html.setAttribute(sidebarSizeAttribute, 'sm');
-    } else {
-      html.setAttribute(sidebarSizeAttribute, 'lg');
-    }
+  sizeChange(event: 'sm' | 'lg' | 'md'): void {
+    this.sidebarSize.set(event);
   }
 
   private getHtmlElement(): HTMLElement {

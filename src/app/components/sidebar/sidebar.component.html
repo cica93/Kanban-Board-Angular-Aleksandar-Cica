@@ -1,5 +1,6 @@
-<app-sidebar-wrapper
+<cica-sidebar-wrapper
   [size]="sidebarSize()"
+  (sizeChange)="sizeChange($event)"
   [theme]="sidebarTheme()"
   [position]="sidebarPosition()"
 >
@@ -12,42 +13,48 @@
     height="90"
     class="logo-image-lg"
   />
- 
-  <app-sidebar-link
-    [icon]="'grid_on'"
-    [label]="'Board'"
-  >
-  <ng-template appSidebarLink [url]="'/rest'">
-    Rest <span class="info">4</span>
-  </ng-template>  
-   <ng-template appSidebarLink [url]="'/graphql'">Graphql <span class="info">6</span></ng-template> 
-</app-sidebar-link>
-  <app-sidebar-link
-    [icon]="'table_view'"
+
+  <cica-sidebar-link [label]="'Board'">
+    <span class="material-symbols-rounded link-icon">grid_on</span>
+    <ng-template
+      cicaSidebarLink
+      [url]="'/rest'"
+    >
+      Rest <span class="info">4</span>
+    </ng-template>
+    <ng-template
+      cicaSidebarLink
+      [url]="'/graphql'"
+      >Graphql <span class="info">6</span></ng-template
+    >
+  </cica-sidebar-link>
+  <cica-sidebar-link
     [label]="'Table'"
     [url]="'/table'"
-  />
-   <app-sidebar-link
-    [icon]="'group'"
-    [url]="'/users'"
   >
-  <ng-template #labelTemplate>
-    <div class="user-label-wrapper">
-       <label>Users</label>
-       <label class="info">1</label>
-    </div>
-  </ng-template>  
-</app-sidebar-link>
-  <app-sidebar-link
-    [icon]="'help'"
+    <span class="material-symbols-rounded link-icon">table_view</span>
+  </cica-sidebar-link>
+  <cica-sidebar-link [url]="'/users'">
+    <span class="material-symbols-rounded link-icon">group</span>
+    <ng-template #labelTemplate>
+      <div class="user-label-wrapper">
+        <label>Users</label>
+        <label class="info">1</label>
+      </div>
+    </ng-template>
+  </cica-sidebar-link>
+  <cica-sidebar-link
     [label]="'Setup'"
     [url]="'/setup'"
-  />
-  <app-sidebar-link
+  >
+    <span class="material-symbols-rounded link-icon">help</span>
+  </cica-sidebar-link>
+  <cica-sidebar-link
     [style.marginTop]="sidebarPosition() === 'top' ? 'unset' : 'auto'"
     [style.marginLeft]="sidebarPosition() === 'top' ? 'auto' : 'unset'"
     (linkClick)="logout.emit()"
-    [icon]="'logout'"
     [label]="'Logout'"
-  />
-</app-sidebar-wrapper>
+  >
+    <span class="material-symbols-rounded link-icon">logout</span>
+  </cica-sidebar-link>
+</cica-sidebar-wrapper>

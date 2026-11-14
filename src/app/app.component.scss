@@ -1,6 +1,6 @@
 .grid-container {
   display: grid;
-  grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+  grid-template-columns: var(--d-sidebar-width) minmax(0, 1fr);
   min-height: 100vh;
   transition: grid-template-columns 0.4s ease-in-out;
   grid-column-gap: 20px;

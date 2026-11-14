@@ -2,7 +2,7 @@ import { Component, input, model } from '@angular/core';
 
 @Component({
   imports: [],
-  selector: 'app-sidebar-wrapper',
+  selector: 'cica-sidebar-wrapper',
   styleUrl: './sidebar-wrapper.component.scss',
   templateUrl: './sidebar-wrapper.component.html',
 })
@@ -14,5 +14,4 @@ export class SidebarWrapperComponent {
   toggleMenu(): void {
     this.size.update((value) => (value === 'sm' ? 'lg' : 'sm'));
   }
-
 }

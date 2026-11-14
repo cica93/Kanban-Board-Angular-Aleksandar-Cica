@@ -9,9 +9,7 @@
     class="nav-link"
     [class.dropdown-toggle]="hasChildren"
   >
-  @if(icon()){
-    <span class="material-symbols-rounded">{{ icon() }}</span>
-  }
+    <ng-content select=".link-icon" />
     <span class="nav-label"  [class.no-content]="!labelTemplate() && !label()">
       @if (labelTemplate(); as template) {
     <ng-container
@@ -22,7 +20,13 @@
   }
     </span>
     @if (hasChildren) {
-      <span class="material-symbols-rounded dropdown-icon">keyboard_arrow_down</span>
+      <span class="dropdown-icon">
+
+<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="currentColor">
+  <path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z"/>
+</svg>
+
+      </span>
     }
   </a>
   <div

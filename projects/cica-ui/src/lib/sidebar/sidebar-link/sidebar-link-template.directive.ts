@@ -6,10 +6,10 @@ interface TemplateContext {
 }
 
 @Directive({
-  selector: '[appSidebarLink]',
+  selector: '[cicaSidebarLink]',
 })
 export class SidebarLinkTemplateDirective {
-    templateRef = inject(TemplateRef<TemplateContext>);
-    url = input.required<string>();
-    label = input<string | undefined>();
+  templateRef = inject(TemplateRef<TemplateContext>);
+  url = input.required<string>();
+  label = input<string | undefined>();
 }
