@@ -4,7 +4,7 @@
     @let streetErrors =
       streetFiled().touched() && streetFiled().dirty() ? streetFiled().errors()[0]?.message : '';
     <ion-input
-      [appFirstFocus]="true"
+      [cicaFirstFocus]="true"
       [attr.id]="'street'"
       [labelPlacement]="'floating'"
       [label]="'Street'"

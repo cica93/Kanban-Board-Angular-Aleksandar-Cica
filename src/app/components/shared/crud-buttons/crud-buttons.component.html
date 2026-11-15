@@ -2,7 +2,7 @@
   <ion-button
     (click)="editEntity()"
     [size]="'small'"
-    appTooltip="Edit {{ entityName() }}"
+    cicaTooltip="Edit {{ entityName() }}"
     [tooltipPosition]="'right'"
   >
     <ion-icon
@@ -15,7 +15,7 @@
   <ion-button
     (click)="createEntity()"
     [size]="'small'"
-    appTooltip="Create {{ entityName() }}"
+    cicaTooltip="Create {{ entityName() }}"
     [tooltipPosition]="'right'"
   >
     <ion-icon
@@ -27,7 +27,7 @@
 
 @if (showDeleteButton()) {
   <ion-button
-    appTooltip="Delete {{ entityName() }}"
+    cicaTooltip="Delete {{ entityName() }}"
     [size]="'small'"
     [tooltipPosition]="'right'"
     [color]="'danger'"
@@ -44,7 +44,7 @@
   <ion-button
     appTooltip="Clear"
     [size]="'small'"
-    [tooltipPosition]="'right'"
+    [cicaTooltip]="'right'"
     [color]="'danger'"
     (click)="close()"
   >

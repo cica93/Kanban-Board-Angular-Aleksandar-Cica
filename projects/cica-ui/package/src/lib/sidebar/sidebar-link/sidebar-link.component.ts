@@ -1,0 +1,69 @@
+import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
+import {
+  Component,
+  contentChild,
+  contentChildren,
+  inject,
+  input,
+  output,
+  TemplateRef,
+  viewChildren,
+} from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { combineLatest, map, merge, scan, startWith, Subject, switchMap } from 'rxjs';
+import { SidebarLinkTemplateDirective } from './sidebar-link-template.directive';
+
+export interface SidebarChildLink {
+  url: string;
+  label?: string;
+}
+
+@Component({
+  imports: [RouterLink, RouterLinkActive, AsyncPipe, NgTemplateOutlet],
+  selector: 'cica-sidebar-link',
+  styleUrl: './sidebar-link.component.scss',
+  templateUrl: './sidebar-link.component.html',
+})
+export class SidebarLinkComponent {
+  url = input<string | undefined>();
+  label = input<string | undefined>();
+  linkClick = output<void>();
+  links$ = viewChildren(RouterLinkActive);
+  labelTemplate = contentChild<TemplateRef<any>>('labelTemplate');
+  linkTemplates = contentChildren<SidebarLinkTemplateDirective>(SidebarLinkTemplateDirective);
+
+  private readonly router = inject(Router);
+
+  toggle = new Subject<{ event: 'click' | 'navigate'; value?: boolean }>();
+
+  isOpen$ = merge(
+    toObservable(this.links$).pipe(
+      switchMap((links) =>
+        combineLatest(
+          links.map((e) => e.isActiveChange.asObservable().pipe(startWith(false))),
+        ).pipe(
+          map((isActiveAnyLink) => ({
+            event: 'navigate',
+            value: isActiveAnyLink.some(Boolean),
+          })),
+        ),
+      ),
+    ),
+    this.toggle.asObservable(),
+  ).pipe(
+    scan((acc, cur) => {
+      if (cur.event === 'click') {
+        return !acc;
+      }
+      return cur?.value ?? false;
+    }, false),
+  );
+
+  linkClicked(): void {
+    if (this.url()) {
+      this.router.navigate([this.url()]);
+    }
+    this.linkClick.emit();
+  }
+}

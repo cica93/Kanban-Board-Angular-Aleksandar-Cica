@@ -33,34 +33,32 @@
     class="dropdown-menu"
     [class.open]="isOpen$ | async"
   >
-    @for (childLink of linkTemplates(); track childLink.url()) {
-      <div class="nav-item">
-        <a
-          [routerLink]="childLink.url()"
-          routerLinkActive="active"
-          class="nav-link dropdown-link"
+    <div class="dropdown-content">
+      @for (childLink of linkTemplates(); track childLink.url()) {
+        <div class="nav-item">
+          <a
+            [routerLink]="childLink.url()"
+            routerLinkActive="active"
+            class="nav-link dropdown-link"
+            >
+            <ng-template [ngTemplateOutlet]="childLink.templateRef"></ng-template
+          ></a>
+        </div>
+      } @empty {
+        <div class="nav-item">
+          <a
+            [routerLink]="url()"
+            routerLinkActive="active"
+            class="nav-link dropdown-link"
+            [class.no-content]="!labelTemplate() && !label()"
+            >@if (labelTemplate(); as template) {
+              <ng-container [ngTemplateOutlet]="template" />
+            } @else {
+              {{ label() }}
+            }</a
           >
-          <ng-template [ngTemplateOutlet]="childLink.templateRef">
-
-          </ng-template></a
-        >
-      </div>
-    } @empty {
-      <div class="nav-item">
-        <a
-          [routerLink]="url()"
-          routerLinkActive="active"
-          class="nav-link dropdown-link"
-          [class.no-content]="!labelTemplate() && !label()"
-          >      @if (labelTemplate(); as template) {
-    <ng-container
-      [ngTemplateOutlet]="template"
-    />
-  } @else {
-    {{label()}}
-  }</a
-        >
-      </div>
-    }
+        </div>
+      }
+    </div>
   </div>
 </div>

@@ -1,0 +1,65 @@
+import { Directive, ElementRef, inject, input, OnDestroy, output } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { combineLatest } from 'rxjs';
+import { CssSize } from './become-visible-directive';
+
+
+@Directive({
+  selector: '[cicaVisiblilityChange]',
+})
+export class VisiblilityChangeDirective implements OnDestroy {
+  private readonly hostElement = inject<ElementRef<HTMLElement>>(ElementRef<HTMLElement>);
+  patentElement = input<HTMLElement>();
+  rootMargin = input<CssSize>('20px');
+  threshold = input<number>(0.1);
+
+  cicaVisiblilityChange = output<boolean>();
+  observer?: IntersectionObserver;
+
+  constructor() {
+    combineLatest([
+      toObservable(this.rootMargin),
+      toObservable(this.threshold),
+      toObservable(this.patentElement),
+    ])
+      .pipe(takeUntilDestroyed())
+      .subscribe(([rootMargin, threshold, root]) => {
+        this.observer = subscribeOnElementAppear({
+          rootMargin,
+          threshold,
+          root,
+          callBackFunction: (isIntersecting: boolean) => {
+            this.cicaVisiblilityChange.emit(isIntersecting);
+          },
+          observerElement: this.hostElement.nativeElement,
+        });
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.observer?.unobserve(this.hostElement.nativeElement);
+  }
+}
+
+export function subscribeOnElementAppear(config: {
+  root?: HTMLElement;
+  rootMargin?: string;
+  threshold?: number;
+  observerElement: Element;
+  callBackFunction: (isIntersecting: boolean) => void;
+}): IntersectionObserver {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      if (entries[0]) {
+        config.callBackFunction(entries[0].isIntersecting);
+      }
+    },
+    {
+      root: config.root,
+      rootMargin: config.rootMargin ?? '200px',
+      threshold: config.threshold ?? 0.1,
+    },
+  );
+  observer.observe(config.observerElement);
+  return observer;
+}

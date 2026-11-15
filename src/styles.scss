@@ -7,8 +7,16 @@
   --ag-auto-height-min-body-height: 140px;
   --ag-auto-height-max-body-height: 600px;
   --d-sidebar-width: 70px;
-  --top-sidebar-height: 60px;
+  --top-sidebar-height: 62px;
   --sidebar-header-height: 120px;
+  --sidebar-dark: rgb(17, 12, 1);
+  --sidebar-primary: var(--ion-color-primary);
+  --navigation-link-space:8px;
+  --dropdown-menu-padding:4px;
+}
+
+.sidebar.sidebar-position-left.sidebar-size-md {
+   --sidebar-header-height: 80px;
 }
 
 .grid-container:has(cica-sidebar-wrapper .sidebar.sidebar-size-lg.sidebar-position-left),
@@ -171,7 +179,7 @@ $spacing-md: 1rem;
   border-radius: 4px;
 
   background: #222;
-  color: #fff;
+  color: orange;
 
   font-size: 13px;
   line-height: 1.4;

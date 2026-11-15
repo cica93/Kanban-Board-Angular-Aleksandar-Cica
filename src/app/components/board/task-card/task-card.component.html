@@ -21,7 +21,7 @@
       <app-avatar-group>
         @for (user of users | slice: 0 : maxVisibleImages; track user.id) {
           <ion-avatar
-            [appTooltip]="user.fullName"
+            [cicaTooltip]="user.fullName"
             [tooltipPosition]="'bottom'"
             class="avatar cursor-pointer"
           >

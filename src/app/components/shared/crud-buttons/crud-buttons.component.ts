@@ -1,5 +1,5 @@
 import { Component, model, output } from '@angular/core';
-import { TooltipDirective } from '@directives/tooltip.directive';
+import { TooltipDirective } from 'cica-ui';
 import { IonButton, IonIcon } from '@ionic/angular';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
 import { ICellRendererParams } from 'ag-grid-community';

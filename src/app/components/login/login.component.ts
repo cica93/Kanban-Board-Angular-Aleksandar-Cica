@@ -23,6 +23,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { JwtUtils } from '@service/jwt.service';
 import { User } from '@service/user.service';
+import { TooltipDirective } from 'cica-ui';
 
 declare const __brand: unique symbol;
 type Branded<T, BRAND> = T & { [__brand]: BRAND };
@@ -105,6 +106,7 @@ export type ObservableType<T> = T extends (...args: any) => Observable<infer R> 
     IonCol,
     IonGrid,
     IonRow,
+    TooltipDirective,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',

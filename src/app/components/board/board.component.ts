@@ -22,7 +22,7 @@ import {
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 
-import { BecomeVisibleDirective } from '@directives/become-visible-directive';
+import { BecomeVisibleDirective } from 'cica-ui';
 import { SearchInputComponent } from '@components/shared/search-input/search-input.component';
 import { HeaderComponent } from '@components/shared/header/header.component';
 import { ScrollTopComponent } from '@components/shared/scroll-top/scroll-top.component';

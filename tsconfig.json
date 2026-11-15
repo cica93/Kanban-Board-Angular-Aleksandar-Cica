@@ -4,7 +4,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "ignoreDeprecations": "6.0",
-    "rootDir": "./src",
+    "rootDir": "./",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitOverride": true,
@@ -30,12 +30,20 @@
       "@/domain/*": ["src/domain/*"],
       "@service/*": ["src/app/services/*"],
       "@components/*": ["src/app/components/*"],
-      "@directives/*": ["src/app/directives/*"],
+      "@directives/*": ["projects/cica-ui/package/src/lib/directives/*", "src/app/directives/*"],
       "cica-ui": ["./dist/cica-ui"]
     }
   },
 
-  "include": ["src/**/*.ts"],
+  "include": [
+    "src/**/*.ts",
+    "projects/cica-ui/package/src/lib/directives/become-visible-directive.ts",
+    "projects/cica-ui/package/src/lib/directives/fetch-data.directive.ts",
+    "projects/cica-ui/package/src/lib/directives/debounce-input.directive.ts",
+    "projects/cica-ui/package/src/lib/directives/visibility-change-directive.ts",
+    "projects/cica-ui/package/src/lib/directives/tooltip.directive.ts",
+    "projects/cica-ui/package/src/lib/directives/first-focus.directive.ts"
+  ],
   "exclude": ["node_modules"],
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
