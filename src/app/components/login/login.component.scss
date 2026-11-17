@@ -1,143 +1,27 @@
 :host {
   height: 100vh;
   display: flex;
-
-  .full-height {
-    height: 100%;
-  }
+  width: 100%;
+  align-items: center;
+  justify-content: center;
 
   .center-content {
-    height: 100%;
+    width: 400px;
     display: flex;
-    align-items: center; // vertical
-    justify-content: center; // horizontal
+    flex-direction: column;
+
+    h1 {
+      margin: 0;
+    }
+
+    button {
+      background: var(--ion-color-primary, #0054e9);
+      color: var(--ion-color-primary-contrast, #fff);
+      border-radius: 14px;
+      padding: 12px;
+
+      font-size: min(1rem, 48px);
+      font-weight: 500;
+    }
   }
 }
-
-/* Anchor positioning: the tooltip flips to the other side when it runs out of room.
-   Each trigger sets its own --anchor name (see the HTML), so many tooltips can share this CSS. */
-[data-tooltip] {
-  anchor-name: var(--anchor);
-  cursor: help;
-}
-
-[data-tooltip] > [role="tooltip"] {
-  position: fixed;
-  position-anchor: var(--anchor);
-  z-index: 1000;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  container-type: anchored;
-  transition: opacity 0.25s ease, visibility 0.25s ease;
-  will-change: opacity, transform;
-  filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.3));
-  background: #1a1a1a;
-  color: #ffffff;
-  padding: 8px 14px;
-  border-radius: 6px;
-  width: max-content;
-  max-width: 250px;
-  font-size: 13px;
-  line-height: 1.4;
-  text-align: center;
-}
-
-/* the arrow */
-[data-tooltip] > [role="tooltip"]::before {
-  content: "";
-  position: absolute;
-  border: 6px solid transparent;
-}
-
-/* positions */
-[data-direction="top"] > [role="tooltip"] {
-  position-area: top center;
-  position-try-fallbacks: flip-block;
-  margin-bottom: 12px;
-}
-[data-direction="top"] > [role="tooltip"]::before {
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  border-top-color: #1a1a1a;
-}
-
-[data-direction="bottom"] > [role="tooltip"] {
-  position-area: bottom center;
-  position-try-fallbacks: flip-block;
-  margin-top: 12px;
-}
-[data-direction="bottom"] > [role="tooltip"]::before {
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  border-bottom-color: #1a1a1a;
-}
-
-[data-direction="left"] > [role="tooltip"] {
-  position-area: left center;
-  position-try-fallbacks: flip-inline;
-  margin-right: 12px;
-}
-[data-direction="left"] > [role="tooltip"]::before {
-  left: 100%;
-  top: 50%;
-  transform: translateY(-50%);
-  border-left-color: #1a1a1a;
-}
-
-[data-direction="right"] > [role="tooltip"] {
-  position-area: right center;
-  position-try-fallbacks: flip-inline;
-  margin-left: 12px;
-}
-[data-direction="right"] > [role="tooltip"]::before {
-  right: 100%;
-  top: 50%;
-  transform: translateY(-50%);
-  border-right-color: #1a1a1a;
-}
-
-/* flipped: move the arrow to the other edge (anchored container queries, Chrome / Edge 143+) */
-@container anchored(fallback: flip-block) {
-  [data-direction="top"] > [role="tooltip"]::before {
-    top: auto;
-    bottom: 100%;
-    border-top-color: transparent;
-    border-bottom-color: #1a1a1a;
-  }
-  [data-direction="bottom"] > [role="tooltip"]::before {
-    bottom: auto;
-    top: 100%;
-    border-bottom-color: transparent;
-    border-top-color: #1a1a1a;
-  }
-}
-@container anchored(fallback: flip-inline) {
-  [data-direction="left"] > [role="tooltip"]::before {
-    left: auto;
-    right: 100%;
-    border-left-color: transparent;
-    border-right-color: #1a1a1a;
-  }
-  [data-direction="right"] > [role="tooltip"]::before {
-    right: auto;
-    left: 100%;
-    border-right-color: transparent;
-    border-left-color: #1a1a1a;
-  }
-}
-
-/* show on hover and keyboard focus */
-[data-tooltip]:is(:hover, :focus-visible) > [role="tooltip"] {
-  opacity: 1;
-  visibility: visible;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  [data-tooltip] > [role="tooltip"] {
-    transition: none;
-  }
-}
-

@@ -1,0 +1,90 @@
+:host {
+    .form-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      width: 100%;
+
+      &.input-disabled {
+         inpup {
+            pointer-events: none;
+            cursor: not-allowed;
+            background-color: rgb(134, 132, 129);
+         }
+      }
+    }
+
+    .red-label {
+      color: #dc3545;
+    }
+
+    .password-input-container {
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .d-none {
+      display: none ;
+    }
+
+    .form-group label {
+      width: 100px;
+      flex-shrink: 0;
+      padding-top: 10px;
+    }
+
+    .input-wrapper {
+      display: flex;
+      position: relative;
+      flex-direction: column;
+      flex: 1;
+      width: 100%;
+      min-width: 0;
+      gap: 4px;
+      .left-icon-wrapper, .right-icon-wrapper {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6b7280;
+        max-width: 22px;
+        cursor: pointer;
+        z-index: 100;
+      }
+
+      .close-icon-wrapper {
+        cursor: pointer;
+        padding:4px;
+      }
+
+      .left-icon-wrapper {
+         left: 14px;
+      }
+
+      .right-icon-wrapper {
+         right: 14px;
+         display: flex;
+         gap: 4px;
+      }
+
+      input {
+       
+
+        padding-top: var(--vertical-input-pedding, 10px);
+        padding-bottom: var(--vertical-input-pedding, 10px);
+        padding-right: var(--input-right-pedding, 10px);
+        padding-left: var(--input-left-pedding, 10px);
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+
+      input.invalid {
+        border-color: #dc3545;
+        }
+    }
+
+    .error-message {
+      @extend .red-label;
+      font-size: 12px;
+    }
+}

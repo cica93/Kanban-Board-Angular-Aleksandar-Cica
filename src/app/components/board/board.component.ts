@@ -1,5 +1,7 @@
 import {
+  ApplicationRef,
   Component,
+  ComponentRef,
   computed,
   inject,
   injectAsync,
@@ -22,7 +24,7 @@ import {
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 
-import { BecomeVisibleDirective } from 'cica-ui';
+import { BecomeVisibleDirective, ConfirmModalComponent, destroy } from 'cica-ui';
 import { SearchInputComponent } from '@components/shared/search-input/search-input.component';
 import { HeaderComponent } from '@components/shared/header/header.component';
 import { ScrollTopComponent } from '@components/shared/scroll-top/scroll-top.component';
@@ -31,7 +33,7 @@ import { IonButton, IonCol, IonGrid, IonIcon, IonRow, IonSpinner } from '@ionic/
 import { add } from 'ionicons/icons';
 import { injectInfiniteQuery, injectMutation } from '@tanstack/angular-query-experimental';
 import { QueryClient } from '@tanstack/angular-query-experimental';
-import { openDeleteModal, openEditModal } from '@components/shared/modalUtills';
+import { openEditModal } from '@components/shared/modalUtills';
 
 const limit = 5;
 
@@ -66,6 +68,7 @@ export class BoardComponent {
   TASK_STATUSES = [...TASK_STATUSES];
   becomeVisible = viewChild.required<BecomeVisibleDirective>(BecomeVisibleDirective);
   private readonly injector = inject(Injector);
+  private readonly appRef = inject(ApplicationRef);
   private readonly queryClient = inject(QueryClient);
   private readonly taskService = inject(AbstractTaskService);
   private readonly messageService = injectAsync(() =>
@@ -131,31 +134,26 @@ export class BoardComponent {
     mutationFn: ({ id, version }: Task) => firstValueFrom(this.taskService.delete(id, version)),
   }));
 
-  async deleteTask(task: Task): Promise<void> {
-    const dialog = await openDeleteModal(
-      this.injector,
-      `Are you sure that you want to delete task with id  ${task.id}?`,
-      'Delete task',
-    );
+  async deleteTask(event: {
+    task: Task;
+    modal: ComponentRef<ConfirmModalComponent>;
+  }): Promise<void> {
     this.dismissMenu();
-    const isSussessMoadalEvent = await this.isSussessMoadalEvent(dialog);
-    if (isSussessMoadalEvent) {
-      this.deleteTaskMutation.mutate(task, {
-        onSuccess: () => {
-          this.dialogCallBackFunction(
-            dialog,
-            'Task deleted',
-            `Task with id ${task.id} successfully deleted`,
-          );
-        },
-        onError: async () => {
-          (await this.messageService()).errorEvent.next({
-            summary: 'Error',
-            detail: `Task with id: ${task.id} can not be deleted`,
-          });
-        },
-      });
-    }
+    this.deleteTaskMutation.mutate(event.task, {
+      onSuccess: async () => {
+        destroy(this.appRef, event.modal);
+        (await this.messageService()).successEvent.next({
+          summary: 'Success',
+          detail: `Task with id: ${event.task.id} is deleted`,
+        });
+      },
+      onError: async () => {
+        (await this.messageService()).errorEvent.next({
+          summary: 'Error',
+          detail: `Task with id: ${event.task.id} can not be deleted`,
+        });
+      },
+    });
   }
 
   async openTaskDialog(task?: Partial<Task>): Promise<void> {

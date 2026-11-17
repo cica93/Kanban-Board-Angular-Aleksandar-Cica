@@ -33,7 +33,7 @@
     class="dropdown-menu"
     [class.open]="isOpen$ | async"
   >
-    <div class="dropdown-content">
+    <div class="">
       @for (childLink of linkTemplates(); track childLink.url()) {
         <div class="nav-item">
           <a

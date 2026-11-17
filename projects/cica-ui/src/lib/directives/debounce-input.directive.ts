@@ -1,6 +1,7 @@
 import { Directive, effect, ElementRef, inject, input, output } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { debounceTime, distinctUntilChanged, fromEvent, map } from 'rxjs';
+import { InputComponent } from '../input/input.component';
 
 @Directive({
   selector: '[cicaDebounceInput]',
@@ -8,13 +9,16 @@ import { debounceTime, distinctUntilChanged, fromEvent, map } from 'rxjs';
 export class DebounceInputDirective {
   debounceTime = input(300);
   cicaDebounceInput = output<string>();
-  private readonly el = inject(ElementRef<HTMLInputElement>);
+  private readonly el = inject(ElementRef<HTMLInputElement>, { optional: true });
+  private readonly input = inject(InputComponent, { optional: true });
   private readonly debouncedValue = toSignal(
-      fromEvent<InputEvent>(this.el.nativeElement, 'input').pipe(
-          map((e) => (e.target as HTMLInputElement).value),
+    (this.input
+      ? toObservable(this.input.value).pipe(map((value) => String(value ?? '')))
+      : fromEvent<InputEvent>(this.el!.nativeElement, 'input').pipe(
+          map((event) => (event.target as HTMLInputElement).value),
         )
-     .pipe(debounceTime(this.debounceTime()), distinctUntilChanged()),
-    { initialValue: this.el.nativeElement.value ?? '' },
+    ).pipe(debounceTime(this.debounceTime()), distinctUntilChanged()),
+    { initialValue: this.input?.value() ?? this.el?.nativeElement.value ?? '' },
   );
 
   constructor() {

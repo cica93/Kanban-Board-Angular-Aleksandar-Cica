@@ -1,64 +1,36 @@
-<ion-grid class="full-height">
+<div class="center-content">
+  <form [formRoot]="loginForm">
+    <h1 style="text-align: center">Login</h1>
 
-<button style="padding: 12px; border-radius: 8px;" [cicaTooltip]="'Cica'">Cica D</button>
+    @let emailInput = loginForm.email();
+    <cica-input
+      [errorMessage]="emailInput.errors()[0]?.message ?? 'Enter a valid email'"
+      label="Email"
+      placeholder="Enter email"
+      [formField]="loginForm.email"
+      [autofocus]="true"
+      id="email"
+    />
 
-  <ion-row class="center-content">
-    <ion-col
-      size="8"
-      size-md="6"
-      size-lg="4"
+    @let passwordInput = loginForm.password();
+    <cica-input
+      [errorMessage]="passwordInput.errors()[0]?.message ?? 'Enter a valid password'"
+      inputType="password"
+      label="Password"
+      [formField]="loginForm.password"
     >
-      <form [formRoot]="loginForm">
-        
-        <h1 style="text-align: center">Login</h1>
-        <ion-list class="form-group">
-          <ion-item>
-            @let emailInput = loginForm.email();
-            <ion-input
-              fill="solid"
-              [class.ion-invalid]="true"
-              [class.ion-touched]="true"
-              [helperText]="emailInput.errors()[0]?.message ?? 'Enter a valid email'"
-              labelPlacement="floating"
-              label="Email"
-              placeholder="Enter email"
-              [formField]="loginForm.email"
-              [autofocus]="true"
-              id="email"
-            />
-          </ion-item>
-          <ion-item>
-            @let passwordInput = loginForm.password();
-            <ion-input
-              fill="solid"
-              [errorText]="passwordInput.errors()[0]?.message"
-              [class.ion-invalid]="passwordInput.touched() && passwordInput.invalid()"
-              [class.ion-touched]="passwordInput.touched()"
-              [helperText]="passwordInput.errors()[0]?.message ?? 'Enter a valid password'"
-              type="password"
-              label="Password"
-              [formField]="loginForm.password"
-              labelPlacement="floating"
-              id="password"
-            >
-              <ion-input-password-toggle slot="end" />
-            </ion-input>
-          </ion-item>
-        </ion-list>
+    </cica-input>
 
-        @let submitting = loginForm().submitting();
-        <ion-button
-          expand="block"
-          [disabled]="submitting"
-          type="submit"
-        >
-          {{ submitting ? 'Logging in...' : 'Login' }}
+    @let submitting = loginForm().submitting();
+    <button
+      [disabled]="submitting"
+      type="submit"
+    >
+      {{ submitting ? 'Logging in...' : 'Login' }}
 
-          @if (submitting) {
-            <ion-spinner name="crescent" />
-          }
-        </ion-button>
-      </form>
-    </ion-col>
-  </ion-row>
-</ion-grid>
+      @if (submitting) {
+        <ion-spinner name="crescent" />
+      }
+    </button>
+  </form>
+</div>

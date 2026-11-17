@@ -1,17 +1,17 @@
 import { Component, effect, input, model, output, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DebounceInputDirective } from 'cica-ui';
-import { IonIcon, IonInput, IonItem, IonList } from '@ionic/angular';
 import { search } from 'ionicons/icons';
+import { InputComponent } from 'cica-ui';
 
 @Component({
   selector: 'app-search-input',
-  imports: [DebounceInputDirective, FormsModule, IonInput, IonItem, IonList, IonIcon],
+  imports: [DebounceInputDirective, FormsModule, InputComponent],
   templateUrl: './search-input.component.html',
 })
 export class SearchInputComponent {
   searchIcon = search;
-  input = viewChild.required<IonInput>('searchInput');
+  input = viewChild.required<InputComponent>('searchInput');
   autoFocus = input(false);
   placeholder = input('');
   value = model<string | null>('');
@@ -35,6 +35,6 @@ export class SearchInputComponent {
   }
 
   private writeValue(event: string): void {
-    this.input().writeValue(event);
+    this.input().value.set(event);
   }
 }

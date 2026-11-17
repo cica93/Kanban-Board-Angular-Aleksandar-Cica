@@ -1,4 +1,4 @@
-import { Component, computed, input, output, signal } from '@angular/core';
+import { Component, ComponentRef, computed, input, output, signal } from '@angular/core';
 import { BADGE_COLOR_MAP, TASK_STATUSES, Task } from '@service/abstract.task.service';
 import { SlicePipe } from '@angular/common';
 import { AvatarGroupComponent } from '@components/shared/avatar-group/avatar-group.component';
@@ -20,6 +20,7 @@ import {
 import { createOutline, ellipsisVertical, trashOutline } from 'ionicons/icons';
 import { User } from '@service/user.service';
 import { TooltipDirective } from '@directives/tooltip.directive';
+import { ConfirmDirective, ConfirmModalComponent } from 'cica-ui';
 
 @Component({
   selector: 'app-task-card',
@@ -39,11 +40,13 @@ import { TooltipDirective } from '@directives/tooltip.directive';
     IonBadge,
     IonAvatar,
     TooltipDirective,
+    ConfirmDirective,
   ],
   templateUrl: './task-card.component.html',
 })
 export class TaskCardComponent {
   menuOpen = input<boolean>(false);
+  menuIsHidden = signal<boolean>(false);
   openMenuEvent = output<void>();
   dismissMenuEvent = output<void>();
   protected selectedUser = signal<User | null>(null);
@@ -56,7 +59,8 @@ export class TaskCardComponent {
   protected readonly maxVisibleImages = 5;
   protected TASK_STATUSES = TASK_STATUSES;
   readonly task = input.required<Task>();
-  readonly onDelete = output<Task>();
+  readonly onDelete = output<{ task: Task; modal: ComponentRef<ConfirmModalComponent> }>();
+  modal?: ComponentRef<ConfirmModalComponent>;
   readonly onEdit = output<Task>();
   protected readonly taskSeverityClass = computed(() => {
     return BADGE_COLOR_MAP[this.task().taskPriority];
@@ -88,5 +92,14 @@ export class TaskCardComponent {
 
   closeUserMenu(): void {
     this.userPopoverOpen.set(true);
+  }
+
+  deleteTask(): void {
+    this.onDelete.emit({ task: this.task(), modal: this.modal! });
+  }
+
+  modalOpenEvent(event: ComponentRef<ConfirmModalComponent>): void {
+    this.modal = event;
+    this.menuIsHidden.set(true);
   }
 }

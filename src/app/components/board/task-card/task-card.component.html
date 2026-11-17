@@ -53,6 +53,7 @@
   [isOpen]="menuOpen()"
   [event]="menuEvent()"
   (didDismiss)="dismissMenuEvent.emit()"
+  [class.hidden]="menuIsHidden()"
 >
   <ng-template>
     <ion-list>
@@ -66,10 +67,13 @@
         ></ion-icon>
         <ion-label>Edit</ion-label>
       </ion-item>
-
       <ion-item
+        [headerText]="'Are you sure?'"
+        [cicaConfirm]="'Delete task with id ' + task().id + '?'"
+        [confirmLabel]="'Delete'"
         class="cursor-pointer"
-        (click)="onDelete.emit(this.task())"
+        (onConfirm)="deleteTask()"
+        (modalOpenEvent)="modalOpenEvent($event)"
       >
         <ion-icon
           slot="start"

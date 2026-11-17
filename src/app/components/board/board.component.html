@@ -55,7 +55,7 @@
                 (dismissMenuEvent)="dismissMenu()"
                 [cdkDragData]="task"
                 [task]="task"
-                (onDelete)="deleteTask(task)"
+                (onDelete)="deleteTask($event)"
                 (onEdit)="openTaskDialog(task)"
               />
             }

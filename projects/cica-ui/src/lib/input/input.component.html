@@ -1,0 +1,89 @@
+
+<div class="form-group" [class.ç]="disabled()">
+      @if(label()){
+      <label (click)="labelClick($event.target)">{{label() }} 
+        @if(required()){
+          <span class="red-label">*</span>
+        }
+      </label>
+      }
+
+      <div class="input-wrapper">
+        <input
+          [class.invalid]="invalid() && touched()"
+          [type]="inputType()"
+          [value]="value()"
+          (input)="value.set($event.target.value)"
+          placeholder="{{ placeholder() ? placeholder() : 'Enter ' +label()}}"
+        />
+        <div class="left-icon-wrapper">
+            <ng-content select=".left-icon"></ng-content>
+        </div>
+         <div class="right-icon-wrapper">
+            <ng-content select=".right-icon"></ng-content>
+            @if(inputType() === 'password' && showTogglePassword()){
+            <div class="password-input-container"  (click)="togglePassword($event.currentTarget)">
+              <svg
+          class="eye-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+
+        <!-- Eye-off icon -->
+        <svg 
+          class="eye-off-icon d-none"
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          hidden
+        >
+          <path d="m3 3 18 18"/>
+          <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"/>
+          <path d="M9.9 5.2A10.8 10.8 0 0 1 12 5c6.4 0 10 7 10 7a14.5 14.5 0 0 1-3.2 4.1"/>
+          <path d="M6.2 6.2C3.5 8 2 12 2 12s3.6 7 10 7a10 10 0 0 0 4-.8"/>
+        </svg>
+            </div>
+            
+               
+            }
+            @if(value() && showClearIcon()){
+               <span class="close-icon-wrapper" (click)="clear()"> <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path d="M18 6 6 18" />
+      <path d="m6 6 12 12" />
+    </svg> </span>
+            }
+        </div>
+
+        @if(invalid() && touched()){
+            <span  class="error-message">
+            {{errorMessage()}}
+            </span>
+        }
+      </div>
+</div>

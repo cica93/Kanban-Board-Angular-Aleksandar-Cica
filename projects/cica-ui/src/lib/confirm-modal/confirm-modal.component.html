@@ -1,0 +1,40 @@
+
+<div class="modal-overlay">
+  <div class="confirm-modal">
+    <div class="modal-header">
+      @if(showWarningIcon()){
+      <div class="modal-icon">
+        <svg viewBox="0 0 24 24" width="24" height="24"
+             fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round">
+          <path d="M12 9v4m0 4h.01" />
+          <path d="M10.3 3.9 1.8 18.5a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" />
+        </svg>
+      </div>
+    }
+      <h3><span >{{headerText() ?? 'Are you shure?'}}</span>
+        <span (click)="cancel()" class="close-icon-wrapper"><svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path d="M18 6 6 18" />
+      <path d="m6 6 12 12" />
+    </svg>
+        </span>
+      </h3>
+    </div>
+   <ng-content />
+    <div class="modal-actions">
+      <button class="btn btn-secondary" (click)="cancel()">{{ cancelLabel() ?? 'Cancel'}}</button>
+      <button class="btn btn-confirm" (click)="confirm()">{{ confirmLabel() ?? 'Confirm'}}</button>
+    </div>
+  </div>
+</div>
+

@@ -1,16 +1,6 @@
 import { Component, injectAsync, resource, signal } from '@angular/core';
 import { firstValueFrom, Observable } from 'rxjs';
-import {
-  IonButton,
-  IonSpinner,
-  IonInput,
-  IonItem,
-  IonList,
-  IonInputPasswordToggle,
-  IonCol,
-  IonGrid,
-  IonRow,
-} from '@ionic/angular';
+import { IonButton, IonSpinner, IonInputPasswordToggle } from '@ionic/angular';
 import {
   form,
   required,
@@ -23,7 +13,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { JwtUtils } from '@service/jwt.service';
 import { User } from '@service/user.service';
-import { TooltipDirective } from 'cica-ui';
+import { InputComponent } from 'cica-ui';
 
 declare const __brand: unique symbol;
 type Branded<T, BRAND> = T & { [__brand]: BRAND };
@@ -98,15 +88,9 @@ export type ObservableType<T> = T extends (...args: any) => Observable<infer R> 
     FormRoot,
     FormsModule,
     IonButton,
-    IonItem,
-    IonList,
     IonInputPasswordToggle,
     IonSpinner,
-    IonInput,
-    IonCol,
-    IonGrid,
-    IonRow,
-    TooltipDirective,
+    InputComponent,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
