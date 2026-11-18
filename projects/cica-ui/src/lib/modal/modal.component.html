@@ -1,6 +1,6 @@
 
-<div class="modal-overlay">
-  <div class="confirm-modal">
+<div class="modal-overlay modal-position-{{modalPosition()}}">
+  <div class="confirm-modal"  [class.full-h]="fullHeight()">
     <div class="modal-header">
       @if(showWarningIcon()){
       <div class="modal-icon">
@@ -30,7 +30,8 @@
         </span>
       </h3>
     </div>
-   <ng-content />
+  <ng-content />
+  <ng-container #formHost></ng-container>
     <div class="modal-actions">
       <button class="btn btn-secondary" (click)="cancel()">{{ cancelLabel() ?? 'Cancel'}}</button>
       <button class="btn btn-confirm" (click)="confirm()">{{ confirmLabel() ?? 'Confirm'}}</button>

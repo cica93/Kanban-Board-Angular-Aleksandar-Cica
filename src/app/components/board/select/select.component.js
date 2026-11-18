@@ -54,7 +54,7 @@ let SelectComponent = class SelectComponent {
             this.isOpen.set(false);
         }
         this.value.set(event);
-        this.params.filterChangedCallback();
+        this.params?.filterChangedCallback();
     }
     doesFilterPass(params) {
         console.log(params);

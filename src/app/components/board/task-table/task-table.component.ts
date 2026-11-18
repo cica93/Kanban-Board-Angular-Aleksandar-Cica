@@ -1,7 +1,11 @@
-import { Component, inject, viewChild } from '@angular/core';
+import { Component, inject, injectAsync, Injector, viewChild } from '@angular/core';
 import { CrudButtonsComponent } from '@components/shared/crud-buttons/crud-buttons.component';
-import { IonCol, IonGrid, IonRow } from '@ionic/angular';
-import { Task, TASK_PRIORITIES, TASK_STATUSES_OPTIONS } from '@service/abstract.task.service';
+import {
+  AbstractTaskService,
+  Task,
+  TASK_PRIORITIES,
+  TASK_STATUSES_OPTIONS,
+} from '@service/abstract.task.service';
 import { ColDef } from 'ag-grid-community';
 import { SelectComponent } from '../select/select.component';
 import {
@@ -11,13 +15,26 @@ import {
 } from '@components/ag-grid-wrapper/ag-grid-wrapper.component';
 import { TaskService } from '@service/task.service';
 import { DatePipe } from '@angular/common';
+import { ModalOptions, SUBMIT_FORM_TOKEN_LOAD } from 'cica-ui';
+import { submit } from '@angular/forms/signals';
 
 @Component({
-  imports: [AgGridWrapperComponent, IonGrid, IonRow, IonCol, AgGridWrapperComponent],
+  imports: [AgGridWrapperComponent],
   selector: 'app-task-table',
   templateUrl: './task-table.component.html',
   providers: [
     DatePipe,
+    {
+      provide: AbstractTaskService,
+      useClass: TaskService,
+    },
+    {
+      provide: SUBMIT_FORM_TOKEN_LOAD,
+      useValue: () =>
+        import('../../board/task-card/task-form/task-form.component').then(
+          (module) => module.TaskFormComponent,
+        ),
+    },
     {
       provide: GRID_DATA_PROVIDER,
       useFactory: (taskService: TaskService): GridDataProviderFunction => {
@@ -35,7 +52,9 @@ import { DatePipe } from '@angular/common';
 })
 export class TaskTableComponent {
   gridWrapper = viewChild.required(AgGridWrapperComponent);
+  private readonly injector = inject(Injector);
   private readonly datePipe = inject(DatePipe);
+  private readonly modalService = injectAsync(() => import('cica-ui').then((m) => m.ModalService));
   readonly columnDefs: ColDef<Task>[] = [
     {
       field: 'title',
@@ -123,9 +142,25 @@ export class TaskTableComponent {
         showCreateButton: true,
         showClearButton: true,
         deleteTitle: 'Clear filters',
-        entityName: 'User',
-        createClickedFunction: () => {
-          console.log('create');
+        entityName: 'Task',
+        createClickedFunction: async () => {
+          const service = await this.modalService();
+          const component = await service.openEditModal({
+            injector: this.injector,
+            modalOptions: {
+              headerText: 'Save Task',
+              confirmLabel: 'Save',
+            } as ModalOptions,
+          });
+          component.componentRef.instance.onCancel.subscribe(() => {
+            service.close(component.componentRef);
+          });
+          component.componentRef.instance.onConfirm.subscribe(() => {
+            submit(component.submitFormRef.instance.form);
+          });
+          component.submitFormRef.instance.onClose.subscribe(() => {
+            service.close(component.componentRef);
+          });
         },
         clearClickedFunction: () => {
           this.gridWrapper().clearAllFilters();
@@ -141,11 +176,37 @@ export class TaskTableComponent {
         entityName: 'User',
         showDeleteButton: true,
         showEditButton: true,
-        editClickedFunction: (task: Task) => {
-          console.log(task);
+        editClickedFunction: async (task: Task) => {
+          const service = await this.modalService();
+          const component = await service.openEditModal({
+            injector: this.injector,
+            modalOptions: {
+              initValue: task,
+              headerText: 'Edit Task',
+              confirmLabel: 'Edit',
+            } as ModalOptions,
+          });
+          component.componentRef.instance.onCancel.subscribe(() => {
+            service.close(component.componentRef);
+          });
+          component.componentRef.instance.onConfirm.subscribe(() => {
+            submit(component.submitFormRef.instance.form);
+          });
+          component.submitFormRef.instance.onClose.subscribe(() => {
+            service.close(component.componentRef);
+          });
         },
-        deleteClickedFunction: (task: Task) => {
-          console.log(task);
+        deleteClickedFunction: async () => {
+          const service = await this.modalService();
+          const component = service.openDeleteModal({
+            modalOptions: {} as ModalOptions,
+          });
+          component.instance.onCancel.subscribe(() => {
+            service.close(component);
+          });
+          component.instance.onConfirm.subscribe(() => {
+            service.close(component);
+          });
         },
       },
     },

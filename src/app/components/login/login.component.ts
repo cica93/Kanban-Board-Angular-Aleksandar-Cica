@@ -1,6 +1,6 @@
 import { Component, injectAsync, resource, signal } from '@angular/core';
 import { firstValueFrom, Observable } from 'rxjs';
-import { IonButton, IonSpinner, IonInputPasswordToggle } from '@ionic/angular';
+import { IonSpinner } from '@ionic/angular';
 import {
   form,
   required,
@@ -83,15 +83,7 @@ export type ObservableType<T> = T extends (...args: any) => Observable<infer R> 
 
 @Component({
   selector: 'app-login',
-  imports: [
-    FormField,
-    FormRoot,
-    FormsModule,
-    IonButton,
-    IonInputPasswordToggle,
-    IonSpinner,
-    InputComponent,
-  ],
+  imports: [FormField, FormRoot, FormsModule, IonSpinner, InputComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })

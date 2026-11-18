@@ -3,13 +3,20 @@
   position: fixed;
   inset: 0;
   z-index: 20001;
-
   display: flex;
   align-items: center;
-  justify-content: center;
+ 
 
-  padding: 16px;
   background: rgba(0, 0, 0, 0.45);
+  &.modal-position-left {
+    justify-content: flex-start;
+  }
+  &.modal-position-right {
+    justify-content: flex-end;
+  }
+  &.modal-position-center {
+     justify-content: center;
+  }
 }
 
 .confirm-modal {
@@ -19,10 +26,12 @@
   width: 100%;
   max-width: 420px;
   padding: 24px;
-
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
+  &.full-h {
+    height: calc(100vh - 48px);
+  }
 }
 
 .modal-header {

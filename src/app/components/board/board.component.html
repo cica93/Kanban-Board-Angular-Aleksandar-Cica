@@ -8,7 +8,13 @@
           (valueChange)="changeSearchValue($event)"
           [placeholder]="'Search'"
         />
-        <ion-button (click)="openTaskDialog()">
+        <ion-button  
+        [headerText]="'Create task'"
+        cicaModal
+        [confirmLabel]="'Create'"
+        class="cursor-pointer"
+        (onSuccess)="onCreate()"
+        >
           <ion-icon
             slot="start"
             [icon]="addIcon"
@@ -56,7 +62,7 @@
                 [cdkDragData]="task"
                 [task]="task"
                 (onDelete)="deleteTask($event)"
-                (onEdit)="openTaskDialog(task)"
+                (onEdit)="onEdit()"
               />
             }
           </div>

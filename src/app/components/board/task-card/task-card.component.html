@@ -58,8 +58,15 @@
   <ng-template>
     <ion-list>
       <ion-item
+        [headerText]="'Edit task'"
+        cicaModal
+        [confirmLabel]="'Edit'"
+        [initValue]="task()"
         class="cursor-pointer"
-        (click)="onEdit.emit(this.task())"
+        (onSuccess)="onEdit.emit(this.task())"
+        (onCancel)="onCancel()"
+        (modalOpenEvent)="modalOpenEvent($event)"
+        class="cursor-pointer"
       >
         <ion-icon
           slot="start"
@@ -69,10 +76,12 @@
       </ion-item>
       <ion-item
         [headerText]="'Are you sure?'"
-        [cicaConfirm]="'Delete task with id ' + task().id + '?'"
+        [isDelete]="true"
+        [cicaModal]="'Delete task with id ' + task().id + '?'"
         [confirmLabel]="'Delete'"
         class="cursor-pointer"
         (onConfirm)="deleteTask()"
+        (onCancel)="onCancel()"
         (modalOpenEvent)="modalOpenEvent($event)"
       >
         <ion-icon

@@ -16,10 +16,7 @@ import {
   TaskStatus,
 } from '@service/abstract.task.service';
 import { firstValueFrom, map, Subject, zip } from 'rxjs';
-import {
-  SubmitForm,
-  SUBMIT_FORM_TOKEN,
-} from '@components/shared/base-dialog/base-dialog.component';
+
 import {
   form,
   FormField,
@@ -36,6 +33,7 @@ import { toObservable } from '@angular/core/rxjs-interop';
 import { IonInput } from '@ionic/angular/ion-input';
 import { IonItem, IonList, IonTextarea } from '@ionic/angular';
 import { SelectComponent } from '@components/board/select/select.component';
+import { SUBMIT_FORM_TOKEN, SubmitForm } from 'cica-ui';
 
 export type NoTUpdatableTaskFields = 'id' | 'taskOrder' | 'version' | 'createdBy' | 'updatedBy';
 export type TaskForm = Omit<Task, NoTUpdatableTaskFields>;

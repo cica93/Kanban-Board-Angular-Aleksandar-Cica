@@ -5,6 +5,10 @@
   align-items: center;
   justify-content: center;
 
+  ::ng-deep .red-label {
+    display: none;
+  }
+
   .center-content {
     width: 400px;
     display: flex;

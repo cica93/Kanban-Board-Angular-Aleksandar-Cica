@@ -5,7 +5,6 @@ import {
   computed,
   inject,
   injectAsync,
-  Injector,
   signal,
   viewChild,
 } from '@angular/core';
@@ -24,7 +23,13 @@ import {
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 
-import { BecomeVisibleDirective, ConfirmModalComponent, destroy } from 'cica-ui';
+import {
+  BecomeVisibleDirective,
+  ModalDirective,
+  destroy,
+  SUBMIT_FORM_TOKEN_LOAD,
+  ModalComponent,
+} from 'cica-ui';
 import { SearchInputComponent } from '@components/shared/search-input/search-input.component';
 import { HeaderComponent } from '@components/shared/header/header.component';
 import { ScrollTopComponent } from '@components/shared/scroll-top/scroll-top.component';
@@ -33,7 +38,6 @@ import { IonButton, IonCol, IonGrid, IonIcon, IonRow, IonSpinner } from '@ionic/
 import { add } from 'ionicons/icons';
 import { injectInfiniteQuery, injectMutation } from '@tanstack/angular-query-experimental';
 import { QueryClient } from '@tanstack/angular-query-experimental';
-import { openEditModal } from '@components/shared/modalUtills';
 
 const limit = 5;
 
@@ -52,9 +56,19 @@ const limit = 5;
     IonRow,
     IonCol,
     IonSpinner,
+    ModalDirective,
   ],
   templateUrl: './board.component.html',
   styleUrl: './board.component.scss',
+  providers: [
+    {
+      provide: SUBMIT_FORM_TOKEN_LOAD,
+      useValue: () =>
+        import('../board/task-card/task-form/task-form.component').then(
+          (module) => module.TaskFormComponent,
+        ),
+    },
+  ],
 })
 export class BoardComponent {
   hasMoreTasks = true;
@@ -67,7 +81,6 @@ export class BoardComponent {
   showModal = signal<boolean>(false);
   TASK_STATUSES = [...TASK_STATUSES];
   becomeVisible = viewChild.required<BecomeVisibleDirective>(BecomeVisibleDirective);
-  private readonly injector = inject(Injector);
   private readonly appRef = inject(ApplicationRef);
   private readonly queryClient = inject(QueryClient);
   private readonly taskService = inject(AbstractTaskService);
@@ -136,7 +149,7 @@ export class BoardComponent {
 
   async deleteTask(event: {
     task: Task;
-    modal: ComponentRef<ConfirmModalComponent>;
+    modal: ComponentRef<ModalComponent>;
   }): Promise<void> {
     this.dismissMenu();
     this.deleteTaskMutation.mutate(event.task, {
@@ -156,9 +169,21 @@ export class BoardComponent {
     });
   }
 
-  async openTaskDialog(task?: Partial<Task>): Promise<void> {
-    const dialog = await openEditModal(this.injector, task, !task ? 'Create task' : 'Edit task');
-    this.dialogCallBackFunction(dialog);
+  async onEdit(): Promise<void> {
+    this.dismissMenu();
+    this.resetTaskFilters();
+
+    (await this.messageService()).successEvent.next({
+      summary: 'Task changed',
+      detail: 'Success!',
+    });
+  }
+
+  async onCreate(): Promise<void> {
+    (await this.messageService()).successEvent.next({
+      summary: 'Task created',
+      detail: 'Success!',
+    });
   }
 
   private async isSussessMoadalEvent(dialog: HTMLIonModalElement): Promise<boolean> {

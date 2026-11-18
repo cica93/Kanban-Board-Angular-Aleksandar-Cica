@@ -20,7 +20,7 @@ import {
 import { createOutline, ellipsisVertical, trashOutline } from 'ionicons/icons';
 import { User } from '@service/user.service';
 import { TooltipDirective } from '@directives/tooltip.directive';
-import { ConfirmDirective, ConfirmModalComponent } from 'cica-ui';
+import { ModalComponent, ModalDirective, SUBMIT_FORM_TOKEN_LOAD } from 'cica-ui';
 
 @Component({
   selector: 'app-task-card',
@@ -40,9 +40,18 @@ import { ConfirmDirective, ConfirmModalComponent } from 'cica-ui';
     IonBadge,
     IonAvatar,
     TooltipDirective,
-    ConfirmDirective,
+    ModalDirective,
   ],
   templateUrl: './task-card.component.html',
+  providers: [
+    {
+      provide: SUBMIT_FORM_TOKEN_LOAD,
+      useValue: () =>
+        import('../../board/task-card/task-form/task-form.component').then(
+          (module) => module.TaskFormComponent,
+        ),
+    },
+  ],
 })
 export class TaskCardComponent {
   menuOpen = input<boolean>(false);
@@ -59,8 +68,8 @@ export class TaskCardComponent {
   protected readonly maxVisibleImages = 5;
   protected TASK_STATUSES = TASK_STATUSES;
   readonly task = input.required<Task>();
-  readonly onDelete = output<{ task: Task; modal: ComponentRef<ConfirmModalComponent> }>();
-  modal?: ComponentRef<ConfirmModalComponent>;
+  readonly onDelete = output<{ task: Task; modal: ComponentRef<ModalComponent> }>();
+  modal?: ComponentRef<ModalComponent>;
   readonly onEdit = output<Task>();
   protected readonly taskSeverityClass = computed(() => {
     return BADGE_COLOR_MAP[this.task().taskPriority];
@@ -90,15 +99,17 @@ export class TaskCardComponent {
     this.userPopoverOpen.set(true);
   }
 
-  closeUserMenu(): void {
-    this.userPopoverOpen.set(true);
+  onCancel(): void {
+    this.menuIsHidden.set(false);
+    this.dismissMenuEvent.emit();
   }
 
   deleteTask(): void {
     this.onDelete.emit({ task: this.task(), modal: this.modal! });
+    this.menuIsHidden.set(false);
   }
 
-  modalOpenEvent(event: ComponentRef<ConfirmModalComponent>): void {
+  modalOpenEvent(event: ComponentRef<ModalComponent>): void {
     this.modal = event;
     this.menuIsHidden.set(true);
   }
