@@ -1,0 +1,13 @@
+
+:host {
+  display: block;
+  width: 100%;
+  
+  .ui-list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+}
+
+

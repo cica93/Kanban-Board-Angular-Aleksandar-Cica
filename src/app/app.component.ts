@@ -1,4 +1,4 @@
-import { Component, inject, injectAsync, OnInit, signal, viewChild } from '@angular/core';
+import { Component, inject, OnInit, signal, viewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
@@ -10,6 +10,7 @@ import { SocketService } from '@service/socket.service';
 
 import { logOutOutline } from 'ionicons/icons';
 import { SidebarComponent } from '@components/sidebar/sidebar.component';
+import { ToastService } from 'cica-ui';
 
 @Component({
   selector: 'app-root',
@@ -22,9 +23,7 @@ export class AppComponent implements OnInit {
   logOutOutlineIcon = logOutOutline;
   protected user$!: Observable<User | null>;
   private readonly securityService = inject(SecurityService);
-  private readonly toastController = injectAsync(() =>
-    import('@ionic/angular').then((a) => a.ToastController),
-  );
+  private readonly toastService = inject(ToastService);
   private readonly socket = inject(SocketService);
   private readonly messageHandlerService = inject(MessageHandlerService);
   public showDialog = signal(false);
@@ -54,22 +53,12 @@ export class AppComponent implements OnInit {
     this.securityService.logout();
   }
 
-  private async showMessage(
+  private showMessage(
     summary: string,
     detail: string | undefined,
     duration: number | undefined,
     color: 'danger' | 'success',
   ) {
-    const toast = await (
-      await this.toastController()
-    ).create({
-      header: detail,
-      message: summary,
-      duration: duration ?? 3000,
-      position: 'top',
-      color,
-    });
-
-    await toast.present();
+    this.toastService.show(color === 'danger' ? 'error' : 'success', summary, detail, duration);
   }
 }

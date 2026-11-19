@@ -1,4 +1,12 @@
-import { Component, inject, InjectionToken, input, signal, output } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  inject,
+  InjectionToken,
+  input,
+  signal,
+  output,
+} from '@angular/core';
 import { PageResponse } from '@service/abstract.task.service';
 import { AgGridAngular } from 'ag-grid-angular';
 import {
@@ -28,6 +36,7 @@ export const GRID_DATA_PROVIDER = new InjectionToken<GridDataProviderFunction>(
 @Component({
   imports: [AgGridAngular],
   selector: 'app-ag-grid-wrapper',
+  styleUrl: './ag-grid-wrapper.component.scss',
   templateUrl: './ag-grid-wrapper.component.html',
   host: {
     style: 'display: flex; width: 100%;',
@@ -39,6 +48,11 @@ export class AgGridWrapperComponent<T> {
   onCellContextMenu = output<CellContextMenuEvent<T>>();
   onRowClicked = output<RowClickedEvent<T>>();
   pagination = signal(true);
+  protected readonly contextMenu = signal<{
+    x: number;
+    y: number;
+    event: CellContextMenuEvent<T>;
+  } | null>(null);
   private readonly dataProvider = inject(GRID_DATA_PROVIDER);
   protected readonly gridOptions = {
     sortingOrder: ['asc', 'desc'],
@@ -51,8 +65,8 @@ export class AgGridWrapperComponent<T> {
     tooltipShowDelay: 0,
     headerHeight: 49,
     rowHeight: 42,
-    tooltipHideDelay: 3000,
     suppressContextMenu: true,
+    tooltipHideDelay: 3000,
     suppressDragLeaveHidesColumns: true,
     suppressMakeColumnVisibleAfterUnGroup: true,
   } satisfies GridOptions<T>;
@@ -122,5 +136,58 @@ export class AgGridWrapperComponent<T> {
   clearAllFilters(): void {
     this.gridApi.setFilterModel(null);
     this.gridApi.onFilterChanged();
+  }
+
+  handleCellContextMenu(event: CellContextMenuEvent<T>): void {
+    const me = event.event as MouseEvent;
+    me.preventDefault();
+
+    const edge = 8;
+    const menuWidth = Math.min(190, window.innerWidth - edge * 2);
+    const menuHeight = Math.min(216, window.innerHeight - edge * 2);
+    this.contextMenu.set({
+      x: Math.max(edge, Math.min(me.clientX ?? 0, window.innerWidth - menuWidth - edge)),
+      y: Math.max(edge, Math.min(me.clientY ?? 0, window.innerHeight - menuHeight - edge)),
+      event,
+    });
+    this.onCellContextMenu.emit(event);
+  }
+
+  copyCell(event: CellContextMenuEvent<T>, includeHeader = false): void {
+    const columnDef = event.column.getColDef();
+    const header = columnDef.headerName ?? columnDef.field ?? '';
+    const value = String(event.value ?? '');
+    const text = includeHeader && header ? `${header}\t${value}` : value;
+
+    void navigator.clipboard?.writeText(text);
+    this.closeContextMenu();
+  }
+
+  editRow(event: CellContextMenuEvent<T>): void {
+    console.log('Edit row:', event.node.data);
+    this.closeContextMenu();
+  }
+
+  deleteRow(event: CellContextMenuEvent<T>): void {
+    console.log('Delete row:', event.node.data);
+    this.closeContextMenu();
+  }
+
+  exportCsv(event: CellContextMenuEvent<T>): void {
+    event.api.exportDataAsCsv();
+    this.closeContextMenu();
+  }
+
+  closeContextMenu(): void {
+    this.contextMenu.set(null);
+  }
+
+  @HostListener('document:keydown.escape')
+  closeContextMenuOnEscape(): void {
+    this.closeContextMenu();
+  }
+
+  preventBrowserContextMenu(event: PointerEvent): void {
+    event.preventDefault();
   }
 }

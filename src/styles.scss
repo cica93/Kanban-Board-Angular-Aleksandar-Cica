@@ -1,8 +1,10 @@
+@use 'cica-ui/styles.scss';
+
 @import '@ionic/angular/css/core.css';
 @import '@ionic/angular/css/normalize.css';
 @import '@ionic/angular/css/typography.css';
 @import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap);
-@import "@ng-select/ng-select/themes/default.theme.css";
+@import '@ng-select/ng-select/themes/default.theme.css';
 
 :root {
   --ag-auto-height-min-body-height: 140px;
@@ -168,74 +170,6 @@ $spacing-md: 1rem;
 
 .cursor-pointer {
   cursor: pointer;
-}
-
-.app-tooltip {
-  position: fixed;
-  z-index: 10000;
-
-  max-width: 250px;
-  padding: 6px 10px;
-
-  border-radius: 4px;
-
-  background: #222;
-  color: orange;
-
-  font-size: 13px;
-  line-height: 1.4;
-
-  white-space: nowrap;
-
-  opacity: 0;
-  visibility: hidden;
-
-  pointer-events: none;
-
-  transition:
-    opacity 100ms ease,
-    visibility 100ms ease;
-}
-
-.app-tooltip::after {
-  position: absolute;
-  width: 0;
-  height: 0;
-  border: 8px solid transparent;
-  content: '';
-}
-
-.app-tooltip-top::after {
-  top: 100%;
-  left: 50%;
-  border-top-color: #222;
-  transform: translateX(-50%);
-}
-
-.app-tooltip-bottom::after {
-  bottom: 100%;
-  left: 50%;
-  border-bottom-color: #222;
-  transform: translateX(-50%);
-}
-
-.app-tooltip-left::after {
-  top: 50%;
-  left: 100%;
-  border-left-color: #222;
-  transform: translateY(-50%);
-}
-
-.app-tooltip-right::after {
-  top: 50%;
-  right: 100%;
-  border-right-color: #222;
-  transform: translateY(-50%);
-}
-
-.app-tooltip-visible {
-  opacity: 1;
-  visibility: visible;
 }
 
 .ag-header-cell.ag-header-center:has(.ag-header-cell-text) .ag-header-cell-label {

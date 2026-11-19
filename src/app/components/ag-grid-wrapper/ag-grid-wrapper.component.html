@@ -2,7 +2,8 @@
   [gridOptions]="gridOptions"
   [columnDefs]="columnDefs()"
   [pagination]="pagination()"
-  (cellContextMenu)="onCellContextMenu.emit($event)"
+  (cellContextMenu)="handleCellContextMenu($event)"
+  (contextmenu)="preventBrowserContextMenu($event)"
   (rowClicked)="onRowClicked.emit($event)"
   [defaultColDef]="defaultColDef"
   [datasource]="datasource"
@@ -11,3 +12,26 @@
   (gridReady)="onGridReady($event)"
   (paginationChanged)="changePageSize($event)"
 />
+
+@if (contextMenu(); as menu) {
+  <div
+    class="context-menu-backdrop"
+    (click)="closeContextMenu()"
+    (contextmenu)="$event.preventDefault()"
+  ></div>
+  <div
+    class="grid-context-menu"
+    [style.left.px]="menu.x"
+    [style.top.px]="menu.y"
+    role="menu"
+    aria-label="Grid cell actions"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="menu-item">
+      <span>Copy</span>
+    </div>
+    <div class="menu-item">
+      <span>Edit</span>
+    </div>
+  </div>
+}

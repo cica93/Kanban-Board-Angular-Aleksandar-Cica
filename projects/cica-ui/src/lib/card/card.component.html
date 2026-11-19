@@ -1,0 +1,22 @@
+<div class="card">
+  <div class="card-header">
+    <div class="card-title">
+      <h3>{{ cardTitle() }}</h3>
+      <ng-content select="[slot=cardTitle]" />
+    </div>
+    @if (cardSubtitle()) {
+      <div class="card-subtitle">
+        <p>{{ cardSubtitle() }}</p>
+        <ng-content select="[slot=cardSubtitle]" />
+      </div>
+    }
+  </div>
+
+  <div class="card-content">
+    <ng-content select="[slot=conrent]" />
+  </div>
+
+  <!-- <div class="card-footer">
+    <ng-content select="[slot=footer]" />
+  </div> -->
+</div>

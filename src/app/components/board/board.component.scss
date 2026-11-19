@@ -1,11 +1,18 @@
-.grid-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: 1fr;
-  grid-column-gap: 24px;
-  grid-row-gap: 0px;
-  padding-inline: 16px;
-  h2 {
-    text-align: center;
+.serach-wrapper {
+  display: flex;
+  flex-direction: row;
+
+  justify-content: space-between;
+  width: 100%;
+  app-search-input {
+    width: 33%;
   }
+}
+
+.text-center {
+  text-align: center;
+}
+
+.padding-16 {
+  padding: 16px;
 }

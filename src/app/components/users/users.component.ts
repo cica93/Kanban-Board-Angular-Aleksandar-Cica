@@ -2,33 +2,20 @@ import { Component, inject, Injector, signal } from '@angular/core';
 import { User, UserService } from '@service/user.service';
 import { successModalEvent } from '@components/shared/base-dialog/base-dialog.component';
 import { openEditModal } from '@components/shared/modalUtills';
-import { IonGrid, IonRow, IonCol, IonList, IonIcon, IonItem, IonLabel } from '@ionic/angular';
-import { createOutline, trashOutline, add } from 'ionicons/icons';
 import { CrudButtonsComponent } from '@components/shared/crud-buttons/crud-buttons.component';
-import { IonPopover } from '@ionic/angular/common';
 import {
   AgGridWrapperComponent,
   GRID_DATA_PROVIDER,
   GridDataProviderFunction,
 } from '@components/ag-grid-wrapper/ag-grid-wrapper.component';
 
-import { CellContextMenuEvent, ColDef, GridApi, RowClickedEvent } from 'ag-grid-community';
+import { CellContextMenuEvent, ColDef, GridApi } from 'ag-grid-community';
 import { map } from 'rxjs';
 
 @Component({
   selector: 'app-users',
   styleUrl: './users.component.scss',
-  imports: [
-    AgGridWrapperComponent,
-    IonGrid,
-    IonRow,
-    IonCol,
-    IonPopover,
-    IonList,
-    IonItem,
-    IonIcon,
-    IonLabel,
-  ],
+  imports: [AgGridWrapperComponent],
   providers: [
     {
       provide: GRID_DATA_PROVIDER,
@@ -50,9 +37,6 @@ import { map } from 'rxjs';
   templateUrl: './users.component.html',
 })
 export class UsersComponent {
-  trashOutlineIcon = trashOutline;
-  createOutlineIcon = createOutline;
-  addIcon = add;
   contentMenuEvent = signal<Event | null | undefined>(null);
   firstInpuChange = true;
   contentMenuOpen = signal(false);
@@ -134,6 +118,12 @@ export class UsersComponent {
     // );
   }
 
+  onCellContextMenu({ event, data }: CellContextMenuEvent<User>): void {
+    this.contentMenuEvent.set(event);
+    this.contentMenuOpen.set(true);
+    this.selectedUser.set(data ?? null);
+  }
+
   //'infinite' | 'viewport' | 'clientSide' | 'serverSide'
 
   addUser(): void {
@@ -154,20 +144,5 @@ export class UsersComponent {
     if (role === successModalEvent) {
       //this.resetTaskFilters();
     }
-  }
-
-  onRowClicked(event: RowClickedEvent<User>): void {
-    const user = event.data;
-    event.node.setSelected(true);
-
-    if (!user) {
-      return;
-    }
-  }
-
-  onCellContextMenu({ event, data }: CellContextMenuEvent<User>): void {
-    this.contentMenuEvent.set(event);
-    this.contentMenuOpen.set(true);
-    this.selectedUser.set(data ?? null);
   }
 }

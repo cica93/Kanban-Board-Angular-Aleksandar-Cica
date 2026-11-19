@@ -1,0 +1,100 @@
+/* container: one per screen position, created by the script */
+.toast-container {
+  position: fixed;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-sizing: border-box;
+  width: min(392px, 100%);
+  padding: 16px;
+  pointer-events: none;
+}
+.toast-container[data-position^="t"] { top: 0; }
+.toast-container[data-position^="b"] { bottom: 0; flex-direction: column-reverse; }
+.toast-container[data-position$="r"] { right: 0; }
+.toast-container[data-position$="l"] { left: 0; }
+.toast-container[data-position$="c"] { left: 50%; transform: translateX(-50%); }
+
+/* slide in from the nearest edge */
+.toast-container[data-position$="r"] { --toast-from: translateX(110%); }
+.toast-container[data-position$="l"] { --toast-from: translateX(-110%); }
+.toast-container[data-position="tc"] { --toast-from: translateY(-120%); }
+.toast-container[data-position="bc"] { --toast-from: translateY(120%); }
+
+.toast {
+  --toast-accent: #3b82f6;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  overflow: hidden;
+  padding: 14px;
+  border-radius: 12px;
+  background: var(--toast-accent);
+  color: var(--toast-text);
+  box-shadow: 0 10px 24px -6px rgba(15, 23, 42, 0.25);
+  font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  pointer-events: auto;
+  animation: toast-in 0.35s cubic-bezier(0.21, 1.02, 0.73, 1) both;
+}
+.toast.is-leaving { animation: toast-out 0.3s ease forwards; }
+
+.toast-success { --toast-accent: #15803d; --toast-text: #ffffff; }
+.toast-error { --toast-accent: #dc2626; --toast-text: #ffffff; }
+.toast-warning { --toast-accent: #f59e0b; --toast-text: #111827; }
+.toast-info { --toast-accent: #2563eb; --toast-text: #ffffff; }
+
+.toast-icon {
+  display: flex;
+  flex: none;
+  margin-top: 1px;
+}
+.toast-icon svg { display: block; width: 20px; height: 20px; }
+
+.toast-body { flex: 1; min-width: 0; }
+/* inherit, so a site-wide p or strong colour can't change the toast text */
+.toast-title { display: block; font-weight: 700; color: inherit; }
+.toast-message { margin: 2px 0 0; font: inherit; color: inherit; opacity: 0.9; overflow-wrap: anywhere; }
+
+.toast-close {
+  flex: none;
+  margin: -4px -6px 0 auto;
+  padding: 2px 6px;
+  font: inherit;
+  font-size: 20px;
+  line-height: 1;
+  color: inherit;
+  background: none;
+  border: 0;
+  border-radius: 6px;
+  opacity: 0.6;
+  cursor: pointer;
+}
+.toast-close:hover { opacity: 1; }
+.toast-close:focus-visible { opacity: 1; outline: 2px solid currentColor; outline-offset: 1px; }
+
+/* the progress bar is also the timer: the toast closes when it runs out */
+.toast-progress {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 4px;
+  background: currentColor;
+  opacity: 0.45;
+  transform-origin: left;
+  animation: toast-progress var(--toast-duration, 4s) linear forwards;
+}
+.toast.is-sticky .toast-progress { display: none; }
+.toast:hover .toast-progress,
+.toast:focus-within .toast-progress { animation-play-state: paused; }
+
+@keyframes toast-in { from { opacity: 0; transform: var(--toast-from); } }
+@keyframes toast-out { to { opacity: 0; transform: var(--toast-from); } }
+@keyframes toast-progress { to { transform: scaleX(0); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .toast,
+  .toast.is-leaving { animation-duration: 1ms; }
+}

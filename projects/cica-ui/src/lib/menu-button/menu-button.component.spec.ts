@@ -1,17 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MenuButtonComponent } from './menu-button.component';
 
-import { HeaderComponent } from './header.component';
-
-describe('HeaderComponent', () => {
-  let component: HeaderComponent;
-  let fixture: ComponentFixture<HeaderComponent>;
+describe('MenuButtonComponent', () => {
+  let component: MenuButtonComponent;
+  let fixture: ComponentFixture<MenuButtonComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HeaderComponent],
+      imports: [MenuButtonComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(HeaderComponent);
+    fixture = TestBed.createComponent(MenuButtonComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

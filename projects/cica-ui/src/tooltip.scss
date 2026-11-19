@@ -1,0 +1,70 @@
+.app-tooltip {
+  position: fixed;
+  z-index: 10000;
+
+  padding: 6px 10px;
+
+  border-radius: 4px;
+
+  background: #222;
+  color: orange;
+
+  font-size: 13px;
+  line-height: 1.4;
+
+  white-space: nowrap;
+
+  opacity: 0;
+  visibility: hidden;
+
+  pointer-events: none;
+
+  transition:
+    opacity 100ms ease,
+    visibility 100ms ease;
+}
+
+.app-tooltip::after {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border: 8px solid transparent;
+  content: '';
+}
+
+.app-tooltip-top::after {
+  top: 100%;
+  left: 50%;
+  border-top-color: #222;
+  transform: translateX(-50%);
+}
+
+.app-tooltip-bottom::after {
+  bottom: 100%;
+  left: 50%;
+  border-bottom-color: #222;
+  transform: translateX(-50%);
+}
+
+.app-tooltip-left::after {
+  top: 50%;
+  left: 100%;
+  border-left-color: #222;
+  transform: translateY(-50%);
+}
+
+.app-tooltip-right::after {
+  top: 50%;
+  right: 100%;
+  border-right-color: #222;
+  transform: translateY(-50%);
+}
+
+.app-tooltip-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.app-tooltip-interactive {
+  pointer-events: auto;
+}

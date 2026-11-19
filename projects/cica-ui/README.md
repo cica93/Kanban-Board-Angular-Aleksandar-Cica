@@ -2,6 +2,16 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.1.0.
 
+## Global styles
+
+Import the library's global styles in the consuming application's global stylesheet:
+
+```css
+@use 'cica-ui/styles.scss';
+```
+
+The stylesheet includes the library's toast and tooltip styles and defines the `--cica-space-*` spacing custom properties.
+
 ## Code scaffolding
 
 Angular CLI includes powerful code scaffolding tools. To generate a new component, run:

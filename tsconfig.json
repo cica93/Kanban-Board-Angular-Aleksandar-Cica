@@ -42,7 +42,8 @@
     "projects/cica-ui/package/src/lib/directives/debounce-input.directive.ts",
     "projects/cica-ui/package/src/lib/directives/visibility-change-directive.ts",
     "projects/cica-ui/package/src/lib/directives/tooltip.directive.ts",
-    "projects/cica-ui/package/src/lib/directives/first-focus.directive.ts"
+    "projects/cica-ui/package/src/lib/directives/first-focus.directive.ts",
+    "projects/cica-ui/src/lib/service/toast.service.ts"
   ],
   "exclude": ["node_modules"],
   "angularCompilerOptions": {

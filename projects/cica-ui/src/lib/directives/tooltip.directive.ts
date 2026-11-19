@@ -1,55 +1,76 @@
-import { Directive, ElementRef, Renderer2, OnDestroy, input } from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  Renderer2,
+  OnDestroy,
+  input,
+  TemplateRef,
+  inject,
+  ViewContainerRef,
+  EmbeddedViewRef,
+} from '@angular/core';
 
 @Directive({
   selector: '[cicaTooltip]',
+  exportAs: 'cicaTooltip',
   host: {
     '(mouseleave)': 'onMouseLeave()',
     '(mouseenter)': 'onMouseEnter()',
   },
 })
 export class TooltipDirective implements OnDestroy {
-  cicaTooltip = input.required<string>();
+  cicaTooltip = input.required<string | TemplateRef<any>>();
+  customTrigger = input<boolean>(false);
   tooltipPosition = input<'top' | 'bottom' | 'left' | 'right'>('top');
 
-  private tooltipElement?: HTMLElement;
+  private tooltipElement: HTMLElement | null = null;
+  private tooltipView?: EmbeddedViewRef<any>;
   private showTimeout?: ReturnType<typeof setTimeout>;
   private hideTimeout?: ReturnType<typeof setTimeout>;
-
-  constructor(
-    private readonly elementRef: ElementRef<HTMLElement>,
-    private readonly renderer: Renderer2,
-  ) {}
- 
+  private readonly elementRef = inject(ElementRef<HTMLElement>);
+  private readonly renderer = inject(Renderer2);
+  private readonly viewContainerRef = inject(ViewContainerRef);
 
   onMouseEnter(): void {
-    this.clearTimeouts();
-    this.showTimeout = setTimeout(() => {
-      this.show();
-    }, 100);
+    if (!this.customTrigger()) {
+      this.clearTimeouts();
+      this.showTimeout = setTimeout(() => {
+        this.show();
+      }, 100);
+    }
   }
 
   onMouseLeave(): void {
-    this.clearTimeouts();
-    this.hideTimeout = setTimeout(() => {
-      this.hide();
-    }, 50);
+    if (!this.customTrigger()) {
+      this.clearTimeouts();
+      this.hideTimeout = setTimeout(() => {
+        this.hide();
+      }, 100);
+    }
   }
 
-  private show(): void {
+  show(): void {
     if (!this.cicaTooltip() || this.tooltipElement) {
       return;
     }
 
     const host = this.elementRef.nativeElement;
-
     const tooltip = this.renderer.createElement('div') as HTMLElement;
+    if (typeof this.cicaTooltip() === 'string') {
+      this.renderer.setProperty(tooltip, 'textContent', this.cicaTooltip());
+    } else {
+      this.renderer.addClass(tooltip, 'app-tooltip-interactive');
+      this.tooltipView = this.viewContainerRef.createEmbeddedView(
+        this.cicaTooltip() as TemplateRef<any>,
+      );
+      this.tooltipView.detectChanges();
+      for (const rootNode of this.tooltipView.rootNodes) {
+        this.renderer.appendChild(tooltip, rootNode);
+      }
+    }
     const preferredPosition = this.tooltipPosition();
-
     this.renderer.addClass(tooltip, 'app-tooltip');
     this.renderer.addClass(tooltip, `app-tooltip-${preferredPosition}`);
-
-    this.renderer.setProperty(tooltip, 'textContent', this.cicaTooltip());
-
     this.renderer.appendChild(document.body, tooltip);
 
     this.tooltipElement = tooltip;
@@ -61,22 +82,23 @@ export class TooltipDirective implements OnDestroy {
     });
   }
 
-  private hide(): void {
+  hide(): void {
     if (!this.tooltipElement) {
       return;
     }
 
     const tooltip = this.tooltipElement;
+    const tooltipView = this.tooltipView;
+    this.tooltipView = undefined;
 
     this.renderer.removeClass(tooltip, 'app-tooltip-visible');
 
     setTimeout(() => {
-      if (tooltip.parentNode) {
-        this.renderer.removeChild(document.body, tooltip);
-      }
+      this.renderer.removeChild(document.body, tooltip);
+      tooltipView?.destroy();
     }, 100);
 
-    this.tooltipElement = undefined;
+    this.tooltipElement = null;
   }
 
   private positionTooltip(
@@ -114,6 +136,8 @@ export class TooltipDirective implements OnDestroy {
 
     let top: number;
     let left: number;
+
+    console.log(tooltipRect);
 
     switch (position) {
       case 'bottom':

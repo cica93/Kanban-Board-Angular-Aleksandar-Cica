@@ -35,7 +35,7 @@ export class FetchDataDirective<T> implements OnInit {
   ngOnInit(): void {
     if (!this.fetchDisabed()) {
       merge(
-        outputToObservable(this.becomeVisibleHtml().becomeVisible).pipe(
+        outputToObservable(this.becomeVisibleHtml().cicaBecomeVisible).pipe(
           filter(() => !this.loading && this.hasMore),
           tap(() => {
             this.slot++;

@@ -1,0 +1,15 @@
+@for (item of items(); track $index) {
+  <div class="col-{{ columns() }}">
+    <ng-container
+      [ngTemplateOutlet]="tempate()"
+      [ngTemplateOutletContext]="{ item: item, index: $index }"
+    >
+    </ng-container>
+  </div>
+} @empty {
+  @if (notFoundText()) {
+    <div class="empty-content">
+      {{ notFoundText() }}
+    </div>
+  }
+}

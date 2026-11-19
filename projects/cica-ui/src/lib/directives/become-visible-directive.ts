@@ -13,7 +13,7 @@ export class BecomeVisibleDirective {
   rootMargin = input<CssSize>('20px');
   threshold = input<number>(0.1);
 
-  becomeVisible = output<void>();
+  cicaBecomeVisible = output<void>();
 
   private observer?: IntersectionObserver;
 
@@ -28,7 +28,7 @@ export class BecomeVisibleDirective {
       this.observer = new IntersectionObserver(
         (entries) => {
           if (entries.some((entry) => entry.isIntersecting)) {
-            this.becomeVisible.emit();
+            this.cicaBecomeVisible.emit();
           }
         },
         {

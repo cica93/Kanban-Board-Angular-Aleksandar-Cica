@@ -29,12 +29,12 @@ import {
   destroy,
   SUBMIT_FORM_TOKEN_LOAD,
   ModalComponent,
+  CollectionsComponent,
 } from 'cica-ui';
 import { SearchInputComponent } from '@components/shared/search-input/search-input.component';
-import { HeaderComponent } from '@components/shared/header/header.component';
 import { ScrollTopComponent } from '@components/shared/scroll-top/scroll-top.component';
 import { successModalEvent } from '@components/shared/base-dialog/base-dialog.component';
-import { IonButton, IonCol, IonGrid, IonIcon, IonRow, IonSpinner } from '@ionic/angular';
+import { IonButton, IonIcon, IonSpinner } from '@ionic/angular';
 import { add } from 'ionicons/icons';
 import { injectInfiniteQuery, injectMutation } from '@tanstack/angular-query-experimental';
 import { QueryClient } from '@tanstack/angular-query-experimental';
@@ -50,12 +50,9 @@ const limit = 5;
     DragDropModule,
     BecomeVisibleDirective,
     SearchInputComponent,
-    HeaderComponent,
     ScrollTopComponent,
-    IonGrid,
-    IonRow,
-    IonCol,
     IonSpinner,
+    CollectionsComponent,
     ModalDirective,
   ],
   templateUrl: './board.component.html',
@@ -147,10 +144,7 @@ export class BoardComponent {
     mutationFn: ({ id, version }: Task) => firstValueFrom(this.taskService.delete(id, version)),
   }));
 
-  async deleteTask(event: {
-    task: Task;
-    modal: ComponentRef<ModalComponent>;
-  }): Promise<void> {
+  async deleteTask(event: { task: Task; modal: ComponentRef<ModalComponent> }): Promise<void> {
     this.dismissMenu();
     this.deleteTaskMutation.mutate(event.task, {
       onSuccess: async () => {

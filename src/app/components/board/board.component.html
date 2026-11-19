@@ -1,80 +1,85 @@
-<ion-grid>
-  <ion-row>
-    <ion-col>
-      <app-header>
-        <app-search-input
-          [autoFocus]="true"
-          [value]="searchValue()"
-          (valueChange)="changeSearchValue($event)"
-          [placeholder]="'Search'"
-        />
-        <ion-button  
-        [headerText]="'Create task'"
-        cicaModal
-        [confirmLabel]="'Create'"
-        class="cursor-pointer"
-        (onSuccess)="onCreate()"
-        >
-          <ion-icon
-            slot="start"
-            [icon]="addIcon"
-          ></ion-icon>
-          Create Task
-        </ion-button>
-      </app-header>
-    </ion-col>
-  </ion-row>
-</ion-grid>
-@let loading = tasksQuery.isLoading();
-@if (loading) {
-  <div
-    class="fixed top-50 left-50 align-items-center justify-content-center"
-    style="z-index: 100"
-  >
-    <ion-spinner></ion-spinner>
+<div class="padding-16">
+  <div class="serach-wrapper">
+    <app-search-input
+      [value]="searchValue()"
+      (valueChange)="changeSearchValue($event)"
+      [placeholder]="'Search'"
+    />
+    <ion-button
+      [headerText]="'Create task'"
+      cicaModal
+      [confirmLabel]="'Create'"
+      class="cursor-pointer"
+      (onSuccess)="onCreate()"
+    >
+      <ion-icon
+        slot="start"
+        [icon]="addIcon"
+      ></ion-icon>
+      Create Task
+    </ion-button>
   </div>
-} @else {
-  <div
-    style="overflow-y: auto; max-height: 80vh"
-    #mainContainer
-  >
-    <div class="grid-container">
-      @for (status of TASK_STATUSES; track status; let i = $index) {
-        @let tasksByStatus = tasks()[i]?.tasks ?? [];
-        <div class="column-wrapper">
-          <h2>
-            {{ status }}
+  @let loading = tasksQuery.isLoading();
+  @if (loading) {
+    <div
+      class="fixed top-50 left-50 align-items-center justify-content-center"
+      style="z-index: 100"
+    >
+      <ion-spinner></ion-spinner>
+    </div>
+  } @else {
+    <div
+      style="overflow-y: auto; max-height: 80vh"
+      #mainContainer
+    >
+      <cica-collections [items]="TASK_STATUSES">
+        <ng-template
+          #itemTemplate
+          let-item="item"
+          let-index="index"
+        >
+          @let tasksByStatus = tasks()[index]?.tasks ?? [];
+          <h2 class="text-center">
+            {{ item }}
           </h2>
           <div
             cdkDropList
-            [id]="status"
+            [id]="item"
             [cdkDropListData]="tasksByStatus"
             [cdkDropListConnectedTo]="TASK_STATUSES"
-            (cdkDropListDropped)="onDrop($event, status)"
+            (cdkDropListDropped)="onDrop($event, item)"
           >
-            @for (task of tasksByStatus; track $index) {
-              <app-task-card
-                cdkDrag
-                cdkDragBoundary="#main-container"
-                [menuOpen]="menuIsOpen()[task.id] ?? false"
-                (openMenuEvent)="openMenu(task.id)"
-                (dismissMenuEvent)="dismissMenu()"
-                [cdkDragData]="task"
-                [task]="task"
-                (onDelete)="deleteTask($event)"
-                (onEdit)="onEdit()"
-              />
-            }
+            <cica-collections
+              [items]="tasksByStatus"
+              [columns]="1"
+            >
+              <ng-template
+                #itemTemplate
+                let-item="item"
+              >
+                <app-task-card
+                  cdkDrag
+                  cdkDragBoundary="#main-container"
+                  [menuOpen]="menuIsOpen()[item.id] ?? false"
+                  (openMenuEvent)="openMenu(item.id)"
+                  (dismissMenuEvent)="dismissMenu()"
+                  [cdkDragData]="item"
+                  [task]="item"
+                  (onDelete)="deleteTask($event)"
+                  (onEdit)="onEdit()"
+                />
+              </ng-template>
+            </cica-collections>
           </div>
-        </div>
-      }
-    </div>
+        </ng-template>
+      </cica-collections>
 
-    <div
-      (cicaBecomeVisible)="loadMore()"
-      [threshold]="0.8"
-      style="visibility: hiden; transform: translateY(-40px); z-index: 100"
-    ></div>
-  </div>
-}
-<app-scroll-top />
+      <div
+        (cicaBecomeVisible)="loadMore()"
+        [threshold]="0.5"
+        style="visibility: hidden; transform: translateY(-40px); z-index: 100"
+      ></div>
+    </div>
+  }
+  <app-scroll-top />
+</div>

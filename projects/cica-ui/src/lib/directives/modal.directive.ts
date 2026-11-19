@@ -2,11 +2,9 @@ import {
   ApplicationRef,
   ComponentRef,
   Directive,
-  DestroyRef,
-  ElementRef,
+  EnvironmentInjector,
   inject,
   input,
-  OnInit,
   output,
   TemplateRef,
   Injector,
@@ -33,11 +31,13 @@ export const SUBMIT_FORM_TOKEN = new InjectionToken<Type<SubmitForm>>('app.confi
 
 @Directive({
   selector: '[cicaModal]',
+  host: {
+    '(click)': 'handleClick()',
+  },
 })
-export class ModalDirective implements OnInit {
-  private readonly el = inject(ElementRef<HTMLElement>);
+export class ModalDirective {
   private readonly appRef = inject(ApplicationRef);
-  private readonly destroyRef = inject(DestroyRef);
+  private readonly environmentInjector = inject(EnvironmentInjector);
   private readonly injector = inject(Injector);
   private readonly modalService = inject(ModalService);
   initValue = input<any>();
@@ -59,53 +59,47 @@ export class ModalDirective implements OnInit {
   componentRef?: ComponentRef<ModalComponent>;
   private submitFormComponentRef?: ComponentRef<SubmitForm<any, any>>;
 
-  ngOnInit(): void {
-    const handleClick = async () => {
-      if (this.destroyRef.destroyed) {
-        return;
-      }
-      const submitFormToken =
-        !this.isDelete() && (await this.injector.get(SUBMIT_FORM_TOKEN_LOAD, { optional: true })());
+  async handleClick(): Promise<void> {
+    const submitFormToken =
+      !this.isDelete() && (await this.injector.get(SUBMIT_FORM_TOKEN_LOAD, null)?.());
 
-      if (submitFormToken) {
-        const { componentRef, submitFormRef } = await this.modalService.openEditModal({
-          modalOptions: {
-            modalPosition: 'right',
-            confirmLabel: this.confirmLabel(),
-            headerText: this.headerText(),
-          },
-        });
-        componentRef.instance.onCancel.subscribe(() => {
-          this.modalService.close(componentRef);
-        });
-        componentRef.instance.onConfirm.subscribe(() => {
-          submit(submitFormRef.instance.form);
-        });
-        submitFormRef.instance.onClose.subscribe(() => {
-          this.modalService.close(componentRef);
-        });
-      } else {
-        const modalRef = this.modalService.openDeleteModal({
-          modalOptions: {
-            modalPosition: 'center',
-            confirmLabel: this.confirmLabel(),
-            headerText: this.headerText(),
-          },
-        });
+    if (submitFormToken) {
+      const { componentRef, submitFormRef } = await this.modalService.openEditModal({
+        environmentInjector: this.environmentInjector,
+        injector: this.injector,
+        modalOptions: {
+          modalPosition: 'right',
+          confirmLabel: this.confirmLabel(),
+          headerText: this.headerText(),
+          initValue: this.initValue(),
+        },
+      });
+      componentRef.instance.onCancel.subscribe(() => {
+        this.modalService.close(componentRef);
+      });
+      componentRef.instance.onConfirm.subscribe(() => {
+        submit(submitFormRef.instance.form);
+      });
+      submitFormRef.instance.onClose.subscribe(() => {
+        this.modalService.close(componentRef);
+      });
+    } else {
+      const modalRef = this.modalService.openDeleteModal({
+        modalOptions: {
+          modalPosition: 'center',
+          confirmLabel: this.confirmLabel(),
+          headerText: this.headerText(),
+          content: this.cicaModal(),
+        },
+      });
 
-        modalRef.instance.onCancel.subscribe(() => {
-          closeModal(this.appRef, modalRef, this.submitFormComponentRef);
-        });
-        modalRef.instance.onConfirm.subscribe(() => {
-          closeModal(this.appRef, modalRef, this.submitFormComponentRef);
-          this.onConfirm.emit({ componentRef: modalRef, appRef: this.appRef });
-        });
-      }
-    };
-
-    this.el.nativeElement.addEventListener('click', handleClick);
-    this.destroyRef.onDestroy(() => {
-      this.el.nativeElement.removeEventListener('click', handleClick);
-    });
+      modalRef.instance.onCancel.subscribe(() => {
+        closeModal(this.appRef, modalRef, this.submitFormComponentRef);
+      });
+      modalRef.instance.onConfirm.subscribe(() => {
+        closeModal(this.appRef, modalRef, this.submitFormComponentRef);
+        this.onConfirm.emit({ componentRef: modalRef, appRef: this.appRef });
+      });
+    }
   }
 }

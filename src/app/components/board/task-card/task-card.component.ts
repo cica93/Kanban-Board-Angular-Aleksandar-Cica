@@ -2,45 +2,35 @@ import { Component, ComponentRef, computed, input, output, signal } from '@angul
 import { BADGE_COLOR_MAP, TASK_STATUSES, Task } from '@service/abstract.task.service';
 import { SlicePipe } from '@angular/common';
 import { AvatarGroupComponent } from '@components/shared/avatar-group/avatar-group.component';
-import {
-  IonBadge,
-  IonButton,
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardTitle,
-  IonIcon,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonPopover,
-  IonAvatar,
-} from '@ionic/angular';
 
 import { createOutline, ellipsisVertical, trashOutline } from 'ionicons/icons';
 import { User } from '@service/user.service';
-import { TooltipDirective } from '@directives/tooltip.directive';
-import { ModalComponent, ModalDirective, SUBMIT_FORM_TOKEN_LOAD } from 'cica-ui';
+import {
+  ListComponent,
+  ListItemComponent,
+  ModalComponent,
+  ModalDirective,
+  SUBMIT_FORM_TOKEN_LOAD,
+  TooltipDirective,
+  MenuButtonComponent,
+  CardComponent,
+} from 'cica-ui';
+import { IonAvatar, IonBadge, IonIcon } from '@ionic/angular';
 
 @Component({
   selector: 'app-task-card',
   imports: [
-    IonIcon,
     AvatarGroupComponent,
     SlicePipe,
-    IonCard,
-    IonCardContent,
-    IonCardTitle,
-    IonButton,
-    IonCardHeader,
-    IonPopover,
-    IonList,
-    IonItem,
-    IonLabel,
-    IonBadge,
-    IonAvatar,
     TooltipDirective,
+    IonAvatar,
     ModalDirective,
+    ListComponent,
+    IonIcon,
+    ListItemComponent,
+    IonBadge,
+    CardComponent,
+    MenuButtonComponent,
   ],
   templateUrl: './task-card.component.html',
   providers: [
@@ -100,17 +90,14 @@ export class TaskCardComponent {
   }
 
   onCancel(): void {
-    this.menuIsHidden.set(false);
     this.dismissMenuEvent.emit();
   }
 
   deleteTask(): void {
     this.onDelete.emit({ task: this.task(), modal: this.modal! });
-    this.menuIsHidden.set(false);
   }
 
   modalOpenEvent(event: ComponentRef<ModalComponent>): void {
     this.modal = event;
-    this.menuIsHidden.set(true);
   }
 }
