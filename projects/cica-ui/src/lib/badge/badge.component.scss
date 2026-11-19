@@ -1,0 +1,47 @@
+@use '../../_variables' as vars;
+
+:host {
+  display: inline-flex;
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: vars.$space-xxs vars.$space-s;
+    border-radius: calc(vars.$space-xxs + 0.5 * vars.$space-s);
+    font-size: vars.$space-s;
+    font-weight: 600;
+    line-height: 1.4;
+    white-space: nowrap;
+
+    &.success {
+        color: #166534;
+        background: #dcfce7;
+    }
+
+    &.info {
+        color: #1e40af;
+        background: #dbeafe;
+    }
+
+    &.danger {
+        color: #991b1b;
+        background: #fee2e2;
+    }
+
+    &.warning {
+        color: #92400e;
+        background: #fef3c7;
+    }
+
+    &.dark {
+        color: #fff;
+        background: #343a40;
+    }
+
+    &.light {
+        color: #343a40;
+        background: #f1f3f5;
+    }
+  }
+
+}

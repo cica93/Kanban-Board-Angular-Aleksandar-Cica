@@ -11,4 +11,5 @@ export * from './lib/directives/fetch-data.directive';
 export * from './lib/directives/first-focus.directive';
 export * from './lib/directives/tooltip.directive';
 export * from './lib/directives/visibility-change-directive';
+export * from './lib/directives//click-outside.directive';
 //# sourceMappingURL=public-api.d.ts.map

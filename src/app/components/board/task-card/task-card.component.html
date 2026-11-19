@@ -1,35 +1,30 @@
 <cica-card [cardTitle]="task().title">
-  <ion-badge
+  <cica-badge
     slot="cardTitle"
-    [color]="taskSeverityClass()"
-    >{{ task().taskPriority }}</ion-badge
-  >
+    [type]="taskSeverityClass()"
+    >{{ task().taskPriority }}</cica-badge>
   <ng-content slot="conrent">
     <p>{{ task().description }}</p>
     <div class="flex flex-column justify-content-space-between margin-top-md">
       @let users = task().users;
-      <app-avatar-group>
+      <cica-avatar-group>
         @for (user of users | slice: 0 : maxVisibleImages; track user.id) {
-          <ion-avatar
+          <cica-avatar
+            class="cursor-pointer"
             [cicaTooltip]="user.fullName"
+            [size]="'sm'"
             [tooltipPosition]="'top'"
-            class="avatar cursor-pointer"
-          >
-            {{ user.fullName | slice: 0 : 1 }}
-          </ion-avatar>
+          >{{user.fullName | slice: 0:1}}
+          </cica-avatar>
         }
         @let length = users.length;
         @if (length > maxVisibleImages) {
-          <ion-avatar>{{ length - maxVisibleImages }}</ion-avatar>
+          <cica-avatar />
         }
-      </app-avatar-group>
+      </cica-avatar-group>
 
-      <cica-menu-button
-        [isOpen]="menuOpen()"
-        [isHidden]="menuIsHidden()"
-        (dropdownTrigger)="openMenuEvent.emit(); menuIsHidden.set(false)"
-      >
-        <cica-ui-list (click)="menuIsHidden.set(true)">
+      <cica-menu-button [(isOpen)]="isOpen">
+        <cica-ui-list (click)="isOpen.set(false)">
           <cica-ui-list-item
             [button]="true"
             [headerText]="'Edit task'"
@@ -37,15 +32,10 @@
             [confirmLabel]="'Edit'"
             [initValue]="task()"
             (onSuccess)="onEdit.emit(this.task())"
-            (onCancel)="onCancel()"
-            (modalOpenEvent)="modalOpenEvent($event)"
             class="cursor-pointer"
           >
-            <span slot="start">
-              <ion-icon
-                slot="start"
-                [icon]="createOutlineIcon"
-              ></ion-icon>
+            <span slot="start" [appSvgIcon]="'edit'">
+                  
             </span>
 
             <strong>Edit</strong>
@@ -59,14 +49,8 @@
             [confirmLabel]="'Delete'"
             class="cursor-pointer"
             (onConfirm)="deleteTask()"
-            (onCancel)="onCancel()"
-            (modalOpenEvent)="modalOpenEvent($event)"
           >
-            <span slot="start">
-              <ion-icon
-                slot="start"
-                [icon]="trashOutlineIcon"
-              ></ion-icon>
+            <span slot="start" class="icon" [appSvgIcon]="'delete'">
             </span>
 
             <strong>Delete</strong>
@@ -76,3 +60,4 @@
     </div>
   </ng-content>
 </cica-card>
+

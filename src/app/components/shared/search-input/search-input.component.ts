@@ -1,16 +1,14 @@
 import { Component, effect, input, model, output, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { DebounceInputDirective } from 'cica-ui';
-import { search } from 'ionicons/icons';
+import { DebounceInputDirective, FirstFocusDirective } from 'cica-ui';
 import { InputComponent } from 'cica-ui';
 
 @Component({
   selector: 'app-search-input',
-  imports: [DebounceInputDirective, FormsModule, InputComponent],
+  imports: [DebounceInputDirective, FormsModule, InputComponent, FirstFocusDirective],
   templateUrl: './search-input.component.html',
 })
 export class SearchInputComponent {
-  searchIcon = search;
   input = viewChild.required<InputComponent>('searchInput');
   autoFocus = input(false);
   placeholder = input('');

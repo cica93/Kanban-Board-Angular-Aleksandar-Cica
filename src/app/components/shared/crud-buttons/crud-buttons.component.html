@@ -1,55 +1,44 @@
 @if (showEditButton()) {
-  <ion-button
+  <button
     (click)="editEntity()"
-    [size]="'small'"
     cicaTooltip="Edit {{ entityName() }}"
     [tooltipPosition]="'right'"
+    [tooltipDisabled]="!!editText()"
+    class="primary"
   >
-    <ion-icon
-      slot="icon-only"
-      [icon]="createOutlineIcon"
-    ></ion-icon>
-  </ion-button>
+  <span [appSvgIcon]="'edit'"></span><span>{{editText()}}</span>
+  </button>
 }
 @if (showCreateButton()) {
-  <ion-button
+  <button
     (click)="createEntity()"
-    [size]="'small'"
     cicaTooltip="Create {{ entityName() }}"
     [tooltipPosition]="'right'"
+    [tooltipDisabled]="!!createText()"
+    class="primary"
   >
-    <ion-icon
-      slot="icon-only"
-      [icon]="addIcon"
-    ></ion-icon>
-  </ion-button>
+   <span [appSvgIcon]="'create'"></span><span>{{createText()}}</span>
+  </button>
 }
 
 @if (showDeleteButton()) {
-  <ion-button
+  <button
     cicaTooltip="Delete {{ entityName() }}"
-    [size]="'small'"
     [tooltipPosition]="'right'"
-    [color]="'danger'"
+    [tooltipDisabled]="!!deleteText()"
     (click)="deleteEntity()"
+    class="danger"
   >
-    <ion-icon
-      slot="icon-only"
-      [icon]="trashOutlineIcon"
-    ></ion-icon>
-  </ion-button>
+  <span [appSvgIcon]="'delete'"></span><span>{{deleteText()}}</span>
+  </button>
 }
 
 @if (showClearButton()) {
-  <ion-button
-    [size]="'small'"
+  <button
     [cicaTooltip]="'Clear'"
-    [color]="'danger'"
     (click)="close()"
+    class="danger"
   >
-    <ion-icon
-      slot="icon-only"
-      [icon]="closeIcon"
-    ></ion-icon>
-  </ion-button>
+  <span [appSvgIcon]="'close'"></span>
+  </button>
 }

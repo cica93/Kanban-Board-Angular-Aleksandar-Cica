@@ -30,26 +30,16 @@ import { AsyncPipe } from '@angular/common';
 import { UserService } from '@service/user.service';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { IonInput } from '@ionic/angular/ion-input';
-import { IonItem, IonList, IonTextarea } from '@ionic/angular';
 import { SelectComponent } from '@components/board/select/select.component';
-import { SUBMIT_FORM_TOKEN, SubmitForm } from 'cica-ui';
+import { InputComponent, SUBMIT_FORM_TOKEN, SubmitForm } from 'cica-ui';
 
 export type NoTUpdatableTaskFields = 'id' | 'taskOrder' | 'version' | 'createdBy' | 'updatedBy';
 export type TaskForm = Omit<Task, NoTUpdatableTaskFields>;
 @Component({
   selector: 'app-task-form',
-  imports: [
-    FormRoot,
-    FormField,
-    SelectComponent,
-    AsyncPipe,
-    IonInput,
-    IonItem,
-    IonList,
-    IonTextarea,
-  ],
+  imports: [FormRoot, FormField, SelectComponent, AsyncPipe, InputComponent],
   templateUrl: './task-form.component.html',
+  styleUrl: './task-form.component.scss',
   host: {
     class: 'h-full',
   },

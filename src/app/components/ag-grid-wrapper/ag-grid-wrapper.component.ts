@@ -188,6 +188,7 @@ export class AgGridWrapperComponent<T> {
   }
 
   preventBrowserContextMenu(event: PointerEvent): void {
-    event.preventDefault();
+    console.log(event);
+    // event.preventDefault();
   }
 }

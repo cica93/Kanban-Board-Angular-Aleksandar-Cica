@@ -1,8 +1,4 @@
 @use 'cica-ui/styles.scss';
-
-@import '@ionic/angular/css/core.css';
-@import '@ionic/angular/css/normalize.css';
-@import '@ionic/angular/css/typography.css';
 @import url(https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap);
 @import '@ng-select/ng-select/themes/default.theme.css';
 
@@ -13,9 +9,12 @@
   --top-sidebar-height: 62px;
   --sidebar-header-height: 120px;
   --sidebar-dark: rgb(17, 12, 1);
-  --sidebar-primary: var(--ion-color-primary);
+  --sidebar-primary: rgb(0, 98, 255);
   --navigation-link-space: 8px;
   --dropdown-menu-padding: 4px;
+  --button-font-size: 14px;
+  --button-horizontal-padding: 6px;
+  --button-vertical-padding: 4px;
 }
 
 .sidebar.sidebar-position-left.sidebar-size-md {
@@ -32,41 +31,8 @@
   grid-template-rows: var(--top-sidebar-height) 1fr;
 }
 
-.invalid-input.touched-input {
-  .helper-text {
-    color: red !important;
-  }
-}
 
-.fixed {
-  position: fixed;
-}
 
-.top-50 {
-  top: 50%;
-}
-
-.left-50 {
-  left: 50%;
-}
-
-ion-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.avatar {
-  display: flex;
-  align-items: center;
-  width: 40px;
-  height: 40px;
-  justify-content: center;
-  background: var(--ion-color-light);
-  color: var(--ion-color-dark);
-  border: 2px solid var(--ion-color-dark);
-  font-weight: 600;
-}
 
 html {
   height: 100%;

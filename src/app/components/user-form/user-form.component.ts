@@ -5,8 +5,8 @@ import {
   addressSchema,
 } from '../address-form/address-form.component';
 import { apply, form, FormRoot, minLength, required } from '@angular/forms/signals';
-import { SUBMIT_FORM_TOKEN, SubmitForm } from '../shared/base-dialog/base-dialog.component';
 import { Subject } from 'rxjs';
+import { SUBMIT_FORM_TOKEN, SubmitForm } from 'cica-ui';
 
 export type AddressFormInput = Omit<Address, 'id'>;
 

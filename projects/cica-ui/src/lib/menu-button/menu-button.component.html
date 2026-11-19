@@ -1,11 +1,21 @@
-<div class="dropdown">
-  <button
-    type="button"
+<div class="dropdown" (cicaClickOutside)="isOpen.set(false)">
+  <div   
     class="dropdown-trigger"
-    (click)="dropdownTrigger.emit()"
+    (click)="isOpen.set(true)"
     aria-label="Open menu"
-    [attr.aria-expanded]="isOpen()"
-  >
+    [attr.aria-expanded]="isOpen()">
+    <ng-container [ngTemplateOutlet]="trigerTempalate() ?? default"></ng-container>
+</div>
+
+  @if (isOpen()) {
+    <div class="dropdown-menu">
+      <ng-content />
+    </div>
+  }
+</div>
+
+<ng-template #default>
+    <span>
     <svg
       width="20"
       height="20"
@@ -29,11 +39,5 @@
         r="2"
       />
     </svg>
-  </button>
-
-  @if (isOpen()) {
-    <div class="dropdown-menu" [class.hidden]="isHidden()">
-      <ng-content />
-    </div>
-  }
-</div>
+  </span>
+</ng-template>

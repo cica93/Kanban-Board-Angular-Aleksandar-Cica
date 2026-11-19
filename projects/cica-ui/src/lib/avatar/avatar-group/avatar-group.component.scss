@@ -1,0 +1,21 @@
+:host {
+  display: inline-flex;
+  align-items: center;
+
+  ::ng-deep cica-avatar {
+    position: relative;
+    margin-left: -12px;
+    transition:
+      transform 0.2s ease,
+      margin 0.2s ease;
+
+    &:first-child {
+      margin-left: 0;
+    }
+
+    &:hover {
+      z-index: 100 !important;
+      transform: translateY(-3px) scale(1.08);
+    }
+  }
+}

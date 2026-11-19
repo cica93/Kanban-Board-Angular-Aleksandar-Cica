@@ -1,12 +1,11 @@
-import { Component, model, output } from '@angular/core';
+import { Component, input, model, output } from '@angular/core';
 import { TooltipDirective } from 'cica-ui';
-import { IonButton, IonIcon } from '@ionic/angular';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
 import { ICellRendererParams } from 'ag-grid-community';
-import { createOutline, trashOutline, add, close } from 'ionicons/icons';
+import { SvgIconDirective } from '../svg-icon.directive';
 
 @Component({
-  imports: [TooltipDirective, IonButton, IonIcon],
+  imports: [TooltipDirective, SvgIconDirective],
   selector: 'app-crud-buttons',
   styleUrl: './crud-buttons.component.scss',
   templateUrl: './crud-buttons.component.html',
@@ -34,9 +33,6 @@ export class CrudButtonsComponent implements ICellRendererAngularComp {
     this.createClickedFunction = params.createClickedFunction;
   }
 
-  protected createOutlineIcon = createOutline;
-  protected trashOutlineIcon = trashOutline;
-  protected addIcon = add;
   protected closeIcon = close;
   private editClickedFunction: (a: any) => void = () => {};
   private deleteClickedFunction: (a: any) => void = () => {};
@@ -53,6 +49,10 @@ export class CrudButtonsComponent implements ICellRendererAngularComp {
   showClearButton = model(false);
   showEditButton = model(true);
   showCreateButton = model(false);
+
+  deleteText = input<string | undefined>();
+  editText = input<string | undefined>();
+  createText = input<string | undefined>();
 
   editEntity(): void {
     this.editClickedFunction(this.entity());

@@ -1,5 +1,5 @@
 {
-  "name": "cica-ui",
+  "name": "cica",
   "version": "0.0.6",
   "peerDependencies": {
     "@angular/common": "^21.0.0 || ^22.0.0",

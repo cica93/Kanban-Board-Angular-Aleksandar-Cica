@@ -22,6 +22,7 @@ export class TooltipDirective implements OnDestroy {
   cicaTooltip = input.required<string | TemplateRef<any>>();
   customTrigger = input<boolean>(false);
   tooltipPosition = input<'top' | 'bottom' | 'left' | 'right'>('top');
+  tooltipDisabled = input<boolean>(false);
 
   private tooltipElement: HTMLElement | null = null;
   private tooltipView?: EmbeddedViewRef<any>;
@@ -32,7 +33,7 @@ export class TooltipDirective implements OnDestroy {
   private readonly viewContainerRef = inject(ViewContainerRef);
 
   onMouseEnter(): void {
-    if (!this.customTrigger()) {
+    if (!this.customTrigger() && !this.tooltipDisabled()) {
       this.clearTimeouts();
       this.showTimeout = setTimeout(() => {
         this.show();
@@ -41,7 +42,7 @@ export class TooltipDirective implements OnDestroy {
   }
 
   onMouseLeave(): void {
-    if (!this.customTrigger()) {
+    if (!this.customTrigger() && !this.tooltipDisabled()) {
       this.clearTimeouts();
       this.hideTimeout = setTimeout(() => {
         this.hide();

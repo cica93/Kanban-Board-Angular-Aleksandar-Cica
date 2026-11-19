@@ -1,7 +1,6 @@
 import { Component, effect, input } from '@angular/core';
 import { FieldTree, FormField, required, schema } from '@angular/forms/signals';
 import { FirstFocusDirective } from 'cica-ui';
-import { IonInput, IonList, IonItem } from '@ionic/angular';
 
 export interface Address {
   id: number;
@@ -12,7 +11,7 @@ export interface Address {
 
 @Component({
   selector: 'app-address-form',
-  imports: [FirstFocusDirective, FormField, IonInput, IonList, IonItem],
+  imports: [FirstFocusDirective, FormField],
   templateUrl: './address-form.component.html',
 })
 export class AddressFormComponent {

@@ -23,7 +23,6 @@ import { EMPTY } from 'rxjs/internal/observable/empty';
 import { provideSignalFormsConfig } from '@angular/forms/signals';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { GlobalErrorHandler } from '@service/error.handler.service';
-import { provideIonicAngular } from '@ionic/angular';
 import { provideTanStackQuery, QueryClient } from '@tanstack/angular-query-experimental';
 import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
 
@@ -74,9 +73,6 @@ export const appConfig: ApplicationConfig = {
       }),
       deps: [HttpLink],
     },
-    provideIonicAngular({
-      mode: 'ios',
-    }),
     provideAppInitializer(() => {
       const securityService = inject(SecurityService);
       if (!JwtUtils.isTokenValid()) {

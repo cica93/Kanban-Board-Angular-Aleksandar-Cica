@@ -1,13 +1,14 @@
-import { Component, input, output } from '@angular/core';
+import { Component, contentChild, model, TemplateRef } from '@angular/core';
+import { ClickOutsideDirective } from '../directives/click-outside.directive';
+import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
-  imports: [],
+  imports: [NgTemplateOutlet, ClickOutsideDirective],
   selector: 'cica-menu-button',
   styleUrl: './menu-button.component.scss',
   templateUrl: './menu-button.component.html',
 })
 export class MenuButtonComponent {
-  isOpen = input<boolean>(false);
-  isHidden = input<boolean>(false);
-  dropdownTrigger = output<void>();
+  trigerTempalate = contentChild<TemplateRef<any>>('trigerTempalate');
+  isOpen = model(false);
 }

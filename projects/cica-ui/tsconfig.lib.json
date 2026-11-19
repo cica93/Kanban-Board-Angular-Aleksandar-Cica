@@ -9,8 +9,6 @@
     "declarationMap": true,
     "types": []
   },
-  "include": ["src/**/*.ts"],
-  "exclude": [
-    "**/*.spec.ts"
-  ]
+  "include": ["src/**/*.ts", "../../src/app/components/shared/svg-icon.directive.ts"],
+  "exclude": ["**/*.spec.ts"]
 }

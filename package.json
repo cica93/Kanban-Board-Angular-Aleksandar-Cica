@@ -23,12 +23,10 @@
     "@angular/platform-browser-dynamic": "^22.1.6",
     "@angular/router": "^22.1.6",
     "@apollo/client": "^4.3.8",
-    "@ionic/angular": "^9.0.3",
     "@ng-select/ng-select": "^24.0.2",
     "@stomp/stompjs": "^7.3.0",
     "@tanstack/angular-query-experimental": "^5.102.8",
     "@types/jasmine": "4.3.1",
-    "@types/node": "12.20.55",
     "ag-grid-angular": "^36.2.0",
     "ag-grid-community": "^36.2.0",
     "cica-ui": "file:dist/cica-ui",
@@ -36,7 +34,6 @@
     "quill": "2.0.2",
     "rxjs": "~7.8.2",
     "sockjs-client": "^1.6.1",
-    "sockjs-client-node": "^1.0.0",
     "tslib": "^2.5.0"
   },
   "devDependencies": {
@@ -48,11 +45,10 @@
     "@openapitools/openapi-generator-cli": "^2.40.1",
     "@schematics/angular": "^22.1.5",
     "@types/jasmine": "~4.3.1",
-    "@types/node": "^16.18.67",
+    "@types/node": "^22.12.0",
     "@types/sockjs-client": "^1.5.4",
     "apollo-angular": "^14.2.0",
     "buffer": "^6.0.3",
-    "codelyzer": "^0.0.28",
     "istanbul-lib-instrument": "^6.0.3",
     "jasmine-core": "~4.6.0",
     "jsdom": "^28.0.0",
@@ -64,10 +60,12 @@
     "ng-packagr": "^22.1.0",
     "postcss": "^8.4.49",
     "prettier": "^3.9.6",
-    "tailwindcss": "^3.4.17",
     "ts-node": "~8.3.0",
     "typescript": "~6.0.3",
-    "vitest": "^4.0.8",
-    "zod": "^4.4.3"
+    "vitest": "^4.0.8"
+  },
+  "overrides": {
+    "piscina": "^5.3.2",
+    "vite": "^8.1.6"
   }
 }

@@ -1,0 +1,31 @@
+:host {
+    display: inline-flex;
+    gap: 4px;
+    button {
+        border-radius: 6px;
+        padding-inline:0px;
+        padding-block:0px;
+        padding: var(--button-vertical-padding) var(--button-horizontal-padding);
+        display: flex;
+        gap: 4px;
+        align-items: center;
+        cursor: pointer;
+        font-size: var(--button-font-size);
+
+        &.danger {
+            background-color: #dc2626;;
+            color: azure;
+        }
+
+         &.primary {
+            background-color: var(--sidebar-primary);
+            border-color: #0d6efd;
+            color: azure;
+        }
+
+        &.success {
+            background-color: #15c48d;;
+            color: azure;
+        }
+    }
+}

@@ -1,9 +1,7 @@
 import { Component, ComponentRef, computed, input, output, signal } from '@angular/core';
 import { BADGE_COLOR_MAP, TASK_STATUSES, Task } from '@service/abstract.task.service';
 import { SlicePipe } from '@angular/common';
-import { AvatarGroupComponent } from '@components/shared/avatar-group/avatar-group.component';
 
-import { createOutline, ellipsisVertical, trashOutline } from 'ionicons/icons';
 import { User } from '@service/user.service';
 import {
   ListComponent,
@@ -14,23 +12,27 @@ import {
   TooltipDirective,
   MenuButtonComponent,
   CardComponent,
+  BadgeComponent,
+  AvatarComponent,
+  AvatarGroupComponent,
 } from 'cica-ui';
-import { IonAvatar, IonBadge, IonIcon } from '@ionic/angular';
+import { SvgIconDirective } from '@components/shared/svg-icon.directive';
 
 @Component({
   selector: 'app-task-card',
   imports: [
     AvatarGroupComponent,
+    AvatarComponent,
     SlicePipe,
     TooltipDirective,
-    IonAvatar,
     ModalDirective,
     ListComponent,
-    IonIcon,
     ListItemComponent,
-    IonBadge,
     CardComponent,
     MenuButtonComponent,
+    BadgeComponent,
+    SvgIconDirective,
+    SlicePipe,
   ],
   templateUrl: './task-card.component.html',
   providers: [
@@ -44,17 +46,11 @@ import { IonAvatar, IonBadge, IonIcon } from '@ionic/angular';
   ],
 })
 export class TaskCardComponent {
-  menuOpen = input<boolean>(false);
-  menuIsHidden = signal<boolean>(false);
-  openMenuEvent = output<void>();
-  dismissMenuEvent = output<void>();
+  isOpen = signal(false);
   protected selectedUser = signal<User | null>(null);
   protected userPopoverOpen = signal(false);
   protected menuEvent = signal<Event | null>(null);
   protected userMenuEvent = signal<Event | null>(null);
-  protected trashOutlineIcon = trashOutline;
-  protected createOutlineIcon = createOutline;
-  protected ellipsisVerticalCircleIcon = ellipsisVertical;
   protected readonly maxVisibleImages = 5;
   protected TASK_STATUSES = TASK_STATUSES;
   readonly task = input.required<Task>();
@@ -78,26 +74,7 @@ export class TaskCardComponent {
 
   constructor() {}
 
-  openMenu(event: Event) {
-    this.menuEvent.set(event);
-    this.openMenuEvent.emit();
-  }
-
-  openUserMenu(event: Event, user: User) {
-    this.selectedUser.set(user);
-    this.userMenuEvent.set(event);
-    this.userPopoverOpen.set(true);
-  }
-
-  onCancel(): void {
-    this.dismissMenuEvent.emit();
-  }
-
   deleteTask(): void {
     this.onDelete.emit({ task: this.task(), modal: this.modal! });
-  }
-
-  modalOpenEvent(event: ComponentRef<ModalComponent>): void {
-    this.modal = event;
   }
 }

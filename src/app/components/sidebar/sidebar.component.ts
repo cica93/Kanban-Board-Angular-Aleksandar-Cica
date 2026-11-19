@@ -1,7 +1,7 @@
 import { Component, input, OnInit, output, signal } from '@angular/core';
-import { IonAvatar } from '@ionic/angular';
 import { SlicePipe } from '@angular/common';
 import {
+  AvatarComponent,
   SidebarLinkComponent,
   SidebarLinkTemplateDirective,
   SidebarWrapperComponent,
@@ -15,9 +15,9 @@ export interface SidebarUser {
   imports: [
     SidebarLinkComponent,
     SidebarWrapperComponent,
-    IonAvatar,
     SlicePipe,
     SidebarLinkTemplateDirective,
+    AvatarComponent,
   ],
   selector: 'app-sidebar',
   styleUrl: './sidebar.component.scss',

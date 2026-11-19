@@ -1,7 +1,5 @@
-import { Component, inject, Injector, signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { User, UserService } from '@service/user.service';
-import { successModalEvent } from '@components/shared/base-dialog/base-dialog.component';
-import { openEditModal } from '@components/shared/modalUtills';
 import { CrudButtonsComponent } from '@components/shared/crud-buttons/crud-buttons.component';
 import {
   AgGridWrapperComponent,
@@ -105,8 +103,6 @@ export class UsersComponent {
     minWidth: 0,
   };
 
-  private readonly injector = inject(Injector);
-
   editUser(user?: User): void {
     console.log(user ?? this.selectedUser());
   }
@@ -133,16 +129,14 @@ export class UsersComponent {
     // ]);
   }
 
-  async openUserkDialog(user?: User): Promise<void> {
-    const dialog = await openEditModal(this.injector, user, user ? 'Edit user' : 'Create user');
-    this.addUser();
-    this.dialogCallBackFunction(dialog);
+  openUserkDialog(user?: User): void {
+    console.log(user);
+    // const dialog = await openEditModal(this.injector, user, user ? 'Edit user' : 'Create user');
+    // this.addUser();
+    // this.dialogCallBackFunction(dialog);
   }
 
-  async dialogCallBackFunction(dialog: HTMLIonModalElement): Promise<void> {
-    const { role } = await dialog.onWillDismiss();
-    if (role === successModalEvent) {
-      //this.resetTaskFilters();
-    }
+  dialogCallBackFunction(dialog: any): void {
+    console.log(dialog);
   }
 }

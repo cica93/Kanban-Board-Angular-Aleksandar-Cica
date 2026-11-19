@@ -6,7 +6,7 @@ import { TaskService } from '@service/task.service';
 import { TaskGraphQlService } from '@service/task.graphql.service';
 import { AbstractTaskService } from '@service/abstract.task.service';
 import { sidebarGuard } from './guards/sidebar.guard';
-import { SUBMIT_FORM_TOKEN_LOAD } from '@components/shared/base-dialog/base-dialog.component';
+import { SUBMIT_FORM_TOKEN_LOAD } from 'cica-ui';
 
 const loginGuard = () => {
   const security = inject(SecurityService);

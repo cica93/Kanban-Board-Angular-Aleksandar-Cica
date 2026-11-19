@@ -33,11 +33,11 @@ import {
 } from 'cica-ui';
 import { SearchInputComponent } from '@components/shared/search-input/search-input.component';
 import { ScrollTopComponent } from '@components/shared/scroll-top/scroll-top.component';
-import { successModalEvent } from '@components/shared/base-dialog/base-dialog.component';
-import { IonButton, IonIcon, IonSpinner } from '@ionic/angular';
-import { add } from 'ionicons/icons';
+
 import { injectInfiniteQuery, injectMutation } from '@tanstack/angular-query-experimental';
 import { QueryClient } from '@tanstack/angular-query-experimental';
+import { SvgIconDirective } from '@components/shared/svg-icon.directive';
+import { CrudButtonsComponent } from '@components/shared/crud-buttons/crud-buttons.component';
 
 const limit = 5;
 
@@ -45,16 +45,15 @@ const limit = 5;
   selector: 'app-board',
   imports: [
     TaskCardComponent,
-    IonButton,
-    IonIcon,
     DragDropModule,
     BecomeVisibleDirective,
     SearchInputComponent,
     ScrollTopComponent,
-    IonSpinner,
     CollectionsComponent,
     ModalDirective,
-  ],
+    SvgIconDirective,
+    CrudButtonsComponent
+],
   templateUrl: './board.component.html',
   styleUrl: './board.component.scss',
   providers: [
@@ -69,7 +68,6 @@ const limit = 5;
 })
 export class BoardComponent {
   hasMoreTasks = true;
-  addIcon = add;
   menuIsOpen = signal<{ [key: number]: boolean }>({});
   restart = signal(false);
   requestId = signal<string>(crypto.randomUUID());
@@ -178,26 +176,6 @@ export class BoardComponent {
       summary: 'Task created',
       detail: 'Success!',
     });
-  }
-
-  private async isSussessMoadalEvent(dialog: HTMLIonModalElement): Promise<boolean> {
-    const { role } = await dialog.onWillDismiss();
-    return role === successModalEvent;
-  }
-
-  async dialogCallBackFunction(
-    dialog: HTMLIonModalElement,
-    summary?: string,
-    detail?: string,
-  ): Promise<void> {
-    this.dismissMenu();
-    const isSussessMoadalEvent = await this.isSussessMoadalEvent(dialog);
-    if (isSussessMoadalEvent) {
-      this.resetTaskFilters();
-    }
-    if (summary && detail) {
-      (await this.messageService()).successEvent.next({ summary, detail });
-    }
   }
 
   dismissMenu(): void {

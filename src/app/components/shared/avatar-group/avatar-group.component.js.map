@@ -1,1 +1,0 @@
-{"version":3,"file":"avatar-group.component.js","sourceRoot":"","sources":["avatar-group.component.ts"],"names":[],"mappings":";AAAA,OAAO,EAAE,SAAS,EAAE,MAAM,eAAe,CAAC;AAQnC,IAAM,oBAAoB,GAA1B,MAAM,oBAAoB;CAAG,CAAA;AAAvB,oBAAoB;IANhC,SAAS,CAAC;QACT,OAAO,EAAE,EAAE;QACX,QAAQ,EAAE,kBAAkB;QAC5B,QAAQ,EAAE,+BAA+B;QACzC,WAAW,EAAE,+BAA+B;KAC7C,CAAC;GACW,oBAAoB,CAAG"}

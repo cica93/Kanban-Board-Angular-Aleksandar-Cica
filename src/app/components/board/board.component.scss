@@ -1,8 +1,12 @@
 .serach-wrapper {
+  --button-font-size: 18px;
+  --button-horizontal-padding: 8px;
+  --button-vertical-padding: 8px;
   display: flex;
   flex-direction: row;
 
   justify-content: space-between;
+  align-items: center;
   width: 100%;
   app-search-input {
     width: 33%;

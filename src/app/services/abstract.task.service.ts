@@ -12,11 +12,11 @@ export const TASK_STATUSES_OPTIONS = TASK_STATUSES.map((ts) => ({
   label: ts,
 }));
 
-const BADGE_COLORS = ['success', 'warning', 'danger'] as const;
-export type BadgeColor = (typeof BADGE_COLORS)[number];
+const BADGE_TYPE = ['success', 'warning', 'danger'] as const;
+export type BadgeColor = (typeof BADGE_TYPE)[number];
 
 export const BADGE_COLOR_MAP = Object.fromEntries(
-  TASK_PRIORITIES.map((priority, index) => [priority, BADGE_COLORS[index]]),
+  TASK_PRIORITIES.map((priority, index) => [priority, BADGE_TYPE[index]]),
 ) as Record<TaskPriority, BadgeColor>;
 
 export interface Task {

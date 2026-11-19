@@ -12,6 +12,10 @@ export * from './lib/menu-button/menu-button.component';
 export * from './lib/list/list.component';
 export * from './lib/list/list-item/list-item.component';
 export * from './lib/collections/collections.component';
+export * from './lib/badge/badge.component';
+export * from './lib/avatar/avatar/avatar.component';
+export * from './lib/avatar/avatar-group/avatar-group.component';
+
 export * from './lib/directives/modal.directive';
 export * from './lib/directives/tooltip.directive';
 export * from './lib/directives/debounce-input.directive';

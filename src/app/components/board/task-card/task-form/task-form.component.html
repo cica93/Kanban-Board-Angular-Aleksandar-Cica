@@ -1,32 +1,15 @@
-<form [formRoot]="form">
-  <ion-list class="form-group margin-md">
-    <ion-item>
-      @let titleErrors =
-        form.title().touched() && form.title().dirty() ? form.title().errors() : '';
-      <ion-input
+<form [formRoot]="form" class="center-content">
+      <cica-input
         [attr.id]="'title'"
-        labelPlacement="floating"
-        [helperText]="titleErrors"
+        [errorMessage]="form.title().errors()[0]?.message"
         [label]="'Title'"
-        placeholder="Enter title"
         [formField]="form.title"
-      ></ion-input>
-    </ion-item>
-    <ion-item>
-      @let descriptionErrors =
-        form.description().touched() && form.description().dirty()
-          ? form.description().errors()
-          : '';
-      <ion-textarea
-        [formField]="form.description"
-        labelPlacement="floating"
-        [helperText]="descriptionErrors"
-        label="Description"
-        placeholder="Enter description"
-      >
-      </ion-textarea>
-    </ion-item>
-    <ion-item>
+      ></cica-input>
+  
+      <textarea  placeholder="Enter description" [formField]="form.description" 
+      id="Description"></textarea>
+
+
       <app-select
         [id]="'task-status'"
         [items]="TASK_STATUSES_OPTIONS"
@@ -38,8 +21,6 @@
         [clearable]="false"
         [searchable]="false"
       />
-    </ion-item>
-    <ion-item>
       <app-select
         [id]="'task-priority'"
         [items]="[...TASK_PRIORITIES]"
@@ -49,8 +30,6 @@
         [clearable]="false"
         [searchable]="false"
       />
-    </ion-item>
-    <ion-item>
       @let users = (users$ | async) ?? [];
       <app-select
         [id]="'users'"
@@ -64,6 +43,5 @@
         [clearable]="false"
         [clearOnBackspace]="false"
       />
-    </ion-item>
-  </ion-list>
+   
 </form>
