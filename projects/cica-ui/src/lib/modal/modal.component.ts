@@ -52,7 +52,7 @@ export class ModalComponent {
       environmentInjector: this.environmentInjector,
       bindings: [inputBinding('initValue', () => clonedValue)],
     });
-    this.submitFormRef.instance.onClose.subscribe((result) => {
+    this.submitFormRef.instance.onSuccess.subscribe((result) => {
       if (result) {
         this.onSuccess.emit(result);
       }

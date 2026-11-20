@@ -11,7 +11,7 @@
   </div>
   <nav class="sidebar-nav">
   @if(showToggleButton()){
-    <button
+    <span
       (click)="toggleMenu()"
       class="sidebar-toggler"
       aria-label="Toggle Sidebar"
@@ -19,7 +19,7 @@
       <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="currentColor">
         <path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z"/>
       </svg>
-    </button>
+    </span>
   }
   <ng-content select="cica-sidebar-link" />
   </nav>

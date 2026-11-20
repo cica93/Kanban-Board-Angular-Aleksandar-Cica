@@ -199,17 +199,7 @@ ag-grid-wrapper {
   min-height: 400px;
 }
 
-html[data-sidebar-direction='horizontal'] {
-  app-sidebar app-sidebar-link:last-child .nav-label {
-    display: none;
-  }
-}
 
-ion-card-title {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 
 .form-group .input-wrapper:has(.left-icon) input {
   --input-left-pedding: 40px;

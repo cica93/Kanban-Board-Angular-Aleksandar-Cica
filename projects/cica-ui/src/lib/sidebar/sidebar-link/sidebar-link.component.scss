@@ -1,4 +1,5 @@
 @use '../../../_variables' as vars;
+@use '../../../colors' as colors;
 
 :host {
   .nav-item {
@@ -14,7 +15,7 @@
   }
 
   .nav-item .nav-link {
-    color: var(--sidebar-light, #eef2ff);
+    color: var(--sidebar-light, colors.$light-color);
     display: flex;
     gap: var(--navigation-link-space, vars.$space-s);
     white-space: nowrap;
@@ -22,14 +23,14 @@
     padding: var(--navigation-link-space, vars.$space-s);
     align-items: center;
     text-decoration: none;
-    border: 1px solid var(--sidebar-dark, #151a2d);
+    border: 1px solid var(--sidebar-dark, colors.$dark-color);
     transition: 0.4s ease;
     cursor: pointer;
   }
 
   .nav-item:is(:hover, .open) > .nav-link:not(.dropdown-title) {
     color: var(--sidebar-dark, #151a2d);
-    background-color: var(--sidebar-light, #eef2ff);
+    background-color: var(--sidebar-light, colors.$light-color);
   }
 
   .nav-item:has(.dropdown-menu):has(a.active) .nav-link:not(.dropdown-link),
@@ -69,7 +70,7 @@
     opacity: 1;
     z-index: 1001;
     pointer-events: auto;
-    background-color: var(--sidebar-dark, #151a2d);
+    background-color: var(--sidebar-dark, colors.$dark-color);
     border-top-right-radius: vars.$space-xs;
     border-bottom-right-radius: vars.$space-xs;
   }
@@ -144,7 +145,7 @@
 
 .dropdown-menu .nav-item .nav-link,
 .dropdown-menu .nav-item .nav-link .dropdown-title {
-  color: var(--sidebar-light, #eef2ff);
+  color: var(--sidebar-light, colors.$light-color);
   padding: vars.$space-xs vars.$space-s;
 }
 
@@ -170,7 +171,7 @@
   .nav-item:has(.dropdown-menu):has(a.active):not(:hover) .nav-link:not(.dropdown-link) {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
-    border-bottom: vars.$space-xxxs solid var(--sidebar-primary, rgb(86, 107, 223));
+    border-bottom: vars.$space-xxxs solid var(--sidebar-primary, colors.$primary-color);
   }
 
 
@@ -196,7 +197,7 @@
     z-index: 1001;
     min-width: 100%;
     padding-left: 0;
-    background-color: var(--sidebar-dark, #151a2d);
+    background-color: var(--sidebar-dark, colors.$dark-color);
     display: none;
   }
 
@@ -208,7 +209,7 @@
 :host-context(.sidebar.sidebar-position-left) {
 
   .nav-item:has(.dropdown-menu a.active) {
-    border-left: vars.$space-xxs solid var(--sidebar-primary, rgb(86, 107, 223));
+    border-left: vars.$space-xxs solid var(--sidebar-primary, colors.$primary-color);
   }
 
   .nav-item:has(.dropdown-menu a.active) {

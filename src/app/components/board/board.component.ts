@@ -36,7 +36,6 @@ import { ScrollTopComponent } from '@components/shared/scroll-top/scroll-top.com
 
 import { injectInfiniteQuery, injectMutation } from '@tanstack/angular-query-experimental';
 import { QueryClient } from '@tanstack/angular-query-experimental';
-import { SvgIconDirective } from '@components/shared/svg-icon.directive';
 import { CrudButtonsComponent } from '@components/shared/crud-buttons/crud-buttons.component';
 
 const limit = 5;
@@ -51,9 +50,8 @@ const limit = 5;
     ScrollTopComponent,
     CollectionsComponent,
     ModalDirective,
-    SvgIconDirective,
-    CrudButtonsComponent
-],
+    CrudButtonsComponent,
+  ],
   templateUrl: './board.component.html',
   styleUrl: './board.component.scss',
   providers: [

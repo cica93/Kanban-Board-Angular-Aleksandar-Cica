@@ -2,10 +2,9 @@ import { Component, input, model, output } from '@angular/core';
 import { TooltipDirective } from 'cica-ui';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
 import { ICellRendererParams } from 'ag-grid-community';
-import { SvgIconDirective } from '../svg-icon.directive';
 
 @Component({
-  imports: [TooltipDirective, SvgIconDirective],
+  imports: [TooltipDirective],
   selector: 'app-crud-buttons',
   styleUrl: './crud-buttons.component.scss',
   templateUrl: './crud-buttons.component.html',

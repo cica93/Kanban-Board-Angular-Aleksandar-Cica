@@ -1,4 +1,5 @@
 @use '../../../_variables' as vars;
+@use '../../../colors' as colors;
 
 :host {
   .sidebar {
@@ -11,7 +12,8 @@
     width: var(--sidebar-width, 250px);
     display: flex;
     flex-direction: column;
-    background-color: var(--sidebar-dark, #151a2d);
+    gap: var(--var-sidebar-gap, vars.$space-s);
+    background-color: var(--sidebar-dark, colors.$dark-color);
     transition: all 0.4s ease-in-out;
   }
 
@@ -59,9 +61,12 @@
     align-items: center;
     right: 0;
     top: 0;
+    padding: vars.$space-xxs;
     transform: translate(50%, -50%);
     transition: left 0.3s ease;
-    border: vars.$space-xxxs solid var(--sidebar-primary, rgb(86, 107, 223));
+    border: vars.$space-xxxs solid var(--sidebar-primary, colors.$primary-color);
+    background-color: var(--light, colors.$light-color);
+    cursor: pointer;
     border-radius: 50%;
     z-index: 2001;
     svg {

@@ -24,7 +24,7 @@ export interface AddressForm {
 })
 export class UserFormComponent implements SubmitForm<AddressForm, AddressForm> {
   initValue = input<AddressForm | null | undefined>(null);
-  onClose: Subject<boolean> = new Subject();
+  onSuccess: Subject<boolean> = new Subject();
   submitted = signal(false);
   formSubmitted = output<any>();
   userModel = signal<{

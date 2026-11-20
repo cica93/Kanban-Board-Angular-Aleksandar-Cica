@@ -1,3 +1,6 @@
+@use '../../../_variables' as vars;
+@use '../../../_colors' as colors;
+
 :host {
   display: inline-flex;
   vertical-align: middle;
@@ -9,9 +12,9 @@
   justify-content: center;
   flex-shrink: 0;
   overflow: visible;
-  background: #e9ecef;
-  color: #495057;
-  border: 2px solid #495057;
+  background: var(--light, colors.$light-color);
+  color: var(--gray-color, colors.$gray-color);
+  border: 2px solid var(--dark, colors.$dark-color);
   font-weight: 600;
 
   &.circle {
@@ -71,11 +74,11 @@
     bottom: 0;
     width: 25%;
     height: 25%;
-    border: 2px solid white;
+    border: 2px solid var(--light, colors.$light-color);
     border-radius: 50%;
 
     &.online {
-      background: #22c55e;
+      background: var(--primary-color, colors.$primary-color);
     }
 
     &.offline {
@@ -83,7 +86,7 @@
     }
 
     &.busy {
-      background: #ef4444;
+      background: var(--danger-color, colors.$danger-color);
     }
   }
 }

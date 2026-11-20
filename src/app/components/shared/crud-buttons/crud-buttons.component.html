@@ -6,7 +6,10 @@
     [tooltipDisabled]="!!editText()"
     class="primary"
   >
-  <span [appSvgIcon]="'edit'"></span><span>{{editText()}}</span>
+  <span class="material-symbols-rounded">edit</span>
+  @if(editText()){
+  <span>{{editText()}}</span>
+  }
   </button>
 }
 @if (showCreateButton()) {
@@ -17,7 +20,10 @@
     [tooltipDisabled]="!!createText()"
     class="primary"
   >
-   <span [appSvgIcon]="'create'"></span><span>{{createText()}}</span>
+   <span class="material-symbols-rounded">add</span>
+   @if(createText()){
+   <span>{{createText()}}</span>
+   }
   </button>
 }
 
@@ -29,7 +35,10 @@
     (click)="deleteEntity()"
     class="danger"
   >
-  <span [appSvgIcon]="'delete'"></span><span>{{deleteText()}}</span>
+ <span class="material-symbols-rounded">delete</span>
+ @if(deleteText()){
+   <span>{{deleteText()}}</span>
+ }
   </button>
 }
 
@@ -39,6 +48,6 @@
     (click)="close()"
     class="danger"
   >
-  <span [appSvgIcon]="'close'"></span>
+  <span class="material-symbols-rounded">close</span>
   </button>
 }

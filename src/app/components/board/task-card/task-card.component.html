@@ -34,9 +34,7 @@
             (onSuccess)="onEdit.emit(this.task())"
             class="cursor-pointer"
           >
-            <span slot="start" [appSvgIcon]="'edit'">
-                  
-            </span>
+           <span slot="start" class="material-symbols-rounded">edit</span>
 
             <strong>Edit</strong>
           </cica-ui-list-item>
@@ -50,9 +48,7 @@
             class="cursor-pointer"
             (onConfirm)="deleteTask()"
           >
-            <span slot="start" class="icon" [appSvgIcon]="'delete'">
-            </span>
-
+            <span slot="start" class="material-symbols-rounded">delete</span>
             <strong>Delete</strong>
           </cica-ui-list-item>
         </cica-ui-list>

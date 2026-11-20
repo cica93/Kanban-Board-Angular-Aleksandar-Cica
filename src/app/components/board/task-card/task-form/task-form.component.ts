@@ -46,7 +46,7 @@ export type TaskForm = Omit<Task, NoTUpdatableTaskFields>;
   providers: [{ provide: SUBMIT_FORM_TOKEN, useClass: forwardRef(() => TaskFormComponent) }],
 })
 export class TaskFormComponent implements SubmitForm<Task, TaskForm> {
-  onClose: Subject<boolean> = new Subject<boolean>();
+  onSuccess: Subject<boolean> = new Subject<boolean>();
   initValue = input<Task | undefined | null>(null);
   private readonly taskService = inject(AbstractTaskService);
   private readonly messageHandlerService = injectAsync(() =>
@@ -129,7 +129,7 @@ export class TaskFormComponent implements SubmitForm<Task, TaskForm> {
             );
             this.showMessage(`Task ${id ? 'updated' : 'created'}`, 'Task changed successfully');
 
-            this.onClose.next(true);
+            this.onSuccess.next(true);
             return undefined;
           } catch (error) {
             return {

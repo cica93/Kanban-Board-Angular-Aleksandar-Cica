@@ -158,7 +158,7 @@ export class TaskTableComponent {
           component.componentRef.instance.onConfirm.subscribe(() => {
             submit(component.submitFormRef.instance.form);
           });
-          component.submitFormRef.instance.onClose.subscribe(() => {
+          component.submitFormRef.instance.onSuccess.subscribe(() => {
             service.close(component.componentRef);
           });
         },
@@ -192,7 +192,7 @@ export class TaskTableComponent {
           component.componentRef.instance.onConfirm.subscribe(() => {
             submit(component.submitFormRef.instance.form);
           });
-          component.submitFormRef.instance.onClose.subscribe(() => {
+          component.submitFormRef.instance.onSuccess.subscribe(() => {
             service.close(component.componentRef);
           });
         },

@@ -1,66 +1,71 @@
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
+@use '../../colors' as colors;
+@use '../../variables' as vars;
 
-.dropdown-trigger {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-
-  width: 36px;
-  height: 36px;
-
-  padding: 0;
-  border: none;
-
-  background: transparent;
-  color: #555;
-  cursor: pointer;
-
-  &:hover {
-    background: #f0f0f0;
-  }
-}
-
-.dropdown-menu {
-  position: absolute;
-  top: calc(100% + 4px);
-  right: 0;
-
-  min-width: 160px;
-  padding: 5px;
-
-  background: #fff;
-  border: 1px solid #e5e5e5;
-  border-radius: 8px;
-
-  box-shadow: 0 4px 12px rgb(0 0 0 / 12%);
-
-  z-index: 100000;
-}
-
-.dropdown-item {
-  display: block;
-  width: 100%;
-
-  padding: 9px 12px;
-
-  border: none;
-  border-radius: 5px;
-
-  background: transparent;
-  text-align: left;
-  font-size: 14px;
-
-  cursor: pointer;
-
-  &:hover {
-    background: #f5f5f5;
+:host {
+  .dropdown {
+    position: relative;
+    display: inline-block;
   }
 
-  &.danger {
-    color: #dc2626;
+  .dropdown-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+
+    width: 36px;
+    height: 36px;
+
+    padding: 0;
+    border: none;
+
+    background: transparent;
+    color: var(--dark, colors.$dark-color);
+    cursor: pointer;
+
+    &:hover {
+      background: var(--light, colors.$light-color);
+    }
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+
+    min-width: 160px;
+    padding: vars.$space-xxs;
+
+    background: #fff;
+    border: 1px solid vars(--secondary-color-hover, colors.$secondary-color-hover);
+    border-radius: vars.$space-xs;
+
+    box-shadow: 0 vars.$space-xxs vars.$space-s var(--dark, colors.$dark-color);
+
+    z-index: 100000;
+  }
+
+  .dropdown-item {
+    display: block;
+    width: 100%;
+
+    padding: vars.$space-xs vars.$space-s;
+
+    border: none;
+    border-radius: vars.$space-xxs;
+
+    background: transparent;
+    text-align: left;
+    font-size: vars.$space-m;
+
+    cursor: pointer;
+
+    &:hover {
+      background: vars(--secondary-color-hover, colors.$secondary-color-hover);
+    }
+
+    &.danger {
+      color: vars(--danger-color, colors.$danger-color);
+    }
   }
 }

@@ -1,15 +1,18 @@
+@use './colors' as colors;
+@use './variables' as vars;
+
 .app-tooltip {
   position: fixed;
   z-index: 10000;
 
-  padding: 6px 10px;
+  padding: vars.$space-xs vars.$space-s;
 
-  border-radius: 4px;
+  border-radius: vars.$space-xxs;
 
-  background: #222;
-  color: orange;
+  background: var(--dark, colors.$dark-color);
+  color: var(--light, colors.$light-color);
 
-  font-size: 13px;
+  font-size: vars.$space-m;
   line-height: 1.4;
 
   white-space: nowrap;
@@ -35,28 +38,28 @@
 .app-tooltip-top::after {
   top: 100%;
   left: 50%;
-  border-top-color: #222;
+  border-top-color: var(--dark, colors.$dark-color);
   transform: translateX(-50%);
 }
 
 .app-tooltip-bottom::after {
   bottom: 100%;
   left: 50%;
-  border-bottom-color: #222;
+  border-bottom-color: var(--dark, colors.$dark-color);
   transform: translateX(-50%);
 }
 
 .app-tooltip-left::after {
   top: 50%;
   left: 100%;
-  border-left-color: #222;
+  border-left-color: var(--dark, colors.$dark-color);
   transform: translateY(-50%);
 }
 
 .app-tooltip-right::after {
   top: 50%;
   right: 100%;
-  border-right-color: #222;
+  border-right-color: var(--dark, colors.$dark-color);
   transform: translateY(-50%);
 }
 

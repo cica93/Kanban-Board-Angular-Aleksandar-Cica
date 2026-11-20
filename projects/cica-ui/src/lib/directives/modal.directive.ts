@@ -20,7 +20,7 @@ import { closeModal, ModalService } from '../service/modal.service';
 export interface SubmitForm<INIT_VALUE = any, FORM_VALUE = any> {
   initValue: InputSignal<INIT_VALUE | null | undefined>;
   form: FieldTree<FORM_VALUE>;
-  onClose: Subject<boolean>;
+  onSuccess: Subject<boolean>;
 }
 
 export const SUBMIT_FORM_TOKEN_LOAD = new InjectionToken<() => Promise<Type<SubmitForm>>>(
@@ -80,7 +80,7 @@ export class ModalDirective {
       componentRef.instance.onConfirm.subscribe(() => {
         submit(submitFormRef.instance.form);
       });
-      submitFormRef.instance.onClose.subscribe(() => {
+      submitFormRef.instance.onSuccess.subscribe(() => {
         this.modalService.close(componentRef);
       });
     } else {

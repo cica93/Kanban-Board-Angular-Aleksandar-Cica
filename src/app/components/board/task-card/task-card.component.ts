@@ -16,7 +16,6 @@ import {
   AvatarComponent,
   AvatarGroupComponent,
 } from 'cica-ui';
-import { SvgIconDirective } from '@components/shared/svg-icon.directive';
 
 @Component({
   selector: 'app-task-card',
@@ -31,7 +30,6 @@ import { SvgIconDirective } from '@components/shared/svg-icon.directive';
     CardComponent,
     MenuButtonComponent,
     BadgeComponent,
-    SvgIconDirective,
     SlicePipe,
   ],
   templateUrl: './task-card.component.html',

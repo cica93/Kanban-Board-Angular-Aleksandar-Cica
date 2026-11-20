@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, injectAsync, Injector, signal } from '@angular/core';
 import { User, UserService } from '@service/user.service';
 import { CrudButtonsComponent } from '@components/shared/crud-buttons/crud-buttons.component';
 import {
@@ -9,6 +9,8 @@ import {
 
 import { CellContextMenuEvent, ColDef, GridApi } from 'ag-grid-community';
 import { map } from 'rxjs';
+import { ModalOptions, SUBMIT_FORM_TOKEN_LOAD } from 'cica-ui';
+import { submit } from '@angular/forms/signals';
 
 @Component({
   selector: 'app-users',
@@ -27,9 +29,14 @@ import { map } from 'rxjs';
         ) =>
           userService
             .getUsers(filter, limit, offset, sortColumn, direction)
-            .pipe(map((e) => e.content));
+            .pipe(map(({ content }) => content));
       },
       deps: [UserService],
+    },
+    {
+      provide: SUBMIT_FORM_TOKEN_LOAD,
+      useValue: () =>
+        import('../user-form/user-form.component').then((module) => module.UserFormComponent),
     },
   ],
   templateUrl: './users.component.html',
@@ -38,6 +45,8 @@ export class UsersComponent {
   contentMenuEvent = signal<Event | null | undefined>(null);
   firstInpuChange = true;
   contentMenuOpen = signal(false);
+  private readonly modalService = injectAsync(() => import('cica-ui').then((m) => m.ModalService));
+  private readonly injector = inject(Injector);
 
   protected gridApi!: GridApi<User>;
 
@@ -129,11 +138,26 @@ export class UsersComponent {
     // ]);
   }
 
-  openUserkDialog(user?: User): void {
-    console.log(user);
-    // const dialog = await openEditModal(this.injector, user, user ? 'Edit user' : 'Create user');
-    // this.addUser();
-    // this.dialogCallBackFunction(dialog);
+  async openUserkDialog(user?: User): Promise<void> {
+    const service = await this.modalService();
+    const label = user ? 'Edit' : 'Save';
+    const { componentRef, submitFormRef } = await service.openEditModal({
+      injector: this.injector,
+      modalOptions: {
+        initValue: user,
+        headerText: `${label} User`,
+        confirmLabel: label,
+      } as ModalOptions,
+    });
+    componentRef.instance.onCancel.subscribe(() => {
+      service.close(componentRef);
+    });
+    componentRef.instance.onConfirm.subscribe(() => {
+      submit(submitFormRef.instance.form);
+    });
+    submitFormRef.instance.onSuccess.subscribe(() => {
+      service.close(componentRef);
+    });
   }
 
   dialogCallBackFunction(dialog: any): void {
