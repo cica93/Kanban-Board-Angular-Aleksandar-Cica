@@ -1,15 +1,20 @@
 <form [formRoot]="form" class="center-content">
+   <cica-form-field-wrapper label="Title">
       <cica-input
         [attr.id]="'title'"
-        [errorMessage]="form.title().errors()[0]?.message"
         [label]="'Title'"
         [formField]="form.title"
       ></cica-input>
+      </cica-form-field-wrapper>
   
-      <textarea  placeholder="Enter description" [formField]="form.description" 
-      id="Description"></textarea>
+      <cica-form-field-wrapper label="Description">
+        <cica-input  placeholder="Enter description" [formField]="form.description" inputType="textarea"
+          id="Description">
+        </cica-input>
+      </cica-form-field-wrapper>
+    
 
-
+<cica-form-field-wrapper label="Status">
       <app-select
         [id]="'task-status'"
         [items]="TASK_STATUSES_OPTIONS"
@@ -21,6 +26,8 @@
         [clearable]="false"
         [searchable]="false"
       />
+      </cica-form-field-wrapper>
+      <cica-form-field-wrapper label="Priorities">
       <app-select
         [id]="'task-priority'"
         [items]="[...TASK_PRIORITIES]"
@@ -30,6 +37,8 @@
         [clearable]="false"
         [searchable]="false"
       />
+      </cica-form-field-wrapper>
+      <cica-form-field-wrapper label="Users">
       @let users = (users$ | async) ?? [];
       <app-select
         [id]="'users'"
@@ -43,5 +52,6 @@
         [clearable]="false"
         [clearOnBackspace]="false"
       />
+      </cica-form-field-wrapper>
    
 </form>

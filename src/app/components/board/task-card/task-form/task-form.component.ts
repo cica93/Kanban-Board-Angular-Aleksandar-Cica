@@ -31,13 +31,20 @@ import { UserService } from '@service/user.service';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { SelectComponent } from '@components/board/select/select.component';
-import { InputComponent, SUBMIT_FORM_TOKEN, SubmitForm } from 'cica-ui';
+import { FormFieldWrapperComponent, InputComponent, SUBMIT_FORM_TOKEN, SubmitForm } from 'cica-ui';
 
 export type NoTUpdatableTaskFields = 'id' | 'taskOrder' | 'version' | 'createdBy' | 'updatedBy';
 export type TaskForm = Omit<Task, NoTUpdatableTaskFields>;
 @Component({
   selector: 'app-task-form',
-  imports: [FormRoot, FormField, SelectComponent, AsyncPipe, InputComponent],
+  imports: [
+    FormRoot,
+    FormField,
+    SelectComponent,
+    AsyncPipe,
+    InputComponent,
+    FormFieldWrapperComponent,
+  ],
   templateUrl: './task-form.component.html',
   styleUrl: './task-form.component.scss',
   host: {

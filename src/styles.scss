@@ -31,6 +31,9 @@
   grid-template-rows: var(--top-sidebar-height) 1fr;
 }
 
+app-search-input {
+  --input-left-pedding:40px
+}
 
 
 
@@ -56,9 +59,7 @@ form,
   gap: 1rem;
 }
 
-.ion-col-end {
-  @extend .justify-content-flex-end;
-}
+
 
 .dialog-actions {
   margin-top: 0.75rem;

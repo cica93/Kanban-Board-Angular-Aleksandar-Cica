@@ -1,14 +1,13 @@
 
-<div class="form-group" [class.ç]="disabled()">
-      @if(label()){
-      <label (click)="labelClick($event.target)">{{label() }} 
-        @if(required()){
-          <span class="red-label">*</span>
-        }
-      </label>
-      }
 
       <div class="input-wrapper">
+        @if(inputType() === 'textarea'){
+           <textarea 
+           [class.invalid]="invalid() && touched()"
+          [value]="value()"
+          (input)="changeTextarea($event.target)"
+          placeholder="{{ placeholder() ? placeholder() : 'Enter ' +label()}}"></textarea>
+        } @else {
         <input
           [class.invalid]="invalid() && touched()"
           [type]="inputType()"
@@ -16,6 +15,7 @@
           (input)="value.set($event.target.value)"
           placeholder="{{ placeholder() ? placeholder() : 'Enter ' +label()}}"
         />
+        }
         <div class="left-icon-wrapper">
             <ng-content select=".left-icon"></ng-content>
         </div>
@@ -79,11 +79,4 @@
     </svg> </span>
             }
         </div>
-
-        @if(invalid() && touched()){
-            <span  class="error-message">
-            {{errorMessage()}}
-            </span>
-        }
-      </div>
-</div>
+  </div>

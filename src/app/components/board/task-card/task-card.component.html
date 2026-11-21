@@ -23,7 +23,7 @@
         }
       </cica-avatar-group>
 
-      <cica-menu-button [(isOpen)]="isOpen">
+      <cica-menu-button [(isOpen)]="isOpen" [position]="'right'">
         <cica-ui-list (click)="isOpen.set(false)">
           <cica-ui-list-item
             [button]="true"

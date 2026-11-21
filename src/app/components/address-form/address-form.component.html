@@ -2,7 +2,6 @@
  @let streetFiled = addressFields().street;
 <cica-input 
       [cicaFirstFocus]="true"
-      [errorMessage]="streetFiled().errors()[0]?.message ?? ''"
       [attr.id]="'street'"
       [label]="'Street'"
       [formField]="streetFiled" />
@@ -11,12 +10,10 @@
       [attr.id]="'zip-code'"
       [label]="'Zip Code'"
       [formField]="zipCodeFiled"
-      [errorMessage]="zipCodeFiled().errors()[0]?.message ?? ''"
     />
      @let cityFiled = addressFields().city;
 <cica-input
       [attr.id]="'city'"
       [label]="'City'"
-      [errorMessage]="cityFiled().errors()[0]?.message ?? ''"
       [formField]="cityFiled"
     />

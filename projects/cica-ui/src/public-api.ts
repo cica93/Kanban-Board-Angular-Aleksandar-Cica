@@ -15,6 +15,14 @@ export * from './lib/collections/collections.component';
 export * from './lib/badge/badge.component';
 export * from './lib/avatar/avatar/avatar.component';
 export * from './lib/avatar/avatar-group/avatar-group.component';
+export * from './lib/form-field-wrapper/form-field-wrapper.component';
+
+export * from './lib/accordion/accordion-item/accordion-item.component';
+export * from './lib/accordion/accordion-title/accordion-title.component';
+export * from './lib/accordion/accordion.component';
+
+export * from './lib/tabs/tabs.component';
+export * from './lib/tabs/tab/tab.component';
 
 export * from './lib/directives/modal.directive';
 export * from './lib/directives/tooltip.directive';

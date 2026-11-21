@@ -1,11 +1,17 @@
 import { Component, effect, input, model, output, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { DebounceInputDirective, FirstFocusDirective } from 'cica-ui';
+import { DebounceInputDirective, FirstFocusDirective, FormFieldWrapperComponent } from 'cica-ui';
 import { InputComponent } from 'cica-ui';
 
 @Component({
   selector: 'app-search-input',
-  imports: [DebounceInputDirective, FormsModule, InputComponent, FirstFocusDirective],
+  imports: [
+    DebounceInputDirective,
+    FormsModule,
+    InputComponent,
+    FirstFocusDirective,
+    FormFieldWrapperComponent,
+  ],
   templateUrl: './search-input.component.html',
 })
 export class SearchInputComponent {

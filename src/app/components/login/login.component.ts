@@ -12,7 +12,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { JwtUtils } from '@service/jwt.service';
 import { User } from '@service/user.service';
-import { InputComponent } from 'cica-ui';
+import { InputComponent, FormFieldWrapperComponent } from 'cica-ui';
 
 declare const __brand: unique symbol;
 type Branded<T, BRAND> = T & { [__brand]: BRAND };
@@ -82,7 +82,7 @@ export type ObservableType<T> = T extends (...args: any) => Observable<infer R> 
 
 @Component({
   selector: 'app-login',
-  imports: [FormField, FormRoot, FormsModule, InputComponent],
+  imports: [FormField, FormRoot, FormsModule, InputComponent, FormFieldWrapperComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
@@ -110,6 +110,7 @@ export class LoginComponent {
     (path) => {
       required(path.email, { message: 'Email is required' });
       email(path.email, { message: 'Please enter a valid email address' });
+      required(path.password, { message: 'Password is required' });
       validate(path.password, ({ value }) => {
         const message = passwordErrorMessage(value());
         if (message) {

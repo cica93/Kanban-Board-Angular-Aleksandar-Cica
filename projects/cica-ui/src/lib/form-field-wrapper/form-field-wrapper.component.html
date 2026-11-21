@@ -1,0 +1,17 @@
+
+@let isInvalid = errorMessage() && touched();
+<div class="content" [class.invalid]="isInvalid">
+    <label>{{label() }} 
+    @if(required()){
+        <span class="requred">*</span>
+    }
+    </label>
+    <ng-content />
+</div>
+
+@if(isInvalid){ 
+<span class="error-message">
+   {{errorMessage()}}
+</span>
+}
+

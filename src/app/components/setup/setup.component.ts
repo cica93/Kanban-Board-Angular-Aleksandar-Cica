@@ -1,7 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AccordionComponent, AccordionItemComponent, AccordionTitleComponent } from 'cica-ui';
 
 @Component({
-  imports: [],
+  imports: [
+    AccordionComponent,
+    AccordionComponent,
+    AccordionItemComponent,
+    AccordionTitleComponent,
+  ],
   selector: 'app-setup',
   styleUrl: './setup.component.scss',
   templateUrl: './setup.component.html',

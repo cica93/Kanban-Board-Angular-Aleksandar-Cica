@@ -1,0 +1,70 @@
+@use './../../variables' as vars;
+
+:host {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+
+    .content {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .content:has(input[type='checkbox']) {
+       flex-direction: row-reverse;
+       justify-content: flex-end;
+       align-items: center;
+    }
+     
+    .content {
+
+        ::ng-deep cica-input {
+            input, textarea {
+                border-radius: 4px;
+                padding-top: var(--vertical-input-pedding, 10px);
+                padding-bottom: var(--vertical-input-pedding, 10px);
+                padding-right: var(--input-right-pedding, 10px);
+                padding-left: var(--input-left-pedding, 10px);
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                font-size: 14px;
+            }
+        }
+    }
+
+    .invalid {
+        ::ng-deep cica-input {
+            input, textarea {
+                border: 2px solid red !important;
+
+            }
+        }
+
+        ::ng-deep ng-select > .ng-select-container{
+            border: 2px solid red !important;
+        }
+    }
+ 
+
+    
+
+    .requred, .error-message {
+      color: #dc3545;
+    }
+
+    .error-message {
+       font-size: vars.$space-s; 
+    }
+}
+
+:host(.hidden) {
+    display: none;
+}
+
+:host(.disabled) {
+    pointer-events: none;
+    cursor: not-allowed;
+    background-color: rgb(134, 132, 129);      
+}

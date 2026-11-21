@@ -2,24 +2,22 @@
   <form [formRoot]="loginForm">
     <h1 style="text-align: center">Login</h1>
 
-    @let emailInput = loginForm.email();
-    <cica-input
-      [errorMessage]="emailInput.errors()[0]?.message ?? 'Enter a valid email'"
-      label="Email"
-      placeholder="Enter email"
-      [formField]="loginForm.email"
-      [autofocus]="true"
-      id="email"
-    />
-
-    @let passwordInput = loginForm.password();
-    <cica-input
-      [errorMessage]="passwordInput.errors()[0]?.message ?? 'Enter a valid password'"
-      inputType="password"
-      label="Password"
-      [formField]="loginForm.password"
-    >
-    </cica-input>
+    <cica-form-field-wrapper label="Email">
+      <cica-input
+        placeholder="Enter email"
+        [formField]="loginForm.email"
+        [autofocus]="true"
+        id="email"
+      />
+    </cica-form-field-wrapper>
+    <cica-form-field-wrapper label="Password">
+      <cica-input
+        inputType="password"
+        label="Password"
+        [formField]="loginForm.password"
+      >
+      </cica-input>
+    </cica-form-field-wrapper>
 
     @let submitting = loginForm().submitting();
     <button
@@ -34,3 +32,4 @@
     </button>
   </form>
 </div>
+ 

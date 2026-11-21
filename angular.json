@@ -99,7 +99,7 @@
       "projectType": "library",
       "root": "projects/cica-ui",
       "sourceRoot": "projects/cica-ui/src",
-      "prefix": "cica-ui",
+      "prefix": "cica",
       "architect": {
         "build": {
           "builder": "@angular/build:ng-packagr",
@@ -127,7 +127,9 @@
   },
   "schematics": {
     "@schematics/angular:component": {
-      "type": "component"
+      "type": "component",
+      "style": "scss",
+      "skipTests": true
     },
     "@schematics/angular:directive": {
       "type": "directive"

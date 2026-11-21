@@ -1,0 +1,22 @@
+<div class="tabs">
+    <div class="tab-header">
+    @for(tab of tabs(); track $index){
+        <div class="tab" 
+        [class.active]="$index === activeTab()" 
+        [class.disabled]="tab.disabled()" 
+        (click)="selectTab($index)">
+            @if(tab.header()){
+            <ng-container [ngTemplateOutlet]="tab.header()"></ng-container>
+            } @else {
+                {{tab.label()}}
+            }
+        </div>
+    }
+    </div>
+    <div class="tab-content">
+        @let content = tabs()[activeTab()]?.content();
+        @if (content) {
+         <ng-container [ngTemplateOutlet]="content!"></ng-container>
+        }
+    </div>
+</div>

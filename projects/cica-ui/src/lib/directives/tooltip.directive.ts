@@ -107,38 +107,24 @@ export class TooltipDirective implements OnDestroy {
     tooltip: HTMLElement,
     preferredPosition: 'top' | 'bottom' | 'left' | 'right',
   ): void {
+    const viewportWidth = document.documentElement.clientWidth;
+    const viewportHeight = document.documentElement.clientHeight;
     const hostRect = host.getBoundingClientRect();
     const tooltipRect = tooltip.getBoundingClientRect();
     const gap = 8;
     const edge = 8;
-    const viewportWidth = document.documentElement.clientWidth;
-    const viewportHeight = document.documentElement.clientHeight;
-    const fits = {
-      top: hostRect.top >= tooltipRect.height + gap + edge,
-      bottom: viewportHeight - hostRect.bottom >= tooltipRect.height + gap + edge,
-      left: hostRect.left >= tooltipRect.width + gap + edge,
-      right: viewportWidth - hostRect.right >= tooltipRect.width + gap + edge,
-    };
-    const opposite = {
-      top: 'bottom',
-      bottom: 'top',
-      left: 'right',
-      right: 'left',
-    } as const;
-    const position = fits[preferredPosition]
-      ? preferredPosition
-      : fits[opposite[preferredPosition]]
-        ? opposite[preferredPosition]
-        : ((Object.keys(fits) as Array<keyof typeof fits>).find((side) => fits[side]) ??
-          preferredPosition);
-
+    const position = calculatePreferredPosition(
+      host,
+      tooltip,
+      preferredPosition,
+      viewportHeight,
+      viewportWidth,
+    );
     this.renderer.removeClass(tooltip, `app-tooltip-${preferredPosition}`);
     this.renderer.addClass(tooltip, `app-tooltip-${position}`);
 
     let top: number;
     let left: number;
-
-    console.log(tooltipRect);
 
     switch (position) {
       case 'bottom':
@@ -180,3 +166,55 @@ export class TooltipDirective implements OnDestroy {
     this.hide();
   }
 }
+
+type PreferredPosition = 'top' | 'bottom' | 'left' | 'right';
+type PreferredPositionConfig = Record<PreferredPosition, boolean>;
+
+export function calculatePreferredPosition(
+  host: HTMLElement,
+  child: HTMLElement,
+  preferredPosition: PreferredPosition,
+  viewportHeight: number,
+  viewportWidth: number,
+  edge = 8,
+  gap = 8,
+): PreferredPosition {
+  const fits = calculateFits(
+    host.getBoundingClientRect(),
+    child.getBoundingClientRect(),
+    viewportHeight,
+    viewportWidth,
+    edge,
+    gap,
+  );
+
+  return fits[preferredPosition]
+    ? preferredPosition
+    : fits[OpositePosition[preferredPosition]]
+      ? OpositePosition[preferredPosition]
+      : ((Object.keys(fits) as Array<keyof typeof fits>).find((side) => fits[side]) ??
+        preferredPosition);
+}
+
+export function calculateFits(
+  hostRect: DOMRect,
+  childRect: DOMRect,
+  viewportHeight: number,
+  viewportWidth: number,
+  edge = 4,
+  gap = 4,
+): PreferredPositionConfig {
+  return {
+    top: hostRect.top >= childRect.height + gap + edge,
+    bottom: viewportHeight - hostRect.bottom >= childRect.height + gap + edge,
+    left: hostRect.left >= childRect.width + gap + edge,
+    right: viewportWidth - hostRect.right >= childRect.width + gap + edge,
+  };
+}
+
+export const OpositePosition = {
+  top: 'bottom',
+  bottom: 'top',
+  left: 'right',
+  right: 'left',
+} as const;

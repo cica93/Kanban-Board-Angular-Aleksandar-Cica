@@ -1,4 +1,4 @@
-<div class="dropdown" (cicaClickOutside)="isOpen.set(false)">
+<div class="dropdown" #dropdownElement (cicaClickOutside)="isOpen.set(false)" >
   <div   
     class="dropdown-trigger"
     (click)="isOpen.set(true)"
@@ -8,7 +8,7 @@
 </div>
 
   @if (isOpen()) {
-    <div class="dropdown-menu">
+    <div #menuElement class="dropdown-menu menu-vertical-position-{{menuPosition().vertical}} menu-horizontal-position-{{menuPosition().horizontal}}">
       <ng-content />
     </div>
   }

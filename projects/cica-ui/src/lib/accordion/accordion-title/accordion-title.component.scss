@@ -1,0 +1,14 @@
+:host {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #1e293b;
+  font-weight: 400;
+  list-style: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  :host-context(.expanded){
+    color: #0c63e4;
+  }
+}
